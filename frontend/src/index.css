@@ -2,12 +2,12 @@
 
 @font-face {
   font-family: inter-regular;
-  src: url(../public/fonts/Inter-Regular.otf);
+  src: url(./assets/fonts/Inter-Regular.otf);
 }
 
 @font-face {
   font-family: inter-bold;
-  src: url(../public/fonts/Inter-Bold.otf);
+  src: url(./assets/fonts/Inter-Bold.otf);
 }
 
 :root {

@@ -1,0 +1,28 @@
+{
+  "method": "post",
+  "url": "http://localhost:3000/api/auth/verify-otp",
+  "data": {
+    "username": "azan_sabir",
+    "password": "03103852656xyz",
+    "email": "gamingvill2.0@gmail.com",
+    "otpCode": 6097
+  },
+  "backup": {
+    "bodyType": "raw",
+    "data": {},
+    "bodySubType": "json",
+    "rawData": "{\n  \"username\": \"azan_sabir\",\n  \"password\": \"03103852656xyz\",\n  \"email\": \"gamingvill2.0@gmail.com\",\n  \"otpCode\": 6097\n}"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "headersArray": [
+    [
+      "996244db-0a30-4896-b96a-0a773f48d5e5",
+      "Content-Type",
+      "application/json",
+      true,
+      "STRING"
+    ]
+  ]
+}

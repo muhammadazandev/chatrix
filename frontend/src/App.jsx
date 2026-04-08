@@ -3,6 +3,7 @@ import Login from "./pages/login/Login";
 import Homepage from "./pages/homepage/Homepage";
 import Chat from "./pages/chat/Chat";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
             </ProtectedRoutes>
           }
         ></Route>
+        <Route path="/reset-password/:token" element={<ForgotPassword />}></Route>
       </Routes>
     </BrowserRouter>
   );
