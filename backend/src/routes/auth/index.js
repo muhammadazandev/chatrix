@@ -6,7 +6,7 @@ import meRouter from "./me/me.js";
 import refreshRouter from "./refresh/refresh.js";
 import logoutRouter from "./logout/logout.js";
 import deleteAccountRouter from "./deleteAccount/deleteAccount.js";
-import forgotPasswordRouter from "./forgorPassword/forgorPassword.js";
+import forgotPasswordRouter from "./forgotPassword/forgotPassword.js";
 import resetPasswordRouter from "./resetPassword/resetPassword.js";
 
 const router = express.Router();
@@ -16,9 +16,9 @@ router.use("/verify-otp", verifyOtpRouter);
 router.use("/login", loginRouter);
 router.use("/me", meRouter);
 router.use("/refresh", refreshRouter);
-router.use("/logout", logoutRouter);
-router.use("/delete-account", deleteAccountRouter);
 router.use("/forgot-password", forgotPasswordRouter);
 router.use("/reset-password/:token", resetPasswordRouter);
+router.use("/logout", logoutRouter);
+router.use("/delete-account", deleteAccountRouter);
 
 export default router;

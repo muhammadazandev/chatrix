@@ -9,16 +9,19 @@ export default async function deleteAccountController(req, res) {
     if (deleteUser.deletedCount === 0) {
       return res.status(404).json({
         message: "User not found",
+        success: false,
       });
     }
 
     return res.status(200).json({
       message: "Account deleted successfully",
+      success: true,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: "Internal server error",
+      success: false,
     });
   }
 }

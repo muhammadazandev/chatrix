@@ -5,7 +5,9 @@ export default async function refreshController(req, res) {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      return res.status(401).json({ message: "No refresh token" });
+      return res
+        .status(401)
+        .json({ message: "No refresh token", success: false });
     }
 
     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
@@ -15,7 +17,10 @@ export default async function refreshController(req, res) {
         res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
         return res
           .status(401)
-          .json({ message: "Invalid or expired refresh token" });
+          .json({
+            message: "Invalid or expired refresh token",
+            success: false,
+          });
       }
 
       const newAccessToken = jwt.sign(
@@ -37,10 +42,14 @@ export default async function refreshController(req, res) {
         maxAge: 60 * 60 * 1000, // Match JWT expiry (1 hour)
       });
 
-      return res.status(200).json({ message: "Access token refreshed" });
+      return res
+        .status(200)
+        .json({ message: "Access token refreshed", success: true });
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 }

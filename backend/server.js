@@ -44,7 +44,7 @@ app.use("/api/auth", authRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ status: "OK" });
+  res.json({ message: "OK" });
 });
 
 const port = process.env.PORT || 3000;

@@ -9,6 +9,7 @@ export default async function loginController(req, res) {
     if (!email || !password) {
       return res.status(400).json({
         message: "Incomplete credentials",
+        success: false,
       });
     }
 
@@ -17,6 +18,7 @@ export default async function loginController(req, res) {
     if (!isExist) {
       return res.status(404).json({
         message: "User not found, try changing the email",
+        success: false,
       });
     }
 
@@ -25,6 +27,7 @@ export default async function loginController(req, res) {
     if (!isPasswordCorrect) {
       return res.status(401).json({
         message: "Password is incorrect",
+        success: false,
       });
     }
 
@@ -73,9 +76,12 @@ export default async function loginController(req, res) {
 
     return res.status(200).json({
       message: "User logged in successful",
+      success: true,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 }

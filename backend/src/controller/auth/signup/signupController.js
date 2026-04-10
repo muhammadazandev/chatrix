@@ -10,6 +10,7 @@ export default async function signupController(req, res) {
     if (!username || !email || !password) {
       return res.status(400).json({
         message: "Incomplete credentials",
+        success: false,
       });
     }
 
@@ -20,12 +21,14 @@ export default async function signupController(req, res) {
     if (isExist) {
       return res.status(409).json({
         message: "Username or email is already taken",
+        success: false,
       });
     }
 
     if (password.length < 8) {
       return res.status(400).json({
         message: "Password must be 8 characters long",
+        success: false,
       });
     }
 
@@ -35,7 +38,7 @@ export default async function signupController(req, res) {
     // Send OTP
     const otpCode = String(Math.floor(1000 + Math.random() * 9000));
 
-    const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 90 * 1000);
 
     const hashedOtp = await bcrypt.hash(otpCode, 10);
 
@@ -44,11 +47,12 @@ export default async function signupController(req, res) {
     await sendOtpMail(email, otpCode);
 
     return res.status(201).json({
-      status: "OTP sent",
+      message: "OTP sent to your email",
+      success: true,
     });
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 }
