@@ -4,9 +4,13 @@ export default async function logoutController(req, res) {
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
 
-    return res.status(200).json({ message: "Logged out successfully" });
+    return res
+      .status(200)
+      .json({ message: "Logged out successfully", success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 }

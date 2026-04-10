@@ -9,6 +9,7 @@ export default async function verifyOtpController(req, res) {
     if (!username || !password || !email || !otpCode) {
       return res.status(400).json({
         message: "All fields are required",
+        success: false,
       });
     }
 
@@ -17,6 +18,7 @@ export default async function verifyOtpController(req, res) {
     if (!findMatchedOtp) {
       return res.status(404).json({
         message: "OTP not found or expired",
+        success: false,
       });
     }
 
@@ -28,6 +30,7 @@ export default async function verifyOtpController(req, res) {
     if (!compareOtp) {
       return res.status(400).json({
         message: "OTP is incorrect",
+        success: false,
       });
     }
 
@@ -36,6 +39,7 @@ export default async function verifyOtpController(req, res) {
     if (now > findMatchedOtp.expiresAt) {
       return res.status(401).json({
         message: "OTP expired",
+        success: false,
       });
     }
 
@@ -44,12 +48,13 @@ export default async function verifyOtpController(req, res) {
     if (existingUser) {
       return res.status(409).json({
         message: "User already exists",
+        success: false,
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    await User.create({
       username,
       email,
       password: hashedPassword,
@@ -60,11 +65,13 @@ export default async function verifyOtpController(req, res) {
 
     return res.status(200).json({
       message: "Signup successful",
+      success: true,
     });
   } catch (error) {
     console.error("Verify OTP error:", error);
     return res.status(500).json({
       message: "Internal server error",
+      success: false,
     });
   }
 }

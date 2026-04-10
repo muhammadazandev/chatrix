@@ -11,12 +11,13 @@ export default async function resetPasswordController(req, res) {
     if (!token || !password)
       return res
         .status(400)
-        .json({ message: "Token and password are required" });
+        .json({ message: "Token and password are required", success: false });
 
     if (password.length < 8)
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 8 characters long" });
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
+        success: false,
+      });
 
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
@@ -28,6 +29,7 @@ export default async function resetPasswordController(req, res) {
     if (!isExist) {
       return res.status(400).json({
         message: "Invalid or expired reset link",
+        success: false,
       });
     }
 
@@ -43,11 +45,13 @@ export default async function resetPasswordController(req, res) {
 
     return res.status(200).json({
       message: "Password reset successful",
+      success: true,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: "Internal server error",
+      success: false,
     });
   }
 }

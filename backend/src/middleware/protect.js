@@ -5,7 +5,9 @@ export default async function protect(req, res, next) {
     const token = req.cookies.accessToken;
 
     if (!token) {
-      return res.status(401).json({ message: "No token, access denied" });
+      return res
+        .status(401)
+        .json({ message: "No token, access denied", success: false });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
@@ -21,6 +23,7 @@ export default async function protect(req, res, next) {
     console.error(error);
     return res.status(403).json({
       message: "Invalid token",
+      success: false,
     });
   }
 }

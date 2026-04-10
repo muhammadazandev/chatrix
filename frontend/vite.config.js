@@ -10,4 +10,17 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] }),
   ],
+  server: {
+    hmr: {
+      overlay: true, // Show errors
+      port: 5000,
+    },
+    watch: {
+      ignored: ["**/node_modules/**", "**/.git/**"],
+    },
+  },
+  clearScreen: false, // Show full logs
+  build: {
+    sourcemap: true,
+  },
 });

@@ -16,9 +16,9 @@ router.use("/verify-otp", verifyOtpRouter);
 router.use("/login", loginRouter);
 router.use("/me", meRouter);
 router.use("/refresh", refreshRouter);
-router.use("/logout", logoutRouter);
-router.use("/delete-account", deleteAccountRouter);
 router.use("/forgot-password", forgotPasswordRouter);
 router.use("/reset-password/:token", resetPasswordRouter);
+router.use("/logout", logoutRouter);
+router.use("/delete-account", deleteAccountRouter);
 
 export default router;

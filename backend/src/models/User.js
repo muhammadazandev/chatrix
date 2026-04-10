@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "https://via.placeholder.com/150?text=No+Image",
   },
+  authProvider: {
+    type: "string",
+    enum: ["local", "google", "both"],
+    default: "local",
+  },
 });
 
 const User = mongoose.model("User", userSchema);

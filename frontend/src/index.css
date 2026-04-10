@@ -11,14 +11,14 @@
 }
 
 :root {
-  --bg-primary: rgb(255, 255, 255);
-  --text-primary: rgb(0, 0, 0);
-  --accent-primary: #2563eb;
+  --bg-primary: rgb(250, 250, 250);
+  --foreground-primary: rgb(0, 0, 0);
+  --accent-color-primary: #1073ef;
 }
 
 body {
   background: var(--bg-primary);
-  color: var(--text-primary);
+  color: var(--foreground-primary);
   font-family: inter-regular;
 }
 
@@ -29,4 +29,63 @@ h4,
 h5,
 h6 {
   font-family: inter-bold;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+input:focus {
+  outline: none;
+}
+
+input:not(.no-focus):focus {
+  border-color: var(--accent-color-primary);
+  transition: all 200ms ease;
+}
+
+button:not(.no-hover),
+.like-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 300ms ease;
+}
+
+button:not(.no-hover)::before,
+.like-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  z-index: 1;
+}
+
+button:not(.no-hover):hover::before,
+.like-button:hover::before {
+  opacity: 1;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+button:disabled,
+.like-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+button:active,
+.like-button:active {
+  transform: scale(0.95);
 }
