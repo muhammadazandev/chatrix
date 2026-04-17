@@ -77,6 +77,7 @@ export default async function loginController(req, res) {
     return res.status(200).json({
       message: "User logged in successful",
       success: true,
+      user: isExist,
     });
   } catch (error) {
     console.error(error);

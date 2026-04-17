@@ -30,9 +30,7 @@ authApi.interceptors.response.use(
         await authApi.post("/auth/refresh");
         return authApi(originalRequest);
       } catch (refreshError) {
-        await authApi.post("/auth/logout");
-        useAuthStore.getState().clearAuthState(); // Clear frontend state without API call
-        window.location.href = "http://localhost:5173/login"; // Redirect after logout
+        useAuthStore.getState().clearAuthState();
         return Promise.reject(refreshError);
       }
     }

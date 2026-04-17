@@ -1,29 +1,9 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "../../store/useAuthStore";
+import Loader from "../../components/Loader";
 
 const Homepage = () => {
-  /*
-  useEffect(() => {
-    async function wow() {
-      const res = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        {
-          username: "azan_sabir",
-          email: "gamingvill2.0@gmail.com",
-          password: "mera password to yahi hay bhai",
-        },
-        {
-          withCredentials: true,
-        },
-      );
-
-      console.log(res);
-    }
-    wow();
-  }, []);
-  */
-
   const { isLoading, isAuthenticated, checkAuth } = useAuthStore();
 
   useEffect(() => {
@@ -32,13 +12,8 @@ const Homepage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[rgb(var(--accent-color-primary))] mb-4" />
-          <p className="text-[rgb(var(--foreground))] text-lg font-medium">
-            Checking authentication...
-          </p>
-        </div>
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
       </div>
     );
   }

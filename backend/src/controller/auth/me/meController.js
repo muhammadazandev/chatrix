@@ -19,6 +19,7 @@ export default async function meController(req, res) {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
+      isLoggedIn: false,
       message: "Internal server error",
       success: false,
     });

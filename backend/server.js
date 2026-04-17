@@ -5,17 +5,18 @@ import connectMongodb from "./src/lib/mongoose.js";
 import authRouter from "./src/routes/auth/index.js";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
+import usersRouter from "./src/routes/users/index.js";
 
 const app = express();
 
 // API rate limiter for whole app
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests
-  message: "Too many requests from this IP, please try again later",
-});
+// const globalLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests
+//   message: "Too many requests from this IP, please try again later",
+// });
 
-app.use(globalLimiter);
+// app.use(globalLimiter);
 
 // API rate limiter for Auth
 const authLimiter = rateLimit({
@@ -41,6 +42,7 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/users", usersRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {

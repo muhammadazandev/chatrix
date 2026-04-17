@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "tippy.js/dist/tippy.css";
+@import "tippy.js/dist/backdrop.css";
+@import "tippy.js/animations/shift-away.css";
 
 @font-face {
   font-family: inter-regular;
@@ -12,6 +15,7 @@
 
 :root {
   --bg-primary: rgb(250, 250, 250);
+  --bg-secondary: rgb(235, 235, 242);
   --foreground-primary: rgb(0, 0, 0);
   --accent-color-primary: #1073ef;
 }

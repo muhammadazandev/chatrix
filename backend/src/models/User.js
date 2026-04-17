@@ -1,40 +1,41 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    validate: {
-      validator: function (v) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: function (v) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        },
+        message: "Email is invalid",
       },
-      message: "Email is invalid",
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: [8, "Password must be at least 8 characters long"],
+    },
+    profilePicture: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/dbzdwitoa/image/upload/f_auto,q_auto/default_profile_picture_txjf8u",
     },
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: [8, "Password must be at least 8 characters long"],
+  {
+    timestamps: true,
   },
-  profilePicture: {
-    type: String,
-    default: "https://via.placeholder.com/150?text=No+Image",
-  },
-  authProvider: {
-    type: "string",
-    enum: ["local", "google", "both"],
-    default: "local",
-  },
-});
+);
 
 const User = mongoose.model("User", userSchema);
 

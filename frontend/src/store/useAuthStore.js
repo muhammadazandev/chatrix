@@ -1,189 +1,197 @@
 import { create } from "zustand";
 import { authApi } from "../utils/api";
 import toast from "react-hot-toast";
+import { persist } from "zustand/middleware";
 
-const useAuthStore = create((set, get) => ({
-  isAuthenticated: false,
-  isLoading: false,
-  isOtpSent: false,
+const handleError = (error) => {
+  if (!error.response) return "Network error";
 
-  checkAuth: async () => {
-    set({ isLoading: true });
+  const status = error.response.status;
 
-    try {
-      const res = await authApi.get("/auth/me");
+  if (error.response.data.message === "No token, access denied") return;
+  if (status === 429) return "Too many requests";
+  if (status >= 500) return "Server error";
 
-      set({
-        isAuthenticated: res.data.success || !!res.data.user,
-        isLoading: false,
-      });
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        console.error(error);
-      }
-      set({ isAuthenticated: false, isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+  return error.response.data?.message || "Something went wrong";
+};
 
-  signup: async (username, email, password) => {
-    set({ isLoading: true });
-    try {
-      const res = await authApi.post("/auth/signup", {
-        username: username,
-        email: email,
-        password: password,
-      });
+const useAuthStore = create(
+  persist(
+    (set, get) => ({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isOtpSent: false,
 
-      toast.success(res?.data?.message);
-      set({ isOtpSent: res.data.success });
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.error(error, error.response);
-      }
-      set({ isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+      checkAuth: async () => {
+        set({ isLoading: true });
 
-  verifyOtp: async (username, email, password, code) => {
-    const isSent = get().isOtpSent;
+        try {
+          const res = await authApi.get("/auth/me");
 
-    if (!isSent) {
-      return toast.error("OTP not sended");
-    }
+          set({
+            isAuthenticated: res.data.isLoggedIn,
+            user: res.data.user,
+          });
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+          set({ isAuthenticated: false });
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-    set({ isLoading: true });
+      signup: async (username, email, password) => {
+        set({ isLoading: true });
+        try {
+          const res = await authApi.post("/auth/signup", {
+            username: username,
+            email: email,
+            password: password,
+          });
 
-    try {
-      const res = await authApi.post("/auth/verify-otp", {
-        username: username,
-        email: email,
-        password: password,
-        otpCode: code.join(""),
-      });
+          toast.success(res?.data?.message);
+          set({ isOtpSent: res.data.success });
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-      if (res?.data?.success) {
-        await get().login(email, password);
-      }
+      verifyOtp: async (username, email, password, code) => {
+        set({ isLoading: true });
 
-      toast.success("Signup successful");
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.error(error, error.response);
-      }
-      set({ isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+        try {
+          const res = await authApi.post("/auth/verify-otp", {
+            username: username,
+            email: email,
+            password: password,
+            otpCode: code.join(""),
+          });
 
-  login: async (email, password) => {
-    set({ isLoading: true });
+          if (res?.data?.success) {
+            await get().login(email, password);
+          }
 
-    try {
-      const res = await authApi.post("/auth/login", {
-        email: email,
-        password: password,
-      });
+          toast.success("Signup successful");
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-      toast.success(res?.data?.message);
-      set({ isAuthenticated: true });
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.error(error, error.response);
-      }
-      set({ isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+      login: async (email, password) => {
+        set({ isLoading: true });
 
-  forgotPassword: async (email) => {
-    if (!email) {
-      toast.error("Please enter an email first");
-    }
+        try {
+          const res = await authApi.post("/auth/login", {
+            email: email,
+            password: password,
+          });
 
-    set({ isLoading: true });
+          toast.success(res?.data?.message);
+          set({ isAuthenticated: true, user: res?.data?.user });
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-    try {
-      const res = await authApi.post("/auth/forgot-password", {
-        email: email,
-      });
-      toast.success(res?.data?.message);
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.error(error, error.response);
-      }
-      set({ isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+      forgotPassword: async (email) => {
+        if (!email) {
+          return toast.error("Please enter an email first");
+        }
 
-  resetPassword: async (password, token) => {
-    set({ isLoading: true });
+        set({ isLoading: true });
 
-    try {
-      const res = await authApi.post(`/auth/reset-password/${token}`, {
-        password: password,
-      });
+        try {
+          const res = await authApi.post("/auth/forgot-password", {
+            email: email,
+          });
+          toast.success(res?.data?.message);
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-      toast.success(res?.data?.message);
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.error(error, error.response);
-      }
-      set({ isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+      resetPassword: async (password, token) => {
+        set({ isLoading: true });
 
-  logout: async () => {
-    set({ isLoading: true });
+        try {
+          const res = await authApi.post(`/auth/reset-password/${token}`, {
+            password: password,
+          });
 
-    try {
-      const res = await authApi.post("/auth/logout");
+          toast.success(res?.data?.message);
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-      set({ isAuthenticated: false, isLoading: false, isOtpSent: false });
+      logout: async () => {
+        set({ isLoading: true });
 
-      window.location.href = "http://localhost:5173/login";
-    } catch (error) {
-      if (!error.response) {
-        toast.error("Network error—please try again.");
-      } else {
-        toast.error(error?.response?.data?.message);
-        console.error(error, error.response);
-      }
-      set({ isLoading: false });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+        try {
+          await authApi.post("/auth/logout");
 
-  clearAuthState: () => {
-    set({ isAuthenticated: false, isLoading: false, isOtpSent: false });
-  },
-}));
+          set({
+            isAuthenticated: false,
+            isOtpSent: false,
+            user: null,
+          });
+        } catch (error) {
+          const message = handleError(error);
+          if (message) {
+            toast.error(message);
+          }
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      clearAuthState: () => {
+        set({
+          isAuthenticated: false,
+          isLoading: false,
+          isOtpSent: false,
+          user: null,
+        });
+      },
+    }),
+    {
+      name: "auth-storage",
+
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+        user: state.user,
+      }),
+    },
+  ),
+);
 
 export default useAuthStore;
