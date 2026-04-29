@@ -13,6 +13,7 @@ export default async function protect(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
     req.user = {
+      id: decoded.userId,
       username: decoded.username,
       email: decoded.email,
       profilePicture: decoded.profilePicture,

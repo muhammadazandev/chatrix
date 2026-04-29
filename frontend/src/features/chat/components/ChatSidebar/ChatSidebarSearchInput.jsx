@@ -33,7 +33,7 @@ const ChatSidebarSearchInput = ({
 
       try {
         const response = await authApi.get(
-          `/users/search?q=${encodeURIComponent(trimmedQuery)}`,
+          `/user/search?q=${encodeURIComponent(trimmedQuery)}`,
         );
 
         setResults(response.data.users || []);

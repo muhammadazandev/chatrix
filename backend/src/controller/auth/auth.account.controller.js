@@ -1,6 +1,6 @@
-import User from "../../../models/User.js";
+import User from "../../models/user.model.js";
 
-export default async function deleteAccountController(req, res) {
+async function deleteAccountController(req, res) {
   try {
     const { email } = req.user;
 
@@ -25,3 +25,5 @@ export default async function deleteAccountController(req, res) {
     });
   }
 }
+
+export { deleteAccountController };

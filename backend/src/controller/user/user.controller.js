@@ -1,10 +1,13 @@
-import User from "../../../models/User.js";
+import User from "../../models/user.model.js";
 
+// Helper functions
 function escapeRegex(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export default async function searchController(req, res) {
+// Controllers functions
+
+async function searchController(req, res) {
   try {
     const q = String(req.query.q || "").trim();
 
@@ -48,3 +51,5 @@ export default async function searchController(req, res) {
     });
   }
 }
+
+export { searchController };

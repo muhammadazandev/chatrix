@@ -2,10 +2,11 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import connectMongodb from "./src/lib/mongoose.js";
-import authRouter from "./src/routes/auth/index.js";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
-import usersRouter from "./src/routes/users/index.js";
+import userRouter from "./src/routes/user.routes.js";
+import authRouter from "./src/routes/auth.routes.js";
+import friendRouter from "./src/routes/friend.routes.js";
 
 const app = express();
 
@@ -42,7 +43,8 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRouter);
-app.use("/api/users", usersRouter);
+app.use("/api/user", userRouter);
+app.use("/api/friend", friendRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {
