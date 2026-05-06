@@ -40,7 +40,7 @@ async function acceptFriendRequest(req, res) {
     }
 
     // Fetch request
-    const findRequest = await Relationship.findById(requestId).lean();
+    const findRequest = await Relationship.findById(requestId);
 
     if (!findRequest) {
       return res
@@ -68,6 +68,7 @@ async function acceptFriendRequest(req, res) {
     findRequest.status = "friends";
     findRequest.requestedBy = null;
     findRequest.acceptedAt = Date.now();
+
     await findRequest.save();
 
     return res.status(200).json({

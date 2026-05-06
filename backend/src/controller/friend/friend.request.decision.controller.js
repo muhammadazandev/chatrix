@@ -196,7 +196,7 @@ async function unfriend(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: "Unfriended successfully",
+      message: "Unfriend successfully",
     });
   } catch (error) {
     console.error(error);

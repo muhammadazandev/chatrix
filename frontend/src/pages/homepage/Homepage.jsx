@@ -4,7 +4,9 @@ import useAuthStore from "../../store/useAuthStore";
 import Loader from "../../components/Loader";
 
 const Homepage = () => {
-  const { isLoading, isAuthenticated, checkAuth } = useAuthStore();
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
     checkAuth();

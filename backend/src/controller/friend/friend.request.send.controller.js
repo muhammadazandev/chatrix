@@ -45,11 +45,11 @@ async function resolveRelationStates(senderId, key) {
 
   if (relation.status === "blocked") {
     const message =
-      relation.blockedBy.toString() === senderId
+      relation.blockedBy?.toString() === senderId
         ? "You blocked this user"
         : "You are blocked by this user";
     return {
-      status: relation.blockedBy.toString() === senderId ? 400 : 403,
+      status: relation.blockedBy?.toString() === senderId ? 400 : 403,
       body: { success: false, message },
     };
   }

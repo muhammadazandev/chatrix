@@ -1,4 +1,4 @@
-const ChatSidebarHeader = () => {
+const Header = () => {
   return (
     <header>
       <h2 className="text-2xl">Chatrix</h2>
@@ -6,4 +6,4 @@ const ChatSidebarHeader = () => {
   );
 };
 
-export default ChatSidebarHeader;
+export default Header;

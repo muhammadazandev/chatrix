@@ -65,9 +65,10 @@ async function block(req, res) {
 async function unblock(req, res) {
   try {
     const { id: userId } = req.user;
-    const { userId: blockingUserId } = req.params; // Fix param name
+    const { userId: blockingUserId } = req.params;
 
     const validation = validateIds(userId, blockingUserId);
+
     if (!validation.valid) {
       return res
         .status(409)
@@ -80,6 +81,7 @@ async function unblock(req, res) {
       key,
       status: "blocked",
     });
+    
     if (!deleted) {
       return res
         .status(409)

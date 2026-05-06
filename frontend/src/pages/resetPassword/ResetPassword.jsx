@@ -8,7 +8,8 @@ const ResetPassword = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { isLoading, resetPassword } = useAuthStore();
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const resetPassword = useAuthStore((state) => state.resetPassword);
   const navigate = useNavigate();
 
   async function handleOnClick() {

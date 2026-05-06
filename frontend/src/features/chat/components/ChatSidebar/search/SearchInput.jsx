@@ -1,15 +1,18 @@
 import { RiSearch2Line } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
-import { authApi } from "../../../../utils/api";
+import IconsWrapper from "../../../../../utils/IconsWrapper";
+import { authApi } from "../../../../../utils/api";
 import { useEffect } from "react";
+import { useFocusInput } from "../../../../../Context/InputFocusContext";
 
-const ChatSidebarSearchInput = ({
+const SearchInput = ({
   query,
   setQuery,
   setResults,
   setIsLoading,
   setSearchError,
 }) => {
+  const inputRef = useFocusInput();
+  
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       const trimmedQuery = query.trim();
@@ -54,9 +57,10 @@ const ChatSidebarSearchInput = ({
 
   return (
     <div className="mt-4">
-      <div className="rounded-full px-4 py-3 bg-(--bg-secondary) flex justify-between gap-3 items-center focus-within:bg-transparent transition-colors duration-200 focus-within:ring-1 focus-within:ring-(--accent-color-primary)">
+      <div className="rounded-full px-4 py-3   bg-(--bg-secondary) flex justify-between gap-3 items-center focus-within:bg-transparent transition-colors duration-400 ring-transparent ring-1 focus-within:ring-(--accent-color-primary) border-0 no-focus">
         <IconsWrapper icon={RiSearch2Line} size={19} />
         <input
+          ref={inputRef}
           type="text"
           className="flex-1"
           placeholder="Search users"
@@ -68,4 +72,4 @@ const ChatSidebarSearchInput = ({
   );
 };
 
-export default ChatSidebarSearchInput;
+export default SearchInput;

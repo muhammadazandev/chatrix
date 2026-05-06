@@ -6,7 +6,8 @@ import useAuthStore from "../../store/useAuthStore";
 import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
-  const { isLoading, forgotPassword } = useAuthStore();
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const forgotPassword = useAuthStore((state) => state.forgotPassword);
   const [email, setEmail] = useState("");
 
   // useEffect(() => {

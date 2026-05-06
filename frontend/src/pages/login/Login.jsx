@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isLoading, isAuthenticated, checkAuth } = useAuthStore();
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const login = useAuthStore((state) => state.login);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

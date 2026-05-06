@@ -8,14 +8,12 @@ import { AnimatePresence } from "motion/react";
 import useCounter from "../../hooks/useCounter";
 
 const Signup = () => {
-  const {
-    signup,
-    isLoading,
-    isOtpSent,
-    verifyOtp,
-    isAuthenticated,
-    checkAuth,
-  } = useAuthStore();
+  const isLoading = useAuthState((state) => state.isLoading);
+  const signup = useAuthState((state) => state.signup);
+  const isOtpSent = useAuthState((state) => state.isOtpSent);
+  const verifyOtp = useAuthState((state) => state.verifyOtp);
+  const isAuthenticated = useAuthState((state) => state.isAuthenticated);
+  const checkAuth = useAuthState((state) => state.checkAuth);
   const [otp, setOtp] = useState(["", "", "", ""]);
 
   const [userData, setUserData] = useState({

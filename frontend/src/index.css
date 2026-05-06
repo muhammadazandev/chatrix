@@ -49,11 +49,15 @@ input:not(.no-focus):focus {
   transition: all 200ms ease;
 }
 
+button,
+.like-button {
+  transition: all 300ms ease;
+}
+
 button:not(.no-hover),
 .like-button {
   position: relative;
   overflow: hidden;
-  transition: all 300ms ease;
 }
 
 button:not(.no-hover)::before,
@@ -91,5 +95,5 @@ button:disabled,
 
 button:active,
 .like-button:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
