@@ -144,15 +144,15 @@ const useAuthStore = create(
 
       logout: async () => {
         set({ isLoading: true });
-
         try {
-          await authApi.post("/auth/logout");
+          const res = await authApi.post("/auth/logout");
 
           set({
             isAuthenticated: false,
             isOtpSent: false,
             user: null,
           });
+          toast.success(res?.data?.message || "Logged out successfully");
         } catch (error) {
           const message = handleError(error);
           if (message) {

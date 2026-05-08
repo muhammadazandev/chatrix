@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import useFriendshipStore from "../../../../../store/useFriendshipStore";
-import UserListItem from "../UserListItem";
 import { motion, AnimatePresence } from "motion/react";
-import ConfirmBox from "../ConfirmBox";
-import RenderActionButtons from "../RelationshipActionMenu";
-import { FriendListsEmptyState } from "../EmptyStates";
+import useFriendshipStore from "../../../../store/useFriendshipStore";
+import { FriendListsEmptyState } from "../../sidebar/components/EmptyStates";
+import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
+import ConfirmBox from "../../sidebar/components/ConfirmBox";
+import UserListItem from "../../sidebar/components/UserListItem";
 
-const FriendsList = ({ setCurrentView }) => {
+const FriendList = () => {
   const getAllFriends = useFriendshipStore((state) => state.getAllFriends);
   const friends = useFriendshipStore((state) => state.friends);
   const unfriend = useFriendshipStore((state) => state.unfriend);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [confirmBoxUserId, setConfirmBoxUserId] = useState(undefined);
-  
+
   useEffect(() => {
     async function get() {
       await getAllFriends();
@@ -64,10 +64,10 @@ const FriendsList = ({ setCurrentView }) => {
           </AnimatePresence>
         </>
       ) : (
-        <FriendListsEmptyState setCurrentView={setCurrentView} />
+        <FriendListsEmptyState />
       )}
     </motion.div>
   );
 };
 
-export default FriendsList;
+export default FriendList;

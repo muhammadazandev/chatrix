@@ -1,8 +1,8 @@
 import { RiSearch2Line } from "@remixicon/react";
-import IconsWrapper from "../../../../../utils/IconsWrapper";
-import { authApi } from "../../../../../utils/api";
+import IconsWrapper from "../../../../utils/IconsWrapper";
 import { useEffect } from "react";
-import { useFocusInput } from "../../../../../Context/InputFocusContext";
+import { authApi } from "../../../../utils/api";
+import { useFocusInput } from "../../../../Context/InputFocusContext";
 
 const SearchInput = ({
   query,
@@ -12,7 +12,7 @@ const SearchInput = ({
   setSearchError,
 }) => {
   const inputRef = useFocusInput();
-  
+
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       const trimmedQuery = query.trim();

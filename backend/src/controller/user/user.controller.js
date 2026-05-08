@@ -1,4 +1,6 @@
 import User from "../../models/user.model.js";
+import Relationship from "../../models/relationship.model.js";
+import makeKey from "../../utils/makeKey.js";
 
 // Helper functions
 function escapeRegex(text) {
@@ -39,9 +41,59 @@ async function searchController(req, res) {
 
     const findUsers = await User.find(query).limit(20).sort({ username: 1 });
 
+    // Get relationship statuses
+    const currentUserId = req.user.id;
+    const searchedUserIds = findUsers.map((user) => user._id);
+
+    const relationships = await Relationship.find({
+      $or: [
+        { user1: currentUserId, user2: { $in: searchedUserIds } },
+        { user1: { $in: searchedUserIds }, user2: currentUserId },
+      ],
+    });
+
+    // Map relationships by the other user's ID
+    const relationshipMap = {};
+    relationships.forEach((rel) => {
+      const otherUserId =
+        rel.user1.toString() === currentUserId
+          ? rel.user2.toString()
+          : rel.user1.toString();
+      relationshipMap[otherUserId] = rel;
+    });
+
+    // Add relationship status to each user
+    const usersWithStatus = findUsers.map((user) => {
+      const userIdStr = user._id.toString();
+      const rel = relationshipMap[userIdStr];
+
+      let status = "none";
+      let requestId = null;
+      if (rel) {
+        if (rel.status === "friends") {
+          status = "friends";
+        } else if (rel.status === "blocked") {
+          status = "blocked";
+        } else if (rel.status === "pending") {
+          requestId = rel._id;
+          if (rel.requestedBy.toString() === currentUserId) {
+            status = "outgoing";
+          } else {
+            status = "incoming";
+          }
+        }
+      }
+
+      return {
+        ...user.toObject(),
+        relationshipStatus: status,
+        requestId: requestId,
+      };
+    });
+
     return res.json({
       success: true,
-      users: findUsers,
+      users: usersWithStatus,
     });
   } catch (error) {
     console.error(error);

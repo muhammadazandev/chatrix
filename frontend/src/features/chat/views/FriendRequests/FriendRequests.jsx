@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import useFriendshipStore from "../../../../../store/useFriendshipStore";
-import UserListItem from "../UserListItem";
 import { motion } from "motion/react";
-import RenderActionButtons from "../RelationshipActionMenu";
-import { FriendRequestsEmptyState } from "../EmptyStates";
+import useFriendshipStore from "../../../../store/useFriendshipStore";
+import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
+import { FriendRequestsEmptyState } from "../../sidebar/components/EmptyStates";
+import UserListItem from "../../sidebar/components/UserListItem";
 
 const FriendRequests = () => {
   const getFriendRequests = useFriendshipStore(

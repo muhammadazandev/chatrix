@@ -18,13 +18,15 @@ const UserListItem = ({
   isUnfriendButton = false,
 }) => {
   const [moreOpenIndex, setMoreOpenIndex] = useState(null);
-  const [isConfirmOpenIndex, setIsConfirmOpenIndex] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmBoxUserId, setConfirmBoxUserId] = useState(null);
   const blockUser = useFriendshipStore((state) => state.blockUser);
 
   async function runBlockUser(userId) {
     await blockUser(userId);
 
-    setIsConfirmOpenIndex(false);
+    setIsConfirmOpen(false);
+    setConfirmBoxUserId(null);
   }
 
   return (
@@ -42,7 +44,7 @@ const UserListItem = ({
 
           <div className="flex flex-col">
             <h3>{user.username}</h3>
-            <p className="text-sm opacity-40 truncate">
+            <p className="text-sm opacity-40 truncate max-w-[90%]">
               {user.bio || "No bio available"}
             </p>
           </div>
@@ -71,7 +73,12 @@ const UserListItem = ({
                     {
                       <>
                         {!isUnfriendButton &&
-                          RenderActions?.(user, requestId[index])}
+                          RenderActions?.(
+                            user,
+                            requestId[index],
+                            setIsConfirmOpen,
+                            setConfirmBoxUserId,
+                          )}
 
                         {isShowBlockButton && (
                           <>
@@ -103,12 +110,12 @@ const UserListItem = ({
                               type="button"
                               className="rounded p-2.5 inline-flex gap-4 items-center"
                               onClick={() => {
-                                setIsConfirmOpenIndex(
-                                  isConfirmOpenIndex === index ? null : index,
-                                );
+                                setIsConfirmOpen(true);
+                                setConfirmBoxUserId(user._id);
                               }}
                               onBlur={() => {
-                                setIsConfirmOpenIndex(false);
+                                setIsConfirmOpen(false);
+                                setConfirmBoxUserId(null);
                               }}
                             >
                               <IconsWrapper icon={RiUserForbidFill} size={18} />
@@ -117,7 +124,12 @@ const UserListItem = ({
                           </>
                         )}
                         {isUnfriendButton &&
-                          RenderActions?.(user, requestId[index])}
+                          RenderActions?.(
+                            user,
+                            requestId[index],
+                            setIsConfirmOpen,
+                            setConfirmBoxUserId,
+                          )}
                       </>
                     }
                   </div>
@@ -126,11 +138,11 @@ const UserListItem = ({
             </AnimatePresence>
 
             <AnimatePresence>
-              {isConfirmOpenIndex === index && (
+              {isConfirmOpen && (
                 <ConfirmBox
                   confirmWhat="block"
-                  setIsConfirmOpen={setIsConfirmOpenIndex}
-                  onConfirm={() => runBlockUser(user._id)}
+                  setIsConfirmOpen={setIsConfirmOpen}
+                  onConfirm={() => runBlockUser(confirmBoxUserId)}
                 />
               )}
             </AnimatePresence>

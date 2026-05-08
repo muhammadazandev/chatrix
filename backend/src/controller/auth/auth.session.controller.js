@@ -37,8 +37,8 @@ function generateToken(
 async function logoutController(req, res) {
   try {
     // Clear both access and refresh tokens
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
 
     return res
       .status(200)

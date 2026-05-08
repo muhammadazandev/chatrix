@@ -4,9 +4,11 @@ import notificationBell from "../../../../assets/lotties/Notification_Bell.lotti
 import Shield from "../../../../assets/lotties/Shield.lottie";
 import NotFound from "../../../../assets/lotties/Not_Found.lottie";
 import { useFocusInput } from "../../../../Context/InputFocusContext";
+import { useSearchParams } from "react-router-dom";
 
-const FriendListsEmptyState = ({ setCurrentView }) => {
+const FriendListsEmptyState = () => {
   const inputRef = useFocusInput();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <div className="h-[55vh] w-full flex justify-center items-center flex-col">
@@ -28,7 +30,11 @@ const FriendListsEmptyState = ({ setCurrentView }) => {
         <button
           className="rounded-sm px-4 py-2 text-sm border border-(--foreground-primary)/30"
           onClick={() => {
-            setCurrentView("requests");
+            const params = new URLSearchParams(searchParams);
+
+            params.set("view", "requests");
+
+            setSearchParams(params);
           }}
         >
           View Friend Requests

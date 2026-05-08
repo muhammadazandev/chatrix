@@ -1,9 +1,9 @@
 import { motion } from "motion/react";
-import useFriendshipStore from "../../../../../store/useFriendshipStore";
 import { useEffect, useState } from "react";
-import UserListItem from "../UserListItem";
-import RenderActionButtons from "../RelationshipActionMenu";
-import { BlockEmptyState } from "../EmptyStates";
+import UserListItem from "../../sidebar/components/UserListItem";
+import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
+import { BlockEmptyState } from "../../sidebar/components/EmptyStates";
+import useFriendshipStore from "../../../../store/useFriendshipStore";
 
 const Blocked = () => {
   const getAllBlockedUsers = useFriendshipStore(

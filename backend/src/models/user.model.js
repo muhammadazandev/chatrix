@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -21,16 +22,25 @@ const userSchema = new mongoose.Schema(
         message: "Email is invalid",
       },
     },
+
     password: {
       type: String,
       required: true,
       minlength: [8, "Password must be at least 8 characters long"],
     },
+
     profilePicture: {
       type: String,
       default:
         "https://res.cloudinary.com/dbzdwitoa/image/upload/f_auto,q_auto/default_profile_picture_txjf8u",
     },
+
+    bio: {
+      type: String,
+      maxlength: [160, "Bio cannot exceed 160 characters"],
+      trim: true,
+      default: "Hey there! I'm using Chatrix.",
+    }
   },
   {
     timestamps: true,

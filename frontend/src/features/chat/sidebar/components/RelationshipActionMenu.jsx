@@ -6,7 +6,6 @@ import {
 } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import { friendshipStore } from "../../../../store/useFriendshipStore";
-import ConfirmBox from "./ConfirmBox";
 
 const {
   acceptFriendRequest,
@@ -132,30 +131,25 @@ function Unblock({ user, ...rest }) {
 const ACTIONS = {
   sendRequest: {
     label: "Add Friend",
-    variant: "primary",
     Component: SendRequest,
   },
   acceptRequest: {
     label: "Accept",
-    variant: "primary",
     Component: AcceptRequest,
   },
   rejectRequest: {
     label: "Reject",
-    variant: "danger",
     Component: RejectRequest,
   },
   cancelRequest: {
     label: "Cancel Request",
-    variant: "danger",
     Component: CancelRequest,
   },
   unfriend: {
     label: "Unfriend",
-    variant: "danger",
     Component: UnfriendFriend,
   },
-  unblock: { label: "Unblock", variant: "primary", Component: Unblock },
+  unblock: { label: "Unblock", Component: Unblock },
 };
 
 const RELATIONSHIP_ACTIONS = {

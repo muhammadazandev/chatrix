@@ -1,0 +1,65 @@
+import Loader from "../../../../components/Loader";
+import UserListItem from "../components/UserListItem";
+import RenderActionButtons from "../components/RelationshipActionMenu";
+import { useState } from "react";
+import { AnimatePresence } from "motion/react";
+import ConfirmBox from "../components/ConfirmBox";
+import useFriendshipStore from "../../../../store/useFriendshipStore";
+
+const SearchResults = ({ results, isLoading }) => {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmBoxUserId, setConfirmBoxUserId] = useState(null);
+  const unfriend = useFriendshipStore((state) => state.unfriend);
+
+  async function runUnfriend(userId) {
+    await unfriend(userId);
+    setIsConfirmOpen(false);
+    setConfirmBoxUserId(null);
+  }
+
+  function RenderActions(
+    user,
+    requestId,
+    setIsConfirmOpen,
+    setConfirmBoxUserId,
+  ) {
+    return (
+      <RenderActionButtons
+        user={user}
+        status={user.relationshipStatus}
+        requestId={user.requestId}
+        setIsConfirmOpen={setIsConfirmOpen}
+        setConfirmBoxUserId={setConfirmBoxUserId}
+      />
+    );
+  }
+
+  return (
+    <div className="mt-8 mb-4">
+      {isLoading ? (
+        <div className="h-[70vh] flex items-center justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <>
+          <UserListItem
+            users={results}
+            RenderActions={RenderActions}
+            isShowBlockButton={true}
+          />
+          <AnimatePresence>
+            {isConfirmOpen && (
+              <ConfirmBox
+                confirmWhat="unfriend"
+                setIsConfirmOpen={setIsConfirmOpen}
+                onConfirm={() => runUnfriend(confirmBoxUserId)}
+              />
+            )}
+          </AnimatePresence>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default SearchResults;

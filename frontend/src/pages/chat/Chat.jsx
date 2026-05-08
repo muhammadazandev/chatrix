@@ -1,4 +1,4 @@
-import ChatSidebar from "../../features/chat/components/ChatSidebar/ChatSidebar";
+import ChatSidebar from "../../features/chat/sidebar/ChatSidebar";
 
 const Chat = () => {
   return (

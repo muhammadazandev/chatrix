@@ -8,12 +8,12 @@ import { AnimatePresence } from "motion/react";
 import useCounter from "../../hooks/useCounter";
 
 const Signup = () => {
-  const isLoading = useAuthState((state) => state.isLoading);
-  const signup = useAuthState((state) => state.signup);
-  const isOtpSent = useAuthState((state) => state.isOtpSent);
-  const verifyOtp = useAuthState((state) => state.verifyOtp);
-  const isAuthenticated = useAuthState((state) => state.isAuthenticated);
-  const checkAuth = useAuthState((state) => state.checkAuth);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const signup = useAuthStore((state) => state.signup);
+  const isOtpSent = useAuthStore((state) => state.isOtpSent);
+  const verifyOtp = useAuthStore((state) => state.verifyOtp);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
   const [otp, setOtp] = useState(["", "", "", ""]);
 
   const [userData, setUserData] = useState({
@@ -63,7 +63,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/chat");
     }
   }, [isAuthenticated, navigate]);
 

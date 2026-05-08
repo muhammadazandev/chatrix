@@ -18,7 +18,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/chat");
     }
   }, [isAuthenticated, navigate]);
 
