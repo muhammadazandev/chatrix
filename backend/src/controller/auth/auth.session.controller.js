@@ -8,7 +8,6 @@ function generateToken(
   userId,
   username,
   email,
-  profilePicture,
   secret,
   expiresIn,
   maxAge,
@@ -18,7 +17,6 @@ function generateToken(
       userId: userId,
       username: username,
       email: email,
-      profilePicture: profilePicture,
     },
     secret,
     {
@@ -88,7 +86,6 @@ async function loginController(req, res) {
       isExist._id,
       isExist.username,
       isExist.email,
-      isExist.profilePicture,
       process.env.JWT_ACCESS_SECRET,
       "1h",
       60 * 60 * 1000, // 1 hour
@@ -102,7 +99,6 @@ async function loginController(req, res) {
       isExist._id,
       isExist.username,
       isExist.email,
-      isExist.profilePicture,
       process.env.JWT_REFRESH_SECRET,
       "7d",
       7 * 24 * 60 * 60 * 1000, // 7 Days
@@ -116,6 +112,7 @@ async function loginController(req, res) {
         username: isExist.username,
         email: isExist.email,
         profilePicture: isExist.profilePicture,
+        bio: isExist.bio,
       },
     });
   } catch (error) {
@@ -153,7 +150,6 @@ async function refreshController(req, res) {
         decoded.userId,
         decoded.username,
         decoded.email,
-        decoded.profilePicture,
         process.env.JWT_ACCESS_SECRET,
         "1h",
         60 * 60 * 1000,
@@ -183,10 +179,12 @@ async function meController(req, res) {
       });
     }
 
+    const userData = await User.findById(req.user.id);
+
     return res.status(200).json({
       isLoggedIn: true,
       message: "Logged in",
-      user: req.user,
+      user: userData,
       success: true,
     });
   } catch (error) {

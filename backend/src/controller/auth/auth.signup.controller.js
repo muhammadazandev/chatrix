@@ -88,6 +88,20 @@ async function signupController(req, res) {
       });
     }
 
+    if (username.length > 25) {
+      return res.status(400).json({
+        success: false,
+        message: "Username cannot exceed 25 characters",
+      });
+    }
+
+    if (/[^a-zA-Z0-9_.]/.test(username)) {
+      return res.status(400).json({
+        success: false,
+        message: "Username only consist characters: a-z, A-Z, 0-9, _, and .",
+      });
+    }
+
     const isExist = await User.findOne({
       $or: [{ email }, { username }],
     });

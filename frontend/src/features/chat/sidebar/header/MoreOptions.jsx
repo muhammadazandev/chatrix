@@ -1,4 +1,9 @@
-import { RiUser3Fill, RiContrastFill, RiLogoutBoxFill } from "@remixicon/react";
+import {
+  RiUser3Fill,
+  RiContrastFill,
+  RiLogoutBoxFill,
+  RiSettings4Fill,
+} from "@remixicon/react";
 import { motion } from "motion/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
@@ -12,6 +17,13 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
 
   const options = useMemo(
     () => [
+      {
+        label: "Settings",
+        id: "settings",
+        variant: "primary",
+        icon: RiSettings4Fill,
+        onBtnClick: () => setSearchParams({ view: "settings" }),
+      },
       {
         label: "Profile",
         id: "profile",

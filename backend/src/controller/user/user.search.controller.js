@@ -7,7 +7,7 @@ function escapeRegex(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// Controllers functions
+// Controller functions
 
 async function searchController(req, res) {
   try {

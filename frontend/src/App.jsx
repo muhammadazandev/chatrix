@@ -11,7 +11,19 @@ import ResetPassword from "./pages/resetPassword/ResetPassword";
 const App = () => {
   return (
     <>
-      <Toaster position="top-right" reverseOrder={true} />
+      <Toaster
+        position="top-right"
+        reverseOrder={true}
+        toastOptions={{
+          style: {
+            maxWidth: 550,
+            wordBreak: "break-word",
+            padding: "10px",
+            boxShadow: "none",
+            outline: "1px solid var(--foreground-secondary)",
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Homepage />}></Route>

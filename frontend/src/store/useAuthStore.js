@@ -171,6 +171,8 @@ const useAuthStore = create(
           user: null,
         });
       },
+
+      updateUser: (user) => set({ user: user }),
     }),
     {
       name: "auth-storage",

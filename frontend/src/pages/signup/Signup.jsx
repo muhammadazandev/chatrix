@@ -36,6 +36,8 @@ const Signup = () => {
       return toast.error("Please fill in all fields");
     }
 
+    if (username.length > 25) return toast.error("Username cannot exceed 25 characters")
+
     await signup(userData.username, userData.email, userData.password);
   }
 

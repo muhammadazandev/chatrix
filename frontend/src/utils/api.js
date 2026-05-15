@@ -4,9 +4,6 @@ import useAuthStore from "../store/useAuthStore";
 const authApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true, // For accessing user info
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 authApi.interceptors.response.use(
