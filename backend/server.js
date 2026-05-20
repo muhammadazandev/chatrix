@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import userRouter from "./src/routes/user.routes.js";
 import authRouter from "./src/routes/auth.routes.js";
 import friendRouter from "./src/routes/friend.routes.js";
+import settingRouter from "./src/routes/setting.routes.js";
+import protect from "./src/middleware/protect.js";
 
 const app = express();
 
@@ -43,8 +45,9 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
-app.use("/api/friend", friendRouter);
+app.use("/api/user", protect, userRouter);
+app.use("/api/friend", protect, friendRouter);
+app.use("/api/setting", protect, settingRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {

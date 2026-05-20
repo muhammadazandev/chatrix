@@ -21,16 +21,16 @@ import {
 
 const router = express.Router();
 
-router.post("/request/:receiverId", protect, sendFriendRequest);
-router.put("/accept/:requestId", protect, acceptFriendRequest); 
-router.delete("/reject/:requestId", protect, rejectFriendRequest); 
-router.delete("/cancel/:requestId", protect, cancelFriendRequest); 
-router.delete("/unfriend/:userId", protect, unfriend); 
-router.get("/list/all", protect, getAllFriends); 
-router.get("/list/pending", protect, getAllPendingRequests); 
-router.get("/list/blocked", protect, getAllBlockedUsers);
-router.get("/status/:userId", protect, checkRelationship);
-router.post("/block/:userId", protect, block);
-router.delete("/unblock/:userId", protect, unblock);
+router.post("/request/:receiverId", sendFriendRequest);
+router.put("/accept/:requestId", acceptFriendRequest);
+router.delete("/reject/:requestId", rejectFriendRequest);
+router.delete("/cancel/:requestId", cancelFriendRequest);
+router.delete("/unfriend/:userId", unfriend);
+router.get("/list/all", getAllFriends);
+router.get("/list/pending", getAllPendingRequests);
+router.get("/list/blocked", getAllBlockedUsers);
+router.get("/status/:userId", checkRelationship);
+router.post("/block/:userId", block);
+router.delete("/unblock/:userId", unblock);
 
 export default router;

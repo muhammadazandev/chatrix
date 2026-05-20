@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import Motion from "../../components/motion/Motion";
+import { fade } from "../../components/motion/variants";
 
 const VerifyOtp = ({
   onBtnClick,
@@ -39,11 +41,7 @@ const VerifyOtp = ({
   }, [isExpired]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+    <Motion variants={fade}
     >
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-(--bg-primary)/95 backdrop-blur-sm">
         <div className="flex flex-col gap-8">
@@ -75,7 +73,7 @@ const VerifyOtp = ({
           </button>
         </div>
       </div>
-    </motion.div>
+    </Motion>
   );
 };
 

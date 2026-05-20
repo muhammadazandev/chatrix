@@ -3,11 +3,17 @@ import Header from "./header/Header";
 import SearchInput from "./search/SearchInput";
 import SearchResults from "./search/SearchResults";
 import ViewTabs from "../views/ViewTabs";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { FocusProvider } from "../../../Context/InputFocusContext";
 import { NoUserFound } from "./components/EmptyStates";
 import SidebarViewRenderer from "../views/SidebarViewRenderer";
 import { useSearchParams } from "react-router-dom";
+import Motion from "../../../components/motion/Motion";
+import {
+  fade,
+  slideFade,
+  slideInLeft,
+} from "../../../components/motion/variants";
 
 const ChatSidebar = () => {
   const [query, setQuery] = useState("");
@@ -48,13 +54,7 @@ const ChatSidebar = () => {
       <div className="bg-(--bg-primary) border-r border-(--foreground-primary)/20 max-w-[calc(100%/3.5)] py-5 px-4 min-h-screen relative">
         <AnimatePresence mode="wait">
           {!isSettingsView && (
-            <motion.div
-              key="sidebar-chrome"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.5, ease: "anticipate" }}
-            >
+            <Motion key="sidebar-chrome" variants={slideFade}>
               <Header />
 
               <SearchInput
@@ -67,42 +67,28 @@ const ChatSidebar = () => {
 
               <AnimatePresence mode="wait">
                 {!isSearching && (
-                  <motion.div
-                    key="view-tabs"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.5, ease: "anticipate" }}
-                  >
+                  <Motion key="view-tabs" variants={fade}>
                     <ViewTabs currentView={currentView} />
-                  </motion.div>
+                  </Motion>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </Motion>
           )}
         </AnimatePresence>
+
         <AnimatePresence mode="wait">
           {isSearching ? (
-            <motion.div
-              key="search"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "anticipate" }}
-              className="mt-4"
-            >
+            <Motion key="search" variants={fade}>
               {renderSearch()}
-            </motion.div>
-          ) : (
-            <motion.div
-              key={currentView}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "anticipate" }}
-            >
+            </Motion>
+          ) : currentView === "settings" ? (
+            <Motion key="settings" variants={slideInLeft}>
               <SidebarViewRenderer currentView={currentView} />
-            </motion.div>
+            </Motion>
+          ) : (
+            <Motion key={currentView} variants={fade}>
+              <SidebarViewRenderer currentView={currentView} />
+            </Motion>
           )}
         </AnimatePresence>
       </div>

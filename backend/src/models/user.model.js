@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
     profilePicture: {
       type: String,
       default:
-        "https://res.cloudinary.com/dbzdwitoa/image/upload/f_auto,q_auto/default_profile_picture_txjf8u",
+        "https://res.cloudinary.com/dbzdwitoa/image/upload/q_auto/f_auto/v1778327421/contact-dark-mode-glyph-ui-icon-address-book-profile-page-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector_sjfa4p.jpg",
     },
 
     bio: {
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
       maxlength: [160, "Bio cannot exceed 160 characters"],
       trim: true,
       default: "Hey there! I'm using Chatrix.",
-    }
+    },
   },
   {
     timestamps: true,

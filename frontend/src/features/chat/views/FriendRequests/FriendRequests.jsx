@@ -4,6 +4,8 @@ import useFriendshipStore from "../../../../store/useFriendshipStore";
 import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
 import { FriendRequestsEmptyState } from "../../sidebar/components/EmptyStates";
 import UserListItem from "../../sidebar/components/UserListItem";
+import { slideInRight } from "../../../../components/motion/variants";
+import Motion from "../../../../components/motion/Motion";
 
 const FriendRequests = () => {
   const getFriendRequests = useFriendshipStore(
@@ -50,13 +52,7 @@ const FriendRequests = () => {
   }
 
   return (
-    <motion.div
-      initial={{ x: 30 }}
-      animate={{ x: 0 }}
-      exit={{ x: -30 }}
-      transition={{ duration: 0.5, ease: "anticipate" }}
-      className="mt-6 mb-4"
-    >
+    <Motion variants={slideInRight} className="mt-6 mb-4">
       <div className="flex flex-col gap-4 mt-5">
         <h3>Sent</h3>
 
@@ -84,7 +80,7 @@ const FriendRequests = () => {
           <div>You don’t have any received requests.</div>
         )}
       </div>
-    </motion.div>
+    </Motion>
   );
 };
 

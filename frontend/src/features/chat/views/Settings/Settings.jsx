@@ -7,10 +7,13 @@ import {
 } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, useAnimate } from "motion/react";
 import Profile from "./tabs/Profile/Profile";
-import Appearance from "./tabs/Appearance";
+import Appearance from "./tabs/Appearance/Appearance";
 import Tooltip from "../../../../components/Tooltip";
+import Motion from "../../../../components/motion/Motion";
+import { slideInFromLeft } from "../../../../components/motion/variants";
+import useSettingsStore from "../../../../store/useSettingsStore";
 
 const tabs = [
   {
@@ -41,6 +44,9 @@ const Settings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentTab = searchParams.get("tab");
+  const [scope, animate] = useAnimate();
+  const isAnimations = useSettingsStore((state) => state.isAnimations);
+  const transition = useSettingsStore((state) => state.transition);
 
   const updateParam = (value) => {
     setSearchParams((prev) => {
@@ -48,6 +54,22 @@ const Settings = () => {
       return prev;
     });
   };
+
+  async function handleBack() {
+    if (isAnimations) {
+      await animate(
+        scope.current,
+        { opacity: 0, x: "-90%" },
+        { duration: 0.4, ease: transition },
+      );
+
+      await animate(scope.current, { display: "none" }, { duration: 0 });
+
+      setSearchParams({});
+    } else {
+      setSearchParams({});
+    }
+  }
 
   function renderTab() {
     switch (currentTab) {
@@ -63,7 +85,7 @@ const Settings = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={scope}>
       {user && (
         <div className="relative">
           <header className="flex gap-3 items-center mb-4 relative z-10">
@@ -71,11 +93,7 @@ const Settings = () => {
               <button
                 className="p-2.5 rounded-full"
                 onClick={() => {
-                  if (currentTab) {
-                    setSearchParams({ view: "settings" });
-                  } else {
-                    setSearchParams({});
-                  }
+                  handleBack();
                 }}
               >
                 <IconsWrapper icon={RiArrowLeftLine} />
@@ -121,16 +139,13 @@ const Settings = () => {
       )}
       <div className="w-full mt-20 overflow-hidden">
         <AnimatePresence mode="wait">
-          <motion.div
+          <Motion
+            variants={slideInFromLeft}
             key={currentTab || "empty"}
-            initial={{ x: "-105%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-105%" }}
-            transition={{ duration: 0.5, ease: "anticipate" }}
             className="absolute left-0 top-0 w-full h-full pointer-events-none"
           >
             <div className="pointer-events-auto p-6">{renderTab()}</div>
-          </motion.div>
+          </Motion>
         </AnimatePresence>
       </div>
     </div>

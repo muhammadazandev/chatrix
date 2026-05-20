@@ -10,12 +10,11 @@ import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-router.get("/search", protect, searchController);
-router.patch("/update-username", protect, updateUsernameController);
-router.patch("/update-bio", protect, updateBioController);
+router.get("/search", searchController);
+router.patch("/update-username", updateUsernameController);
+router.patch("/update-bio", updateBioController);
 router.patch(
   "/update-profile-picture",
-  protect,
   upload.single("profilePicture"),
   updateProfilePictureController,
 );

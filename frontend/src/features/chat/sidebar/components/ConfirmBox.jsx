@@ -1,25 +1,17 @@
 import { createPortal } from "react-dom";
-import { motion } from "motion/react";
 import { RiErrorWarningLine } from "@remixicon/react";
+import Motion from "../../../../components/motion/Motion";
+import { fade, slideFadeScale } from "../../../../components/motion/variants";
 
 const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
   return createPortal(
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+    <Motion
+      variants={fade}
       className="fixed inset-0 z-100 flex items-center justify-center bg-(--foreground-primary)/20 backdrop-blur-[2px]"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 50, scale: 0.95 }}
-        transition={{
-          type: "spring",
-          damping: 25,
-          stiffness: 300,
-        }}
+      <Motion
+        variants={slideFadeScale}
+        transition="spring"
         className="w-85 overflow-hidden rounded-2xl bg-(--bg-primary) shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-(--bg-secondary)"
       >
         <div className="p-6">
@@ -53,8 +45,8 @@ const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
             Confirm
           </button>
         </div>
-      </motion.div>
-    </motion.div>,
+      </Motion>
+    </Motion>,
     document.body,
   );
 };

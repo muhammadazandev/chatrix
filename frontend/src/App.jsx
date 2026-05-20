@@ -7,10 +7,12 @@ import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
 import Signup from "./pages/signup/Signup";
 import { Toaster } from "react-hot-toast";
 import ResetPassword from "./pages/resetPassword/ResetPassword";
+import AppearanceBootstrap from "./bootstrap/AppearanceBootstrap";
 
 const App = () => {
   return (
     <>
+      <AppearanceBootstrap />
       <Toaster
         position="top-right"
         reverseOrder={true}

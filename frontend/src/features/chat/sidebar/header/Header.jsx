@@ -16,7 +16,7 @@ const Header = () => {
       <button
         className="p-2 rounded-full"
         onClick={() => setIsMoreOpen(!isMoreOpen)}
-        onBlur={() => setIsMoreOpen(false)}
+        // onBlur={() => setIsMoreOpen(false)}
       >
         <IconsWrapper icon={RiMore2Fill} size={24} />
       </button>

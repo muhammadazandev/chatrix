@@ -1,4 +1,4 @@
-import PasswordReset from "../../models/password-reset.model.js";
+import PasswordReset from "../../models/password.reset.model.js";
 import User from "../../models/user.model.js";
 import { sendPasswordResetMail } from "../../utils/mailer.js";
 import crypto from "crypto";

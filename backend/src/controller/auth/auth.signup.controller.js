@@ -1,7 +1,8 @@
 import User from "../../models/user.model.js";
 import { sendOtpMail } from "../../utils/mailer.js";
 import bcrypt from "bcryptjs";
-import OTP from "../../models/Otp.model.js";
+import OTP from "../../models/otp.model.js";
+import Settings from "../../models/settings.model.js";
 
 async function verifyOtpController(req, res) {
   try {
@@ -55,7 +56,7 @@ async function verifyOtpController(req, res) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
@@ -64,6 +65,9 @@ async function verifyOtpController(req, res) {
     // Clean up the OTP after successful verification
     await OTP.deleteOne({ email });
 
+    // Create user settings document when the user create account first time
+    await Settings.create({ userId: newUser._id });
+    
     return res.status(200).json({
       message: "Signup successful",
       success: true,

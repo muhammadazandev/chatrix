@@ -4,6 +4,8 @@ import UserListItem from "../../sidebar/components/UserListItem";
 import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
 import { BlockEmptyState } from "../../sidebar/components/EmptyStates";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
+import Motion from "../../../../components/motion/Motion";
+import { slideInRight } from "../../../../components/motion/variants";
 
 const Blocked = () => {
   const getAllBlockedUsers = useFriendshipStore(
@@ -36,12 +38,8 @@ const Blocked = () => {
   }
 
   return (
-    <motion.div
+    <Motion variants={slideInRight}
       className="mt-6 mb-4"
-      initial={{ x: 30 }}
-      animate={{ x: 0 }}
-      exit={{ x: -30 }}
-      transition={{ duration: 0.5, ease: "anticipate" }}
     >
       {users?.length > 0 ? (
         <UserListItem
@@ -52,7 +50,7 @@ const Blocked = () => {
       ) : (
         <BlockEmptyState />
       )}
-    </motion.div>
+    </Motion>
   );
 };
 
