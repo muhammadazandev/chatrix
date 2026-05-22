@@ -2,6 +2,7 @@ import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import IconsWrapper from "../../utils/IconsWrapper";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useSettingsStore from "../../store/useSettingsStore";
 
 const Form = ({
   isLoading,
@@ -13,6 +14,8 @@ const Form = ({
 }) => {
   const [isShowPassword, setIsShowPassword] = useState(false);
 
+  const getSetting = useSettingsStore((state) => state.getSetting);
+
   return (
     <form
       method="post"
@@ -20,6 +23,7 @@ const Form = ({
       onSubmit={async (e) => {
         e.preventDefault();
         await onSubmit(email, password);
+        await getSetting();
       }}
     >
       <input

@@ -3,6 +3,7 @@ import { authApi } from "../utils/api";
 import toast from "react-hot-toast";
 import { persist } from "zustand/middleware";
 import handleError from "../utils/handleError";
+import useSettingsStore from "./useSettingsStore";
 
 const useAuthStore = create(
   persist(
@@ -90,7 +91,10 @@ const useAuthStore = create(
           });
 
           toast.success(res?.data?.message);
+
           set({ isAuthenticated: true, user: res?.data?.user });
+
+          await useSettingsStore().getState().getSetting();
         } catch (error) {
           const message = handleError(error);
           if (message) {
@@ -146,6 +150,8 @@ const useAuthStore = create(
         set({ isLoading: true });
         try {
           const res = await authApi.post("/auth/logout");
+
+          localStorage.clear();
 
           set({
             isAuthenticated: false,

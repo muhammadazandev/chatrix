@@ -71,7 +71,7 @@ async function getSettingController(req, res) {
     return res.status(200).json({
       success: true,
       message: "Settings",
-      setting: settings,
+      settings: settings,
     });
   } catch (error) {
     console.error(error);

@@ -2,7 +2,7 @@ import axios from "axios";
 import useAuthStore from "../store/useAuthStore";
 
 const authApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: true, // For accessing user info
 });
 
@@ -37,7 +37,7 @@ authApi.interceptors.response.use(
 );
 
 const publicApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: false,
 });
 

@@ -12,17 +12,21 @@ const useSettingsStore = create(
       isAnimations: true,
       transition: "smooth",
 
-      updateSetting: async (settingKey, settingValue) => {
+      setToDefault: () => {
+        set({
+          theme: "system",
+          accentColor: "#1073ef",
+          isAnimations: true,
+          transition: "smooth",
+        });
+      },
+
+      updateSetting: async (key, value) => {
         try {
-          if (
-            !settingKey ||
-            settingValue === undefined ||
-            settingValue === null
-          )
-            return;
+          if (!key || value === undefined || value === null) return;
 
           const res = await authApi.patch("/setting/update", {
-            [settingKey]: settingValue,
+            [key]: value,
           });
 
           const settings = res.data?.settings;
@@ -47,7 +51,7 @@ const useSettingsStore = create(
         try {
           const res = await authApi.get("/setting/get");
 
-          const settings = res.data?.settings;
+            const settings = res.data?.settings || res.data?.setting;
 
           if (settings) {
             set({

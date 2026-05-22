@@ -9,27 +9,20 @@ import authRouter from "./src/routes/auth.routes.js";
 import friendRouter from "./src/routes/friend.routes.js";
 import settingRouter from "./src/routes/setting.routes.js";
 import protect from "./src/middleware/protect.js";
+import http from "http";
+import { Server } from "socket.io";
+import { registerSocket } from "./src/socket/index.js";
 
 const app = express();
 
 // API rate limiter for whole app
-// const globalLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // limit each IP to 100 requests
-//   message: "Too many requests from this IP, please try again later",
-// });
-
-// app.use(globalLimiter);
-
-// API rate limiter for Auth
-const authLimiter = rateLimit({
+const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // only 5 attempts per IP
-  message: "Too many attempts, please try again later",
-  standardHeaders: true,
+  max: 100, // limit each IP to 100 requests
+  message: "Too many requests from this IP, please try again later",
 });
 
-app.use("/auth", authLimiter);
+app.use(globalLimiter);
 
 // connect to mongodb
 connectMongodb();
@@ -54,8 +47,19 @@ app.get("/api/health", (req, res) => {
   res.json({ message: "OK" });
 });
 
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
+});
+
+registerSocket(io);
+
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

@@ -1,34 +1,24 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { authApi } from "../utils/api";
-// import useAuthStore from "../store/auth/authStore"; // Your store
+import useAuthStore from "../store/useAuthStore";
 
 const ProtectedRoutes = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const setAuth = useAuthStore((state) => state.setAuthenticated); // Sync to store
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
-    async function checkIsLoggedIn() {
-      try {
-        const response = await authApi.get("/auth/me");
-        const loggedIn = response.data.isLoggedIn || !!response.data.user;
-        setIsLoggedIn(loggedIn);
-        // setAuth(loggedIn);
-      } catch (error) {
-        console.error(error);
-        setIsLoggedIn(false);
-        // setAuth(false);
-      } finally {
-        setLoading(false);
-      }
+    async function runCheck() {
+      await checkAuth();
     }
-    checkIsLoggedIn();
+
+    runCheck();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
 
-  return isLoggedIn ? children : <Navigate to="/login" replace />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoutes;

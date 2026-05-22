@@ -55,6 +55,11 @@ input:focus {
   outline: none;
 }
 
+input::placeholder {
+  color: var(--foreground-secondary);
+  opacity: 0.5
+}
+
 input:not(.no-focus):focus {
   border-color: var(--accent-color-primary);
   transition: all 200ms ease;

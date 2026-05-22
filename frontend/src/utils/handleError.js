@@ -1,5 +1,5 @@
 const handleError = (error) => {
-  if (!error.response) return "Network error";
+  if (!error.response) return "";
 
   const status = error.response.status;
 
@@ -9,6 +9,7 @@ const handleError = (error) => {
   )
     return;
   if (status === 429) return "Too many requests";
+  if (status === 401) return "Unauthorized";
   if (status >= 500) return "Server error";
 
   return error.response.data?.message || "Something went wrong";
