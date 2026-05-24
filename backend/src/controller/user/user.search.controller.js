@@ -1,6 +1,5 @@
 import User from "../../models/user.model.js";
 import Relationship from "../../models/relationship.model.js";
-import makeKey from "../../utils/makeKey.js";
 
 // Helper functions
 function escapeRegex(text) {
@@ -63,7 +62,7 @@ async function searchController(req, res) {
     });
 
     // Add relationship status to each user
-    const usersWithStatus = findUsers.map((user) => {
+    const users = findUsers.map((user) => {
       const userIdStr = user._id.toString();
       const rel = relationshipMap[userIdStr];
 
@@ -93,7 +92,7 @@ async function searchController(req, res) {
 
     return res.json({
       success: true,
-      users: usersWithStatus,
+      users: users,
     });
   } catch (error) {
     console.error(error);

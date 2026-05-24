@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Relationship from "../../models/relationship.model.js";
 import makeKey from "../../utils/makeKey.js";
+import { onlineUsers } from "../../socket/socket.store.js";
 
 async function getAllFriends(req, res) {
   try {
@@ -24,7 +25,10 @@ async function getAllFriends(req, res) {
       const friend =
         rel.user1._id.toString() === userId.toString() ? rel.user2 : rel.user1;
 
-      return friend;
+      return {
+        ...friend.toObject(),
+        isOnline: onlineUsers.has(friend._id.toString()),
+      };
     });
 
     return res.status(200).json({

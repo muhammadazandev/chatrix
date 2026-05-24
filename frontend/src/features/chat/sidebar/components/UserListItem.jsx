@@ -58,6 +58,13 @@ const UserListItem = ({
                 <p className="text-xs font-medium opacity-50 truncate max-w-60 mt-0.5">
                   {user.bio || "No bio available"}
                 </p>
+
+                {user.isOnline === null ||
+                user.isOnline === undefined ? null : (
+                  <div
+                    className={`absolute p-1.5 bottom-1 left-1 border border-(--foreground-primary)/50 rounded-full ${user.isOnline ? "bg-green-600" : "bg-transparent"}`}
+                  />
+                )}
               </div>
             </div>
 
@@ -123,7 +130,7 @@ const UserListItem = ({
                     )}
 
                     {isShowBlockButton && (
-                      <div className="h-[1px] my-1.5 mx-2 bg-(--foreground-secondary)/30" />
+                      <div className="h-px my-1.5 mx-2 bg-(--foreground-secondary)/30" />
                     )}
 
                     {isShowBlockButton && (

@@ -63,7 +63,7 @@ async function loginController(req, res) {
     const isExist = await User.findOne({ email });
 
     if (!isExist) {
-      return res.status(401).json({
+      return res.status(404).json({
         message: "Invalid credentials",
         success: false,
       });
@@ -72,7 +72,7 @@ async function loginController(req, res) {
     const isPasswordCorrect = await bcrypt.compare(password, isExist.password);
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({
+      return res.status(404).json({
         message: "Invalid credentials",
         success: false,
       });

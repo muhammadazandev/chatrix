@@ -1,3 +1,4 @@
+import { registerFriendsPresence } from "./handlers/friends.presence.handler.js";
 import { socketAuth } from "./socket.middleware.js";
 import { onlineUsers } from "./socket.store.js";
 
@@ -5,16 +6,26 @@ export const registerSocket = (io) => {
   io.use(socketAuth);
 
   io.on("connection", (socket) => {
-    const userId = socket.user.userId;
+    const userId = socket.user.userId.toString();
 
-    onlineUsers.set(userId, socket.id);
+    if (!onlineUsers.has(userId)) {
+      onlineUsers.set(userId, new Set());
+    }
 
-    console.log("User Online: ", userId);
-    console.log(onlineUsers);
+    onlineUsers.get(userId).add(socket.id);
+
+    registerFriendsPresence(io, socket);
 
     socket.on("disconnect", () => {
-      onlineUsers.delete(userId);
-      console.log("User Offline: ", userId);
+      const userSockets = onlineUsers.get(userId);
+
+      if (userSockets) {
+        userSockets.delete(socket.id);
+
+        if (userSockets.size === 0) {
+          onlineUsers.delete(userId);
+        }
+      }
     });
   });
 };

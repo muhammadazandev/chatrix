@@ -13,6 +13,13 @@ const useFriendshipStore = create(
       friends: [],
       blocked: [],
 
+      updateFriendStatus: (userId, isOnline) =>
+        set((state) => ({
+          friends: state.friends.map((f) =>
+            f._id.toString() === userId.toString() ? { ...f, isOnline } : f,
+          ),
+        })),
+
       sendFriendRequest: async (receiverId) => {
         set({ isLoading: true });
 
