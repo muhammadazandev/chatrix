@@ -6,7 +6,7 @@ import Settings from "../../models/settings.model.js";
 
 async function verifyOtpController(req, res) {
   try {
-    const { username, password, email, otpCode } = req.body;
+    const { username, password, email, otpCode } = req.body || {};
 
     if (!username || !password || !email || !otpCode) {
       return res.status(400).json({
@@ -67,7 +67,7 @@ async function verifyOtpController(req, res) {
 
     // Create user settings document when the user create account first time
     await Settings.create({ userId: newUser._id });
-    
+
     return res.status(200).json({
       message: "Signup successful",
       success: true,
@@ -83,7 +83,7 @@ async function verifyOtpController(req, res) {
 
 async function signupController(req, res) {
   try {
-    const { username, email, password } = req.body ?? {};
+    const { username, email, password } = req.body || {};
 
     if (!username || !email || !password) {
       return res.status(400).json({

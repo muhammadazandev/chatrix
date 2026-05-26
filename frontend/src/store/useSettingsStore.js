@@ -28,7 +28,7 @@ const useSettingsStore = create(
           const res = await authApi.patch("/setting/update", {
             [key]: value,
           });
-
+          
           const settings = res.data?.settings;
 
           if (settings) {

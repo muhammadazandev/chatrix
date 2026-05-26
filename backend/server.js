@@ -8,6 +8,8 @@ import userRouter from "./src/routes/user.routes.js";
 import authRouter from "./src/routes/auth.routes.js";
 import friendRouter from "./src/routes/friend.routes.js";
 import settingRouter from "./src/routes/setting.routes.js";
+import conversationRouter from "./src/routes/conversation.routes.js";
+import messageRouter from "./src/routes/message.routes.js";
 import protect from "./src/middleware/protect.js";
 import http from "http";
 import { Server } from "socket.io";
@@ -31,7 +33,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
@@ -43,6 +45,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", protect, userRouter);
 app.use("/api/friend", protect, friendRouter);
 app.use("/api/setting", protect, settingRouter);
+app.use("/api/conversation", protect, conversationRouter);
+app.use("/api/message", protect, messageRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {

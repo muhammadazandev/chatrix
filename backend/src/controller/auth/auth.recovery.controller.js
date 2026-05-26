@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 
 async function forgotPasswordController(req, res) {
   try {
-    const { email } = req.body;
+    const { email } = req.body || {};
 
     const isExist = await User.findOne({ email });
 
@@ -58,7 +58,7 @@ async function forgotPasswordController(req, res) {
 async function resetPasswordController(req, res) {
   try {
     const { token } = req.params;
-    const { password } = req.body;
+    const { password } = req.body || {};
 
     if (!token || !password)
       return res

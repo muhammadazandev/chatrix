@@ -22,7 +22,7 @@ const ChatSidebar = () => {
   const [searchError, setSearchError] = useState("");
   const [searchParams] = useSearchParams();
 
-  const currentView = searchParams.get("view") || "friends";
+  const currentView = searchParams.get("view") || "conversation";
 
   const isSettingsView = currentView === "settings";
 

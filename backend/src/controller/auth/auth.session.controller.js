@@ -51,7 +51,7 @@ async function logoutController(req, res) {
 
 async function loginController(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
     if (!email || !password) {
       return res.status(400).json({

@@ -5,7 +5,7 @@ const allowedFields = ["theme", "accentColor", "isAnimations", "transition"];
 async function updateSettingController(req, res) {
   try {
     const userId = req.user.id;
-    const body = req.body;
+    const body = req.body || {};
 
     if (!body) {
       return res
