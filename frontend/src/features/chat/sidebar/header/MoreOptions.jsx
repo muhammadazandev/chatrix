@@ -67,7 +67,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
       <Motion
         variants={popLift}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="absolute -right-60  top-auto mt-2 w-56 z-50 rounded-lg border border-(--foreground-secondary) bg-(--bg-primary) p-1.5 flex flex-col origin-top-left"
+        className="absolute -right-60  top-auto mt-2 w-56 z-50 rounded-lg border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-lg flex flex-col origin-top-left overflow-hidden py-3"
       >
         {options.map((opt) => {
           const isDanger = opt.variant === "danger";
@@ -80,7 +80,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
 
               <button
                 type="button"
-                className={`w-full rounded-sm px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium cursor-pointer transition-all duration-150 active:scale-[0.98]
+                className={`w-full px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium
                   ${
                     isDanger
                       ? "text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/15"

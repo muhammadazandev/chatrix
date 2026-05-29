@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Conversation from "../../models/conversation.model.js";
 import Message from "../../models/message.model.js";
 import verifyParticipant from "../../utils/verifyConversationParticipant.js";
@@ -20,6 +21,12 @@ async function getOldMessages(req, res) {
         success: false,
         message: "Conversation ID is required",
       });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(conversationId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid conversation ID" });
     }
 
     const conversation = await Conversation.findById(conversationId);

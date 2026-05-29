@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import Conversation from "../../models/conversation.model.js";
 import Relationship from "../../models/relationship.model.js";
 import verifyParticipant from "../../utils/verifyConversationParticipant.js";
+import User from "../../models/user.model.js";
 
 async function accessConversationController(req, res) {
   try {
@@ -12,6 +14,12 @@ async function accessConversationController(req, res) {
         success: false,
         message: "Unauthorized",
       });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(targetUserId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid user id" });
     }
 
     if (!targetUserId) {
@@ -91,14 +99,35 @@ async function getConversations(req, res) {
 
     const conversations = await Conversation.find({
       participants: userId,
-    }).sort({
-      lastMessageAt: -1,
+    })
+      .populate("participants", "username profilePicture bio")
+      .sort({
+        lastMessageAt: -1,
+      });
+
+    const formatted = conversations.map((con) => {
+      const friend = con.participants.find((p) => p._id.toString() !== userId);
+
+      return {
+        _id: con._id,
+        lastMessageText: con.lastMessageText,
+        type: con.type,
+
+        friend: {
+          _id: friend._id,
+          username: friend.username,
+          profilePicture: friend.profilePicture,
+          bio: friend.bio,
+        },
+
+        createdAt: con.createdAt,
+        updatedAt: con.updatedAt,
+      };
     });
 
     return res.status(200).json({
       success: true,
-      message: "All Conversations",
-      conversations,
+      conversations: formatted,
     });
   } catch (error) {
     console.error(error);
@@ -146,10 +175,19 @@ async function verifyConversation(req, res) {
       });
     }
 
+    const friendId = conversation.participants.find(
+      (f) => f._id.toString() !== userId.toString(),
+    );
+
+    const friend = await User.findById(friendId).select(
+      "username profilePicture bio",
+    );
+
     return res.status(200).json({
       success: true,
       message: "Verified",
       conversation,
+      friend,
     });
   } catch (error) {
     console.error(error);

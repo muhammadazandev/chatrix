@@ -179,7 +179,7 @@ async function meController(req, res) {
       });
     }
 
-    const userData = await User.findById(req.user.id);
+    const userData = await User.findById(req.user.id).select("-password");
 
     return res.status(200).json({
       isLoggedIn: true,

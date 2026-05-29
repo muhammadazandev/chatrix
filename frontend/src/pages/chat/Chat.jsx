@@ -4,12 +4,24 @@ import ChatSidebar from "../../features/chat/sidebar/ChatSidebar";
 
 const Chat = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const conversationId = searchParams.get("conversationId");
 
   return (
     <div className="flex">
       <ChatSidebar />
 
-      {searchParams.get("conversationId") ? <Conversation /> : null}
+      {conversationId ? (
+        <Conversation />
+      ) : (
+        <div className="h-screen flex flex-col w-full items-center justify-center opacity-75 gap-3 text-center">
+          <h2 className="font-medium tracking-wider text-3xl">
+            Select a conversation
+          </h2>
+          <h5 className="max-w-[30%] opacity-60">
+            Choose a chat from the sidebar to start messaging.
+          </h5>
+        </div>
+      )}
     </div>
   );
 };

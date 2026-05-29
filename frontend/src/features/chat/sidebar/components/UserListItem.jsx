@@ -2,11 +2,7 @@ import { RiMore2Fill } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
-import {
-  RiUserForbidFill,
-  RiFileCopyFill,
-  RiUserSharedFill,
-} from "@remixicon/react";
+import { RiUserForbidFill } from "@remixicon/react";
 import ConfirmBox from "./ConfirmBox";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import Motion from "../../../../components/motion/Motion";
@@ -17,7 +13,6 @@ const UserListItem = ({
   requestId = [],
   RenderActions,
   isShowBlockButton = true,
-  isUnfriendButton = false,
 }) => {
   const [moreOpenIndex, setMoreOpenIndex] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -91,69 +86,31 @@ const UserListItem = ({
                 {isMenuOpen && (
                   <Motion
                     variants={popLift}
-                    className="absolute right-0 top-full mt-2 w-56 z-50 rounded-lg border border-(--foreground-secondary) bg-(--bg-primary) p-1.5 shadow-xl flex flex-col origin-top-right backdrop-blur-md"
+                    className="absolute right-0 top-full mt-2 w-52 z-50 rounded-lg border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-lg flex flex-col origin-top-right overflow-hidden py-3"
                   >
-                    {!isUnfriendButton &&
-                      RenderActions?.(
-                        user,
-                        requestId[index],
-                        setIsConfirmOpen,
-                        setConfirmBoxUserId,
-                      )}
+                    {RenderActions?.(
+                      user,
+                      requestId[index],
+                      setIsConfirmOpen,
+                      setConfirmBoxUserId,
+                    )}
 
                     {isShowBlockButton && (
                       <>
+                        <div className="h-px bg-(--foreground-secondary)/20 mx-2 my-1" />
                         <button
                           type="button"
-                          className="w-full rounded-sm px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium text-(--foreground-primary) cursor-pointer opacity-85 hover:opacity-100 hover:bg-(--bg-secondary)/60 transition-all duration-150 active:scale-[0.98]"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500 bg-red-500/15 text-red-350 transition-all duration-200 mt-2"
+                          onClick={() => {
+                            setConfirmBoxUserId(user._id);
+                            setIsConfirmOpen(true);
+                          }}
                         >
-                          <IconsWrapper
-                            icon={RiFileCopyFill}
-                            size={18}
-                            className="opacity-75"
-                          />
-                          <span>Copy profile link</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className="w-full rounded-sm px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium text-(--foreground-primary) cursor-pointer opacity-85 hover:opacity-100 hover:bg-(--bg-secondary)/60 transition-all duration-150 active:scale-[0.98]"
-                        >
-                          <IconsWrapper
-                            icon={RiUserSharedFill}
-                            size={18}
-                            className="opacity-75"
-                          />
-                          <span>Share user profile</span>
+                          <IconsWrapper icon={RiUserForbidFill} size={18} />
+                          <span>Block user</span>
                         </button>
                       </>
                     )}
-
-                    {isShowBlockButton && (
-                      <div className="h-px my-1.5 mx-2 bg-(--foreground-secondary)/30" />
-                    )}
-
-                    {isShowBlockButton && (
-                      <button
-                        type="button"
-                        className="w-full rounded-sm px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium text-red-500 cursor-pointer hover:bg-red-500/10 dark:hover:bg-red-500/15 transition-all duration-150 active:scale-[0.98]"
-                        onClick={() => {
-                          setConfirmBoxUserId(user._id);
-                          setIsConfirmOpen(true);
-                        }}
-                      >
-                        <IconsWrapper icon={RiUserForbidFill} size={18} />
-                        <span>Block user</span>
-                      </button>
-                    )}
-
-                    {isUnfriendButton &&
-                      RenderActions?.(
-                        user,
-                        requestId[index],
-                        setIsConfirmOpen,
-                        setConfirmBoxUserId,
-                      )}
                   </Motion>
                 )}
               </AnimatePresence>

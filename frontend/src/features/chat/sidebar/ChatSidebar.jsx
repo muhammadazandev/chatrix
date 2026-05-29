@@ -51,7 +51,7 @@ const ChatSidebar = () => {
 
   return (
     <FocusProvider>
-      <div className="bg-(--bg-primary) border-r border-(--foreground-primary)/20 max-w-[calc(100%/3.5)] py-5 px-4 min-h-screen relative">
+      <div className="bg-(--bg-primary) border-r border-(--foreground-primary)/20 max-w-[calc(100%/3.5)] min-w-[calc(100%/3.5)] py-5 px-4 min-h-screen relative">
         <AnimatePresence mode="wait">
           {!isSettingsView && (
             <Motion key="sidebar-chrome" variants={slideFade}>

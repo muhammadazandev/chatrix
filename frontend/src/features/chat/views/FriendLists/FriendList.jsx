@@ -47,7 +47,6 @@ const FriendList = () => {
           <UserListItem
             users={friends}
             RenderActions={RenderActions}
-            isUnfriendButton={true}
           />
           <AnimatePresence>
             {isConfirmOpen && confirmBoxUserId && (
