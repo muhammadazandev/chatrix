@@ -14,6 +14,7 @@ import protect from "./src/middleware/protect.js";
 import http from "http";
 import { Server } from "socket.io";
 import { registerSocket } from "./src/socket/index.js";
+import { setIo } from "./src/socket/socket.instance.js";
 
 const app = express();
 
@@ -61,6 +62,8 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+
+setIo(io);
 
 registerSocket(io);
 

@@ -5,9 +5,9 @@ import toast from "react-hot-toast";
 
 const useChatStore = create((set) => ({
   currentConversationId: null,
-  allConversations: null,
+  allConversations: [],
   conversationFriend: null,
-  messages: null,
+  messages: [],
 
   setCurrentConversationId: (id) => set({ currentConversationId: id }),
 

@@ -13,6 +13,10 @@ const ConversationView = () => {
   const verifyConversation = useChatStore((state) => state.verifyConversation);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const sortedConversations = [...allConversations].sort(
+    (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt),
+  );
+
   const updateConversationIdParam = (conversationId) => {
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
@@ -39,7 +43,7 @@ const ConversationView = () => {
 
   return (
     <div className="mt-8 flex flex-col gap-1">
-      {allConversations?.map((con) => {
+      {sortedConversations?.map((con) => {
         return (
           <div
             key={con._id}
@@ -62,7 +66,7 @@ const ConversationView = () => {
                   </h3>
                 </div>
                 <p className="text-xs font-medium opacity-50 truncate max-w-60 mt-0.5">
-                  {con.lastMessageText || con.friend.bio || ""}
+                  {con.lastMessageText || ""}
                 </p>
               </div>
             </div>

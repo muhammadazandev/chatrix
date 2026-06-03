@@ -111,6 +111,7 @@ async function getConversations(req, res) {
       return {
         _id: con._id,
         lastMessageText: con.lastMessageText,
+        lastMessageAt: con.lastMessageAt,
         type: con.type,
 
         friend: {

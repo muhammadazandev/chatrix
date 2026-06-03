@@ -29,9 +29,10 @@ export const registerFriendsPresence = (io, socket) => {
   const handleFriendOnline = async () => {
     try {
       const friendIds = await getFriendsId(userId);
-
       for (const friendId of friendIds) {
-        notifyIfOnline(friendId.toString(), "friend_online", { userId });
+        notifyIfOnline(friendId.toString(), "friend_online", {
+          userId: userId.toString(),
+        });
       }
     } catch (err) {
       console.error("friend_online error:", err);
@@ -43,7 +44,9 @@ export const registerFriendsPresence = (io, socket) => {
       const friendIds = await getFriendsId(userId);
 
       for (const friendId of friendIds) {
-        notifyIfOnline(friendId.toString(), "friend_offline", { userId });
+        notifyIfOnline(friendId.toString(), "friend_offline", {
+          userId: userId.toString(),
+        });
       }
     } catch (err) {
       console.error("friend_offline error:", err);

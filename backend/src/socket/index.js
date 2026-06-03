@@ -1,4 +1,6 @@
+import { registerConversationConnections } from "./handlers/conversation.connection.handler.js";
 import { registerFriendsPresence } from "./handlers/friends.presence.handler.js";
+import { registerNewMessage } from "./handlers/new.message.handler.js";
 import { socketAuth } from "./socket.middleware.js";
 import { onlineUsers } from "./socket.store.js";
 
@@ -16,12 +18,16 @@ export const registerSocket = (io) => {
 
     registerFriendsPresence(io, socket);
 
-    socket.on("disconnect", () => {
-      const userSockets = onlineUsers.get(userId);
+    registerConversationConnections(io, socket);
 
+    registerNewMessage(io, socket);
+    
+    socket.on("disconnect", (reason) => {
+      const userSockets = onlineUsers.get(userId);
+      
       if (userSockets) {
         userSockets.delete(socket.id);
-
+        
         if (userSockets.size === 0) {
           onlineUsers.delete(userId);
         }
