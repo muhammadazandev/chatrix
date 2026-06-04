@@ -1,7 +1,7 @@
 import { RiSendPlane2Fill } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { socket } from "../../../../socket/socket";
 import { SOCKET_EVENTS } from "../../../../socket/events";
 import { useSearchParams } from "react-router-dom";
@@ -9,19 +9,56 @@ import toast from "react-hot-toast";
 
 const MessageInput = () => {
   const inputRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const errorTimeoutRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const isTypingRef = useRef(false);
   const [isError, setIsError] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const conversationId = searchParams.get("conversationId");
+  const conversationIdRef = useRef(conversationId);
+
+  const emitStartTyping = () => {
+    if (!conversationIdRef.current) return;
+
+    socket.emit(SOCKET_EVENTS.START_TYPING, {
+      conversationId: conversationIdRef.current,
+    });
+  };
+
+  const emitStopTyping = () => {
+    if (!conversationIdRef.current) return;
+
+    socket.emit(SOCKET_EVENTS.STOP_TYPING, {
+      conversationId: conversationIdRef.current,
+    });
+  };
+
+  const stopTypingNow = (conversationIdToStop) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    if (isTypingRef.current) {
+      isTypingRef.current = false;
+      const stopId = conversationIdToStop || conversationIdRef.current;
+      if (stopId) {
+        socket.emit(SOCKET_EVENTS.STOP_TYPING, {
+          conversationId: stopId,
+        });
+      }
+    }
+  };
 
   const sendMessage = () => {
-    if (!inputRef.current || !searchParams.get("conversationId")) return;
+    if (!inputRef.current || !conversationIdRef.current) return;
+    stopTypingNow();
 
     const message = inputRef.current.value.trim();
 
     if (message) {
       const data = {
         message,
-        conversationId: searchParams.get("conversationId"),
+        conversationId: conversationIdRef.current,
       };
 
       socket.emit(SOCKET_EVENTS["NEW_MESSAGE"], data, (res) => {
@@ -32,13 +69,13 @@ const MessageInput = () => {
 
       inputRef.current.value = "";
     } else {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
       }
 
       setIsError(true);
 
-      timeoutRef.current = setTimeout(() => {
+      errorTimeoutRef.current = setTimeout(() => {
         setIsError(false);
       }, 500);
     }
@@ -46,11 +83,30 @@ const MessageInput = () => {
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+      }
+
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        emitStopTyping(); // important safety call
       }
     };
   }, []);
+
+  useEffect(() => {
+    const previousConversationId = conversationIdRef.current;
+
+    if (previousConversationId && previousConversationId !== conversationId) {
+      stopTypingNow(previousConversationId);
+    }
+
+    conversationIdRef.current = conversationId;
+
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }, [conversationId]);
 
   const shakeVariants = {
     error: {
@@ -62,6 +118,24 @@ const MessageInput = () => {
       x: 0,
       borderColor: "transparent",
     },
+  };
+
+  const handleTyping = () => {
+    if (!conversationIdRef.current) return;
+
+    if (!isTypingRef.current) {
+      isTypingRef.current = true;
+      emitStartTyping();
+    }
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      isTypingRef.current = false;
+      emitStopTyping();
+    }, 1500);
   };
 
   return (
@@ -76,6 +150,7 @@ const MessageInput = () => {
           placeholder="Enter Your Message"
           className="w-full outline-none bg-transparent"
           ref={inputRef}
+          onInput={handleTyping}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               sendMessage();

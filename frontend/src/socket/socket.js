@@ -13,10 +13,13 @@ socket.on("connect", () => {
   const conId = useChatStore.getState().currentConversationId;
 
   if (conId) {
-    if (lastJoinedConversation === conId) return;
-
     lastJoinedConversation = conId;
 
     socket.emit(SOCKET_EVENTS.JOIN_CONVERSATION, conId);
   }
+});
+
+socket.on("disconnect", () => {
+  
+  lastJoinedConversation = null;
 });

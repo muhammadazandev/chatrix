@@ -16,14 +16,26 @@ const MessagesList = ({ messages }) => {
       <div className="flex flex-col gap-5 py-5 px-5">
         {messages?.map((message, index) => {
           const isLastMessage = index === messages.length - 1;
+          const isSendByMe = message.senderId === user?._id;
 
           return (
             <div
               ref={isLastMessage ? latestMessageRef : null}
               key={message._id}
-              className={`max-w-[50%] rounded-sm py-2 px-4 ${message.senderId === user?._id ? "bg-(--accent-color-primary) self-end" : "bg-(--bg-secondary) self-start"}`}
+              className={`max-w-[60%] rounded-md py-1 px-3 ${isSendByMe ? "bg-(--accent-color-primary) self-end" : "bg-(--bg-secondary) self-start"}`}
             >
-              <p>{message.text}</p>
+              <p className={`text-sm`}>{message.text}</p>
+
+              <div>
+                <p
+                  className={`text-xs mt-1 opacity-50 ${isSendByMe ? "text-right" : "text-left"}`}
+                >
+                  {new Date(message.createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
             </div>
           );
         })}

@@ -136,8 +136,8 @@ async function refreshController(req, res) {
     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
       if (err) {
         // expire / invalid -> clear cookies (auto-logout)
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
+        res.clearCookie("accessToken", { path: "/" });
+        res.clearCookie("refreshToken", { path: "/" });
         return res.status(401).json({
           message: "Invalid or expired refresh token",
           success: false,

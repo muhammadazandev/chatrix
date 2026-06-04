@@ -22,7 +22,7 @@ export default async function protect(req, res, next) {
     next(); // Connected to protected route
   } catch (error) {
     console.error(error);
-    return res.status(403).json({
+    return res.status(401).json({
       message: "Invalid token",
       success: false,
     });

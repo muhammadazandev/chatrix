@@ -1,5 +1,6 @@
 import Conversation from "../../models/conversation.model.js";
 import verifyParticipant from "../../utils/verifyConversationParticipant.js";
+import { typingUsers } from "../socket.store.js";
 
 export const registerConversationConnections = (io, socket) => {
   const userId = socket.user.userId.toString();
@@ -27,6 +28,12 @@ export const registerConversationConnections = (io, socket) => {
 
       if (socket.currentConversation) {
         socket.leave(socket.currentConversation);
+      }
+
+      for (const key of typingUsers) {
+        if (key.startsWith(`${socket.id}:`)) {
+          typingUsers.delete(key);
+        }
       }
 
       socket.currentConversation = conversationId;

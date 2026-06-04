@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import MessagesList from "./messagesList/MessagesList";
 import { socket } from "../../../socket/socket";
 import { SOCKET_EVENTS } from "../../../socket/events";
+import TypingIndicator from "./typingIndicator/TypingIndicator";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
@@ -41,6 +42,7 @@ const Conversation = () => {
     <div className="flex-1 flex flex-col bg-(--bg-primary) h-screen relative overflow-hidden">
       <Header />
       <MessagesList messages={messages} />
+      <TypingIndicator />
       <MessageInput />
     </div>
   );
