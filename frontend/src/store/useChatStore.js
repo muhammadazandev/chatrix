@@ -20,7 +20,13 @@ const useChatStore = create((set) => ({
         targetUserId: targetUserId,
       });
 
-      set({ currentConversationId: res.data.conversation._id });
+      const conversationId = res.data.conversation._id;
+
+      set({ currentConversationId: conversationId });
+
+      const params = new URLSearchParams(window.location.search);
+      params.set("conversationId", conversationId);
+      window.history.replaceState(null, "", `?${params.toString()}`);
     } catch (error) {
       const message = handleError(error);
       if (message) {

@@ -16,7 +16,7 @@ const Header = () => {
     }
 
     verify();
-  }, []);
+  }, [conId, conversationFriend, verifyConversation]);
 
   if (!conversationFriend) return null;
 

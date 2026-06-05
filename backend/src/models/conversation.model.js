@@ -4,7 +4,7 @@ const conversationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ["direct"],
+      enum: ["direct", "group"],
       default: "direct",
     },
 
@@ -15,6 +15,15 @@ const conversationSchema = new mongoose.Schema(
       },
     ],
 
+    name: { type: String },
+
+    avatar: { type: String },
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
     lastMessageText: { type: String },
 
     lastMessageAt: { type: Date },
@@ -23,6 +32,10 @@ const conversationSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+conversationSchema.index({
+  participants: 1,
+});
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 

@@ -49,9 +49,11 @@ async function getOldMessages(req, res) {
 
     const messages = await Message.find({
       conversationId,
-    }).sort({
-      createdAt: 1,
-    });
+    })
+      .sort({
+        createdAt: 1,
+      })
+      .lean();
 
     return res.status(200).json({
       success: true,

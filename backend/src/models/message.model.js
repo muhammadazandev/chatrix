@@ -14,13 +14,40 @@ const messageSchema = mongoose.Schema(
       required: true,
     },
 
+    messageType: {
+      type: String,
+      enum: ["text", "image", "video", "file"],
+      default: "text",
+    },
+
     text: {
       type: String,
-      required: true,
+      default: "",
+    },
+
+    mediaUrl: { type: String },
+
+    isEdited: {
+      type: Boolean,
+      default: false,
+    },
+
+    editedAt: {
+      type: Date,
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
 );
+
+messageSchema.index({
+  conversationId: 1,
+  createdAt: -1,
+});
 
 const Message = mongoose.model("Message", messageSchema);
 
