@@ -7,9 +7,6 @@ const ConversationView = () => {
     (state) => state.getAllConversations,
   );
   const allConversations = useChatStore((state) => state.allConversations);
-  const setCurrentConversationId = useChatStore(
-    (state) => state.setCurrentConversationId,
-  );
   const verifyConversation = useChatStore((state) => state.verifyConversation);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -33,7 +30,6 @@ const ConversationView = () => {
 
   async function handleConversationClick(conversationId) {
     await verifyConversation(conversationId);
-    setCurrentConversationId(conversationId);
     updateConversationIdParam(conversationId);
   }
 

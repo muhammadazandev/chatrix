@@ -10,8 +10,9 @@ export const socket = io(import.meta.env.VITE_API_URL, {
 let lastJoinedConversation = null;
 
 socket.on("connect", () => {
-  const conId = useChatStore.getState().currentConversationId;
-
+  const params = new URLSearchParams(window.location.search);
+  const conId = params.get('conversationId');
+  
   if (conId) {
     lastJoinedConversation = conId;
 

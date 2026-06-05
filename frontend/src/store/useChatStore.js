@@ -2,31 +2,32 @@ import { create } from "zustand";
 import { authApi } from "../utils/api";
 import handleError from "../utils/handleError";
 import toast from "react-hot-toast";
+import { SOCKET_EVENTS } from "../socket/events";
+import { socket } from "../socket/socket";
 
 const useChatStore = create((set) => ({
-  currentConversationId: null,
   allConversations: [],
   conversationFriend: null,
   messages: [],
   typingUsersByConversation: {},
 
-  setCurrentConversationId: (id) => set({ currentConversationId: id }),
-
-  accessConversation: async (targetUserId) => {
+  accessConversation: async (targetUserId, onSuccessNavigate) => {
     try {
       if (!targetUserId) return;
 
-      const res = await authApi.post("/conversation/access", {
+      const accessRes = await authApi.post("/conversation/access", {
         targetUserId: targetUserId,
       });
 
-      const conversationId = res.data.conversation._id;
+      const conversationId = accessRes.data.conversation._id;
 
-      set({ currentConversationId: conversationId });
+      onSuccessNavigate?.(conversationId);
 
-      const params = new URLSearchParams(window.location.search);
-      params.set("conversationId", conversationId);
-      window.history.replaceState(null, "", `?${params.toString()}`);
+      socket.emit(SOCKET_EVENTS.JOIN_CONVERSATION, conversationId);
+
+      const verifyRes = await authApi.get(`/conversation/${conversationId}`);
+
+      set({ conversationFriend: verifyRes?.data?.friend });
     } catch (error) {
       const message = handleError(error);
       if (message) {

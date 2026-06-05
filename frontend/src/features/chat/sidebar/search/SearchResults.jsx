@@ -19,7 +19,7 @@ const SearchResults = ({ results, isLoading }) => {
 
   function RenderActions(
     user,
-    requestId,
+    setMoreOpenIndex,
     setIsConfirmOpen,
     setConfirmBoxUserId,
   ) {
@@ -30,6 +30,7 @@ const SearchResults = ({ results, isLoading }) => {
         requestId={user.requestId}
         setIsConfirmOpen={setIsConfirmOpen}
         setConfirmBoxUserId={setConfirmBoxUserId}
+        setMoreOpenIndex={setMoreOpenIndex}
       />
     );
   }

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { motion } from "motion/react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
 import { FriendRequestsEmptyState } from "../../sidebar/components/EmptyStates";
@@ -24,22 +23,24 @@ const FriendRequests = () => {
     getFriendRequests();
   }, [getFriendRequests]);
 
-  function SentRenderActions(user, requestId) {
+  function SentRenderActions(user, setMoreOpenIndex, requestId) {
     return (
       <RenderActionButtons
         user={user}
         status="outgoing"
         requestId={requestId}
+        setMoreOpenIndex={setMoreOpenIndex}
       />
     );
   }
 
-  function ReceivedRenderActions(user, requestId) {
+  function ReceivedRenderActions(user, setMoreOpenIndex, requestId) {
     return (
       <RenderActionButtons
         user={user}
         status="incoming"
         requestId={requestId}
+        setMoreOpenIndex={setMoreOpenIndex}
       />
     );
   }

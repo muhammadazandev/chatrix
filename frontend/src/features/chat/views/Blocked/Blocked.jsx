@@ -29,12 +29,14 @@ const Blocked = () => {
     }
   }, [blocked]);
 
-  async function unblock(userId) {
-    await unblockUser(userId);
-  }
-
-  function RenderActions(user) {
-    return <RenderActionButtons user={user} status="blocked" />;
+  function RenderActions(user, setMoreOpenIndex) {
+    return (
+      <RenderActionButtons
+        user={user}
+        status="blocked"
+        setMoreOpenIndex={setMoreOpenIndex}
+      />
+    );
   }
 
   return (

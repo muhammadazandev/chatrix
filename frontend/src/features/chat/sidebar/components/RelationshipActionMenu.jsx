@@ -8,7 +8,7 @@ import {
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import { friendshipStore } from "../../../../store/useFriendshipStore";
 import { getChatState } from "../../../../store/useChatStore";
-
+import { useSearchParams } from "react-router-dom";
 const {
   acceptFriendRequest,
   rejectFriendRequest,
@@ -17,8 +17,14 @@ const {
   unblockUser,
 } = friendshipStore.getState();
 const { accessConversation } = getChatState();
-
-async function performAction(action, requestId, userId, targetUserId) {
+async function performAction(
+  action,
+  requestId,
+  userId,
+  targetUserId,
+  setSearchParams,
+  searchParams,
+) {
   const actions = {
     accept: acceptFriendRequest,
     reject: rejectFriendRequest,
@@ -27,22 +33,21 @@ async function performAction(action, requestId, userId, targetUserId) {
     unblock: unblockUser,
     accessConversation: accessConversation,
   };
-
   const fn = actions[action];
-
   if (fn) {
     if (action === "accept" || action === "reject" || action === "cancel") {
       await fn(requestId);
     } else if (action === "accessConversation") {
-      await fn(targetUserId);
+      await fn(targetUserId, (conversationId) => {
+        const params = new URLSearchParams(searchParams);
+        params.set("conversationId", conversationId);
+        setSearchParams(params);
+      });
     } else {
       await fn(userId);
     }
   }
-}
-
-// Buttons functions;
-
+} // Buttons functions;
 const buttonsClasses = {
   base: "w-full flex items-center gap-3 px-4 py-2.5 transition-all duration-200",
   hover:
@@ -51,14 +56,14 @@ const buttonsClasses = {
   text: "text-sm text-(--foreground-primary)",
   icon: "flex-shrink-0 opacity-70",
 };
-
-function SendRequest({ user, noHover = false, ...rest }) {
+function SendRequest({ user, noHover = false, setMoreOpenIndex, ...rest }) {
   return (
     <button
       type="button"
       className={`${buttonsClasses.base} ${buttonsClasses.text} ${noHover ? "" : buttonsClasses.hover}`}
       onClick={() => {
         performAction("send", undefined, user?._id);
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -71,13 +76,20 @@ function SendRequest({ user, noHover = false, ...rest }) {
   );
 }
 
-function CancelRequest({ user, requestId, noHover = false, ...rest }) {
+function CancelRequest({
+  user,
+  requestId,
+  noHover = false,
+  setMoreOpenIndex,
+  ...rest
+}) {
   return (
     <button
       type="button"
       className={`${buttonsClasses.base} ${buttonsClasses.text} ${noHover ? "" : buttonsClasses.hover}`}
       onClick={() => {
         performAction("cancel", requestId);
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -90,13 +102,20 @@ function CancelRequest({ user, requestId, noHover = false, ...rest }) {
   );
 }
 
-function AcceptRequest({ user, requestId, noHover = false, ...rest }) {
+function AcceptRequest({
+  user,
+  requestId,
+  setMoreOpenIndex,
+  noHover = false,
+  ...rest
+}) {
   return (
     <button
       type="button"
       className={`${buttonsClasses.base} ${buttonsClasses.text} ${noHover ? "" : buttonsClasses.hover}`}
       onClick={() => {
         performAction("accept", requestId);
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -109,13 +128,20 @@ function AcceptRequest({ user, requestId, noHover = false, ...rest }) {
   );
 }
 
-function RejectRequest({ user, requestId, noHover = false, ...rest }) {
+function RejectRequest({
+  user,
+  requestId,
+  setMoreOpenIndex,
+  noHover = false,
+  ...rest
+}) {
   return (
     <button
       type="button"
       className={`${buttonsClasses.base} ${buttonsClasses.text} ${noHover ? "" : buttonsClasses.hover}`}
       onClick={() => {
         performAction("reject", requestId);
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -133,6 +159,7 @@ function UnfriendFriend({
   setIsConfirmOpen,
   setConfirmBoxUserId,
   noHover = false,
+  setMoreOpenIndex,
   ...rest
 }) {
   return (
@@ -142,6 +169,7 @@ function UnfriendFriend({
       onClick={() => {
         setIsConfirmOpen(true);
         setConfirmBoxUserId(user._id);
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -154,13 +182,14 @@ function UnfriendFriend({
   );
 }
 
-function Unblock({ user, noHover = false, ...rest }) {
+function Unblock({ user, noHover = false, setMoreOpenIndex, ...rest }) {
   return (
     <button
       type="button"
       className={`${buttonsClasses.base} ${buttonsClasses.text} ${noHover ? "" : buttonsClasses.hover}`}
       onClick={() => {
         performAction("unblock", undefined, user._id);
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -173,13 +202,28 @@ function Unblock({ user, noHover = false, ...rest }) {
   );
 }
 
-function AccessConversation({ user, targetUserId, noHover = false, ...rest }) {
+function AccessConversation({
+  user,
+  targetUserId,
+  noHover = false,
+  setMoreOpenIndex,
+  ...rest
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
   return (
     <button
       type="button"
       className={`${buttonsClasses.base} ${buttonsClasses.text} ${noHover ? "" : buttonsClasses.hover}`}
       onClick={() => {
-        performAction("accessConversation", undefined, undefined, targetUserId);
+        performAction(
+          "accessConversation",
+          undefined,
+          undefined,
+          targetUserId,
+          setSearchParams,
+          searchParams,
+        );
+        setMoreOpenIndex?.(null);
       }}
     >
       <IconsWrapper
@@ -217,7 +261,10 @@ const ACTIONS = {
     label: "Start Chat",
     Component: AccessConversation,
   },
-  unblock: { label: "Unblock", Component: Unblock },
+  unblock: {
+    label: "Unblock",
+    Component: Unblock,
+  },
 };
 
 const RELATIONSHIP_ACTIONS = {
@@ -230,30 +277,28 @@ const RELATIONSHIP_ACTIONS = {
 
 export default function RenderActionButtons({
   user,
+  setMoreOpenIndex,
   requestId,
   status,
   setIsConfirmOpen,
   setConfirmBoxUserId,
-  targetUserId,
 }) {
   const actionKeys = RELATIONSHIP_ACTIONS[status] || [];
-
   return (
     <>
       {actionKeys.map((key) => {
         const Action = ACTIONS[key]?.Component;
-
         if (!Action) return null;
-
         return (
           <Action
             key={key}
             user={user}
-            requestId={requestId}
+            setMoreOpenIndex={setMoreOpenIndex}
             // Pass the extra props, unused ones are safely ignored
             setIsConfirmOpen={setIsConfirmOpen}
             setConfirmBoxUserId={setConfirmBoxUserId}
             targetUserId={user._id}
+            requestId={requestId}
           />
         );
       })}

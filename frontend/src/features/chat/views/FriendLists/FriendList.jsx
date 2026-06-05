@@ -29,13 +29,14 @@ const FriendList = () => {
     setConfirmBoxUserId(undefined);
   }
 
-  function RenderActions(user) {
+  function RenderActions(user, setMoreOpenIndex) {
     return (
       <RenderActionButtons
         user={user}
         status="friends"
         setIsConfirmOpen={setIsConfirmOpen}
         setConfirmBoxUserId={setConfirmBoxUserId}
+        setMoreOpenIndex={setMoreOpenIndex}
       />
     );
   }

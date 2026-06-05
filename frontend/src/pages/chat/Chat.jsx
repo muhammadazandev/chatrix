@@ -3,7 +3,7 @@ import Conversation from "../../features/chat/conversation/Conversation";
 import ChatSidebar from "../../features/chat/sidebar/ChatSidebar";
 
 const Chat = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const conversationId = searchParams.get("conversationId");
 
   return (

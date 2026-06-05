@@ -90,6 +90,7 @@ const UserListItem = ({
                   >
                     {RenderActions?.(
                       user,
+                      setMoreOpenIndex,
                       requestId[index],
                       setIsConfirmOpen,
                       setConfirmBoxUserId,
