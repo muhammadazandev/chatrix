@@ -4,7 +4,7 @@ import IconsWrapper from "../../../../../../utils/IconsWrapper";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import Tooltip from "../../../../../../components/Tooltip";
 import toast from "react-hot-toast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProfileField from "./ProfileField";
 import ProfilePicture from "./ProfilePicture";
 
@@ -37,6 +37,7 @@ const Profile = () => {
             inputsRef={inputsRef}
             user={user}
             value={formData.username}
+            formData={formData}
             setValue={(value) =>
               setFormData((prev) => ({
                 ...prev,
@@ -52,6 +53,7 @@ const Profile = () => {
             inputsRef={inputsRef}
             user={user}
             value={formData.bio}
+            formData={formData}
             setValue={(value) =>
               setFormData((prev) => ({
                 ...prev,

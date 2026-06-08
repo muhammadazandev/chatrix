@@ -2,9 +2,11 @@ import { useState } from "react";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import Tooltip from "../../../../../../components/Tooltip";
 import IconsWrapper from "../../../../../../utils/IconsWrapper";
-import { RiCheckLine, RiPencilLine } from "@remixicon/react";
+import { RiCheckLine, RiEmotionHappyLine, RiPencilLine } from "@remixicon/react";
 import toast from "react-hot-toast";
 import { authApi } from "../../../../../../utils/api";
+import useEmojiPicker from "../../../../../../hooks/useEmojiPicker";
+import SharedEmojiPicker from "../../../../../../components/SharedEmojiPicker";
 
 function ProfileField({
   field,
@@ -12,21 +14,27 @@ function ProfileField({
   setActiveField,
   inputsRef,
   user,
-  value,
-  setValue,
+  value: initialValue,
+  setValue: setInitialValue,
+  formData,
 }) {
   const [loading, setLoading] = useState(false);
   const updateUser = useAuthStore((state) => state.updateUser);
+  const { value, setValue, isOpen, handleEmojiSelect, closePicker, togglePicker } =
+    useEmojiPicker(initialValue);
 
   function validation() {
     let error = null;
 
+    // Matches any character that is NOT a-z, A-Z, 0-9, _, ., or a native Emoji
+    const invalidCharacterRegex = /[^\w.\p{Extended_Pictographic}]/u;
+
     if (field === "username") {
-      if (value.length > 25)
+      if ([...value].length > 25)
         return (error = "Username cannot exceed 25 characters");
-      if (/[^a-zA-Z0-9_.]/.test(value))
+      if (invalidCharacterRegex.test(value))
         return (error =
-          "Username only consist characters: a-z, A-Z, 0-9, _, and .");
+          "Username can only consist of characters: a-z, A-Z, 0-9, _, ., and emojis");
 
       if (value === user.username)
         return (error = "Please enter a new username first");
@@ -42,7 +50,6 @@ function ProfileField({
 
   function handleEditClick(field) {
     inputsRef?.current[field]?.focus();
-
     setActiveField(field);
   }
 
@@ -94,12 +101,22 @@ function ProfileField({
       >
         <input
           value={value}
-          onChange={(e) => setValue(e.currentTarget.value)}
+          onChange={(e) => {
+            const newValue = e.currentTarget.value;
+
+            if (field === "username") {
+              const allowedRegex = /[a-zA-Z0-9_.]|\p{Extended_Pictographic}/gu;
+              const matches = newValue.match(allowedRegex);
+              const filteredValue = matches ? matches.join("") : "";
+              setValue(filteredValue);
+            } else {
+              setValue(newValue);
+            }
+          }}
           readOnly={activeField !== field}
           spellCheck={false}
-          className="flex-1 bg-transparent text-lg w-[90%] truncate"
+          className="flex-1 bg-transparent text-lg w-[90%] truncate z-30"
           ref={(el) => (inputsRef.current[field] = el)}
-          onBlur={() => setActiveField(null)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               if (loading) return;
@@ -108,30 +125,58 @@ function ProfileField({
           }}
         />
 
+        <SharedEmojiPicker
+          classes="absolute left-[105%] -translate-y-1/3 ml-4 origin-bottom-left"
+          isOpen={isOpen}
+          handleEmojiSelect={handleEmojiSelect}
+          closePicker={closePicker}
+        />
+
         {activeField === field ? (
-          <Tooltip content="Save Changes" delay={[1000, 0]}>
-            <button
-              className="rounded-full p-2.5 relative bottom-3"
-              onMouseDown={(e) => {
-                if (loading) return;
-                e.preventDefault(); // prevents input blur
-                handleAcceptClick(field);
+          <div className="flex gap-2">
+            <div
+              className="fixed top-0 left-0 z-20 h-screen w-screen"
+              onClick={() => {
+                setActiveField(null);
+                setValue(
+                  field === "username" ? formData.username : formData.bio,
+                );
               }}
-              disabled={loading}
-            >
-              <IconsWrapper icon={RiCheckLine} />
-            </button>
-          </Tooltip>
+            />
+            <Tooltip content="Open Emoji Picker" delay={[1000, 0]}>
+              <button
+                className="rounded-full p-2 relative bottom-3 z-30"
+                onClick={togglePicker}
+              >
+                <IconsWrapper icon={RiEmotionHappyLine} size={20} />
+              </button>
+            </Tooltip>
+
+            <Tooltip content="Save Changes" delay={[1000, 0]}>
+              <button
+                className="rounded-full p-2 relative bottom-3 z-30"
+                onMouseDown={(e) => {
+                  if (loading) return;
+                  e.preventDefault(); // prevents input blur
+                  handleAcceptClick(field);
+                }}
+                disabled={loading}
+              >
+                <IconsWrapper icon={RiCheckLine} size={20} />
+              </button>
+            </Tooltip>
+          </div>
         ) : (
           <Tooltip
             content={`Edit ${field === "username" ? "Username" : "Bio"}`}
             delay={[1000, 0]}
           >
             <button
-              className="rounded-full p-2.5 relative bottom-3"
+              className="rounded-full p-2 relative bottom-3 z-30"
               onClick={() => handleEditClick(field)}
+              type="button"
             >
-              <IconsWrapper icon={RiPencilLine} />
+              <IconsWrapper icon={RiPencilLine} size={20} />
             </button>
           </Tooltip>
         )}

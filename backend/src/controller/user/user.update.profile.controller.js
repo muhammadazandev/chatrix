@@ -19,14 +19,19 @@ async function updateUsernameController(req, res) {
       });
     }
 
-    if (newUsername.length > 25) {
+    const usernameLength = [...newUsername].length;
+
+    if (usernameLength > 25) {
       return res.status(400).json({
         success: false,
         message: "Username cannot exceed 25 characters",
       });
     }
 
-    if (/[^a-zA-Z0-9_.]/.test(newUsername)) {
+    const invalidCharacterRegex = /[^a-zA-Z0-9_\.\p{Extended_Pictographic}]/u;
+    
+    // Matches any character that is NOT a-z, A-Z, 0-9, _, ., or a native Emoji
+    if (invalidCharacterRegex.test(newUsername)) {
       return res.status(400).json({
         success: false,
         message: "Username only consist characters: a-z, A-Z, 0-9, _, and .",
