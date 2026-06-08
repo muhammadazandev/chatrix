@@ -1,10 +1,10 @@
 import Loader from "../../../../components/Loader";
-import UserListItem from "../components/UserListItem";
-import RenderActionButtons from "../components/RelationshipActionMenu";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
-import ConfirmBox from "../components/ConfirmBox";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
+import UserListItems from "../userListItems/UserListItems";
+import RenderActionButtons from "../userListItems/RelationshipActionMenu";
+import ConfirmBox from "../../../../components/ConfirmBox";
 
 const SearchResults = ({ results, isLoading }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -43,7 +43,7 @@ const SearchResults = ({ results, isLoading }) => {
         </div>
       ) : (
         <>
-          <UserListItem
+          <UserListItems
             users={results}
             RenderActions={RenderActions}
             isShowBlockButton={true}

@@ -1,17 +1,10 @@
-import {
-  RiArrowLeftLine,
-  RiCamera4Line,
-  RiPencilLine,
-  RiFileCopyLine,
-  RiCheckLine,
-} from "@remixicon/react";
+import { RiArrowLeftLine, RiFileCopyLine } from "@remixicon/react";
 import { useNavigate } from "react-router-dom";
 import IconsWrapper from "../../../../../../utils/IconsWrapper";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import Tooltip from "../../../../../../components/Tooltip";
 import toast from "react-hot-toast";
 import { useRef, useState } from "react";
-import { authApi } from "../../../../../../utils/api";
 import ProfileField from "./ProfileField";
 import ProfilePicture from "./ProfilePicture";
 

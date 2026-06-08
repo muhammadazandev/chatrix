@@ -8,25 +8,24 @@ import { FocusProvider } from "../../../Context/InputFocusContext";
 import { NoUserFound } from "./components/EmptyStates";
 import SidebarViewRenderer from "../views/SidebarViewRenderer";
 import { useSearchParams } from "react-router-dom";
-import Motion from "../../../components/motion/Motion";
-import {
-  fade,
-  slideFade,
-  slideInLeft,
-} from "../../../components/motion/variants";
+import useFriendshipStore from "../../../store/useFriendshipStore";
+import Motion from "../../../motion/Motion";
+import { fade, slideFade, slideInLeft } from "../../../motion/variants";
 
 const ChatSidebar = () => {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [searchParams] = useSearchParams();
+  const results = useFriendshipStore((state) => state.searchResults);
+  const setResults = useFriendshipStore((state) => state.setSearchResults);
 
   const currentView = searchParams.get("view") || "conversation";
 
-  const isSettingsView = currentView === "settings";
+  const isDifferentView =
+    currentView === "settings" || currentView === "profile";
 
-  const isSearching = !isSettingsView && query.trim().length > 1;
+  const isSearching = !isDifferentView && query.trim().length > 1;
 
   function renderSearch() {
     if (
@@ -42,18 +41,18 @@ const ChatSidebar = () => {
   }
 
   useEffect(() => {
-    if (isSettingsView) {
+    if (isDifferentView) {
       setQuery("");
-      setResults([]);
+      setResults(null);
       setSearchError("");
     }
-  }, [isSettingsView]);
+  }, [isDifferentView]);
 
   return (
     <FocusProvider>
       <div className="bg-(--bg-primary) border-r border-(--foreground-primary)/20 max-w-[calc(100%/3.5)] min-w-[calc(100%/3.5)] py-5 px-4 min-h-screen relative">
         <AnimatePresence mode="wait">
-          {!isSettingsView && (
+          {!isDifferentView && (
             <Motion key="sidebar-chrome" variants={slideFade}>
               <Header />
 
@@ -81,7 +80,7 @@ const ChatSidebar = () => {
             <Motion key="search" variants={fade}>
               {renderSearch()}
             </Motion>
-          ) : currentView === "settings" ? (
+          ) : currentView === "settings" || currentView === "profile" ? (
             <Motion key="settings" variants={slideInLeft}>
               <SidebarViewRenderer currentView={currentView} />
             </Motion>

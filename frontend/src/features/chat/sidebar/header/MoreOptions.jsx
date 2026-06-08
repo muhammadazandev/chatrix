@@ -8,8 +8,8 @@ import IconsWrapper from "../../../../utils/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
-import Motion from "../../../../components/motion/Motion";
-import { popLift } from "../../../../components/motion/variants";
+import { popLift } from "../../../../motion/variants";
+import Motion from "../../../../motion/Motion";
 
 const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
   const navigate = useNavigate();

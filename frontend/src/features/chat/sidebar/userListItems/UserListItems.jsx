@@ -3,12 +3,13 @@ import IconsWrapper from "../../../../utils/IconsWrapper";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { RiUserForbidFill } from "@remixicon/react";
-import ConfirmBox from "./ConfirmBox";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
-import Motion from "../../../../components/motion/Motion";
-import { popLift } from "../../../../components/motion/variants";
+import Motion from "../../../../motion/Motion";
+import { popLift } from "../../../../motion/variants";
+import ProfilePicture from "./ProfilePicture";
+import ConfirmBox from "../../../../components/ConfirmBox"
 
-const UserListItem = ({
+const UserListItems = ({
   users = [],
   requestId = [],
   RenderActions,
@@ -39,11 +40,7 @@ const UserListItem = ({
             {/* User Profile Card Section */}
             <div className="flex items-center gap-3.5 min-w-0 flex-1">
               <div className="relative shrink-0">
-                <img
-                  src={user.profilePicture}
-                  alt={`${user.username} profile`}
-                  className="rounded-full w-12 h-12 object-cover border border-(--foreground-secondary)/20 group-hover:border-(--foreground-primary)/40 transition duration-300"
-                />
+                {user && <ProfilePicture user={user} />}
               </div>
 
               <div className="flex flex-col min-w-0">
@@ -134,4 +131,4 @@ const UserListItem = ({
   );
 };
 
-export default UserListItem;
+export default UserListItems;

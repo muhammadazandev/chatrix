@@ -3,8 +3,8 @@ import useSettingsStore from "../../../../../../store/useSettingsStore";
 import IconsWrapper from "../../../../../../utils/IconsWrapper";
 import { RiArrowDownSLine, RiCheckLine } from "@remixicon/react";
 import { AnimatePresence, motion } from "motion/react";
-import Motion from "../../../../../../components/motion/Motion";
-import { popLift } from "../../../../../../components/motion/variants";
+import Motion from "../../../../../../motion/Motion";
+import { popLift } from "../../../../../../motion/variants";
 
 const AnimationSettings = () => {
   const isAnimations = useSettingsStore((state) => state.isAnimations);

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
-import RenderActionButtons from "../../sidebar/components/RelationshipActionMenu";
 import { FriendRequestsEmptyState } from "../../sidebar/components/EmptyStates";
-import UserListItem from "../../sidebar/components/UserListItem";
-import { slideInRight } from "../../../../components/motion/variants";
-import Motion from "../../../../components/motion/Motion";
+import { slideInRight } from "../../../../motion/variants";
+import Motion from "../../../../motion/Motion";
+import UserListItems from "../../sidebar/userListItems/UserListItems";
+import RenderActionButtons from "../../sidebar/userListItems/RelationshipActionMenu";
 
 const FriendRequests = () => {
   const getFriendRequests = useFriendshipStore(
@@ -58,7 +58,7 @@ const FriendRequests = () => {
         <h3>Sent</h3>
 
         {hasSent ? (
-          <UserListItem
+          <UserListItems
             users={pendingSentRequests.map((req) => req.user1)}
             RenderActions={SentRenderActions}
             requestId={pendingSentRequests.map((req) => req._id)}
@@ -72,7 +72,7 @@ const FriendRequests = () => {
         <h3>Received</h3>
 
         {hasReceived ? (
-          <UserListItem
+          <UserListItems
             users={pendingReceivedRequests.map((req) => req.user1)}
             RenderActions={ReceivedRenderActions}
             requestId={pendingReceivedRequests.map((req) => req._id)}

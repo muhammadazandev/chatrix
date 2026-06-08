@@ -5,11 +5,11 @@ import { RiCloseLine, RiCheckLine, RiShuffleLine } from "@remixicon/react";
 import { accentColors } from "./accentColors";
 import Tooltip from "../../../../../../components/Tooltip";
 import useSettingsStore from "../../../../../../store/useSettingsStore";
-import Motion from "../../../../../../components/motion/Motion";
+import Motion from "../../../../../../motion/Motion";
 import {
   fade,
   slideInRight,
-} from "../../../../../../components/motion/variants";
+} from "../../../../../../motion/variants";
 
 const AccentColor = () => {
   const [isColorsBoxOpen, setIsColorsBoxOpen] = useState(false);

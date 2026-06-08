@@ -3,6 +3,7 @@ import FriendRequests from "./FriendRequests/FriendRequests";
 import Blocked from "./Blocked/Blocked";
 import Settings from "./Settings/Settings";
 import ConversationView from "./Conversation/ConversationView";
+import Profile from "./Profile/Profile";
 
 const SIDEBAR_VIEWS = {
   friends: FriendList,
@@ -10,6 +11,7 @@ const SIDEBAR_VIEWS = {
   blocked: Blocked,
   settings: Settings,
   conversation: ConversationView,
+  profile: Profile,
 };
 
 const SidebarViewRenderer = ({ currentView }) => {

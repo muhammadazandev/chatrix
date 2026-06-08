@@ -106,7 +106,7 @@ async function sendFriendRequest(req, res) {
     if (relationResult !== true)
       return res.status(relationResult.status).json(relationResult.body);
 
-    await Relationship.create({
+    const newRelation = await Relationship.create({
       user1,
       user2,
       key,
@@ -114,9 +114,11 @@ async function sendFriendRequest(req, res) {
       status: "pending",
     });
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Friend request sent successfully" });
+    return res.status(201).json({
+      success: true,
+      message: "Friend request sent successfully",
+      relationId: newRelation._id,
+    });
   } catch (error) {
     const message =
       error.code === 11000

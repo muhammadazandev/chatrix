@@ -1,15 +1,7 @@
-import { useSearchParams } from "react-router-dom";
+import { useQueryParams } from "../../../hooks/useQueryParams";
 
 const ViewTabs = ({ currentView }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const addParam = (key, value) => {
-    const params = new URLSearchParams(searchParams);
-
-    params.set(key, value);
-
-    setSearchParams(params);
-  };
+  const { updateParams } = useQueryParams();
 
   const viewsButtons = [
     { id: "conversation", label: "Conversation" },
@@ -26,7 +18,7 @@ const ViewTabs = ({ currentView }) => {
             type="button"
             className={`min-w-fit rounded-full px-4 py-2 text-sm border border-(--foreground-primary)/50 opacity-90 text-nowrap ${view.id === currentView ? "bg-(--accent-color-primary)/15 no-hover hover:bg-(--accent-color-primary)/25" : ""}`}
             onClick={() => {
-              addParam("view", view.id);
+              updateParams({ view: view.id });
             }}
             key={view.id}
           >

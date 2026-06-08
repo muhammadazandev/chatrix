@@ -1,8 +1,7 @@
-import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import Motion from "../../components/motion/Motion";
-import { fade } from "../../components/motion/variants";
+import Motion from "../../motion/Motion";
+import { fade } from "../../motion/variants";
 
 const VerifyOtp = ({
   onBtnClick,

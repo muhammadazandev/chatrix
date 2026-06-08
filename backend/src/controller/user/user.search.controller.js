@@ -38,7 +38,7 @@ async function searchController(req, res) {
       query.username.$ne = req.user.username;
     }
 
-    const findUsers = await User.find(query).limit(20).sort({ username: 1 });
+    const findUsers = await User.find(query).limit(20).sort({ username: 1 }).select("-password");
 
     // Get relationship statuses
     const currentUserId = req.user.id;

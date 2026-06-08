@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import useSettingsStore from "../../store/useSettingsStore";
 import { transitions } from "./transitions";
+import useSettingsStore from "../store/useSettingsStore";
 
 const motionPropsList = [
   "initial",

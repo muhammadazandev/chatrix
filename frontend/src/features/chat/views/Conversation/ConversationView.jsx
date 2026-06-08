@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useChatStore from "../../../../store/useChatStore";
-import { useSearchParams } from "react-router-dom";
+import { useQueryParams } from "../../../../hooks/useQueryParams";
 
 const ConversationView = () => {
   const getAllConversations = useChatStore(
@@ -8,29 +8,17 @@ const ConversationView = () => {
   );
   const allConversations = useChatStore((state) => state.allConversations);
   const verifyConversation = useChatStore((state) => state.verifyConversation);
-  const [searchParams, setSearchParams] = useSearchParams();
-
+  const { searchParams, updateParams } = useQueryParams();
   const sortedConversations = [...allConversations].sort(
     (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt),
   );
 
-  const updateConversationIdParam = (conversationId) => {
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-
-      if (params.get("conversationId") === conversationId) {
-        return params;
-      } else {
-        params.set("conversationId", conversationId);
-      }
-
-      return params;
-    });
-  };
-
   async function handleConversationClick(conversationId) {
     await verifyConversation(conversationId);
-    updateConversationIdParam(conversationId);
+
+    if (searchParams.get("conversationId") !== conversationId) {
+      updateParams({ conversationId });
+    }
   }
 
   useEffect(() => {

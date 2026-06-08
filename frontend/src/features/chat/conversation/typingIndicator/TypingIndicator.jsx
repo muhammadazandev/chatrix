@@ -1,8 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import useChatStore from "../../../../store/useChatStore";
 import { AnimatePresence, motion } from "motion/react";
-import Motion from "../../../../components/motion/Motion";
-import { fade } from "../../../../components/motion/variants";
+import { fade } from "../../../../motion/variants";
+import Motion from "../../../../motion/Motion";
 
 const TypingIndicator = () => {
   const [searchParams] = useSearchParams();

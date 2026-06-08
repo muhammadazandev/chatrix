@@ -7,6 +7,7 @@ import {
   updateUsernameController,
 } from "../controller/user/user.update.profile.controller.js";
 import upload from "../middleware/upload.js";
+import { getUserProfile } from "../controller/user/user.profile.controller.js";
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.patch(
   upload.single("profilePicture"),
   updateProfilePictureController,
 );
+router.get("/:userId/profile", protect, getUserProfile);
 
 export default router;

@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { RiErrorWarningLine } from "@remixicon/react";
-import Motion from "../../../../components/motion/Motion";
-import { fade, slideFadeScale } from "../../../../components/motion/variants";
+import { fade, slideFadeScale } from "../motion/variants";
+import Motion from "../motion/Motion";
 
 const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
   return createPortal(

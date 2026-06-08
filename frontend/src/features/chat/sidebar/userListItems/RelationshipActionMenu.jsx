@@ -48,6 +48,7 @@ async function performAction({
   targetUserId,
   setSearchParams,
   searchParams,
+  onStartChat,
 }) {
   const {
     acceptFriendRequest,
@@ -56,38 +57,54 @@ async function performAction({
     sendFriendRequest,
     unblockUser,
     unfriend,
+    updateOpenedUserRelationship,
+    openedUserProfile,
   } = friendshipStore.getState();
   const { accessConversation } = getChatState();
 
   switch (actionKey) {
     case "acceptRequest":
       await acceptFriendRequest(requestId);
+      if (openedUserProfile) updateOpenedUserRelationship("friends");
       break;
 
     case "rejectRequest":
       await rejectFriendRequest(requestId);
+      if (openedUserProfile) updateOpenedUserRelationship("none");
       break;
 
     case "cancelRequest":
       await cancelFriendRequest(requestId);
+      if (openedUserProfile) updateOpenedUserRelationship("none");
       break;
 
     case "sendRequest":
       await sendFriendRequest(userId);
+      if (openedUserProfile) updateOpenedUserRelationship("outgoing");
       break;
 
     case "unblock":
       await unblockUser(userId);
+      if (openedUserProfile) updateOpenedUserRelationship("none");
       break;
 
     case "unfriend":
       await unfriend(userId);
+      if (openedUserProfile) updateOpenedUserRelationship("none");
       break;
 
     case "startChat":
-      await accessConversation(targetUserId, (conversationId) => {
+      await accessConversation(targetUserId, async (conversationId) => {
         const params = new URLSearchParams(searchParams);
         params.set("conversationId", conversationId);
+
+        await onStartChat?.();
+
+        if (params.get("view") === "profile") {
+          params.set("view", "conversation");
+          params.delete("userId");
+        }
+
         setSearchParams(params);
       });
       break;
@@ -104,14 +121,17 @@ function ActionButton({
   requestId,
   setIsConfirmOpen,
   setConfirmBoxUserId,
+  setConfirmAction,
+  onStartChat,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleClick = async () => {
     if (actionKey === "unfriend") {
       setIsConfirmOpen(true);
-      setConfirmBoxUserId(user._id);
+      setConfirmBoxUserId?.(user._id);
       setMoreOpenIndex?.(null);
+      setConfirmAction?.("friend");
       return;
     }
 
@@ -122,6 +142,7 @@ function ActionButton({
       targetUserId: user._id,
       setSearchParams,
       searchParams,
+      onStartChat,
     });
 
     setMoreOpenIndex?.(null);
@@ -158,6 +179,8 @@ export default function RenderActionButtons({
   status,
   setIsConfirmOpen,
   setConfirmBoxUserId,
+  setConfirmAction,
+  onStartChat,
 }) {
   const actionKeys = RELATIONSHIP_ACTIONS[status] || [];
 
@@ -172,6 +195,8 @@ export default function RenderActionButtons({
           setMoreOpenIndex={setMoreOpenIndex}
           setIsConfirmOpen={setIsConfirmOpen}
           setConfirmBoxUserId={setConfirmBoxUserId}
+          setConfirmAction={setConfirmAction}
+          onStartChat={onStartChat}
         />
       ))}
     </>

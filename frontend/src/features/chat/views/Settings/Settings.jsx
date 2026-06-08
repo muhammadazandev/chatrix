@@ -6,14 +6,15 @@ import {
   RiLogoutBoxLine,
 } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { AnimatePresence, useAnimate } from "motion/react";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
 import Profile from "./tabs/Profile/Profile";
 import Appearance from "./tabs/Appearance/Appearance";
 import Tooltip from "../../../../components/Tooltip";
-import Motion from "../../../../components/motion/Motion";
-import { slideInFromLeft } from "../../../../components/motion/variants";
-import useSettingsStore from "../../../../store/useSettingsStore";
+import Motion from "../../../../motion/Motion";
+import { slideInFromLeft } from "../../../../motion/variants";
+import { useQueryParams } from "../../../../hooks/useQueryParams";
+import useSlidePanelClose from "../../../../hooks/useSlidePanelClose";
 
 const tabs = [
   {
@@ -41,34 +42,14 @@ const tabs = [
 const Settings = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchParams, updateParams } = useQueryParams();
   const navigate = useNavigate();
   const currentTab = searchParams.get("tab");
-  const [scope, animate] = useAnimate();
-  const isAnimations = useSettingsStore((state) => state.isAnimations);
-  const transition = useSettingsStore((state) => state.transition);
-
-  const updateParam = (value) => {
-    setSearchParams((prev) => {
-      prev.set("tab", value);
-      return prev;
-    });
-  };
+  const { scope, close } = useSlidePanelClose();
 
   async function handleBack() {
-    if (isAnimations) {
-      await animate(
-        scope.current,
-        { opacity: 0, x: "-90%" },
-        { duration: 0.4, ease: transition },
-      );
-
-      await animate(scope.current, { display: "none" }, { duration: 0 });
-
-      setSearchParams({});
-    } else {
-      setSearchParams({});
-    }
+    await close();
+    updateParams({ view: null });
   }
 
   function renderTab() {
@@ -118,7 +99,7 @@ const Settings = () => {
                         await logout();
                         navigate("/login");
                       } else {
-                        updateParam(tab.id);
+                        updateParams({ tab: tab.id });
                       }
                     }}
                   >

@@ -3,8 +3,8 @@ import IconsWrapper from "../../../../../../utils/IconsWrapper";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import useSettingsStore from "../../../../../../store/useSettingsStore";
-import Motion from "../../../../../../components/motion/Motion";
-import { popLift } from "../../../../../../components/motion/variants";
+import Motion from "../../../../../../motion/Motion";
+import { popLift } from "../../../../../../motion/variants";
 
 const Theme = () => {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
