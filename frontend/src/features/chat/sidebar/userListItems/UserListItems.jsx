@@ -7,7 +7,7 @@ import useFriendshipStore from "../../../../store/useFriendshipStore";
 import Motion from "../../../../motion/Motion";
 import { popLift } from "../../../../motion/variants";
 import ProfilePicture from "./ProfilePicture";
-import ConfirmBox from "../../../../components/ConfirmBox"
+import ConfirmBox from "../../../../components/ConfirmBox";
 
 const UserListItems = ({
   users = [],
@@ -83,7 +83,7 @@ const UserListItems = ({
                 {isMenuOpen && (
                   <Motion
                     variants={popLift}
-                    className="absolute right-0 top-full mt-2 w-52 z-50 rounded-lg border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-lg flex flex-col origin-top-right overflow-hidden py-3"
+                    className="absolute right-0 top-full mt-2 z-50 flex flex-col origin-top-right overflow-hidden w-42 rounded-xl border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-[0_0_15px_var(--foreground-primary)]/5 p-1 [&_button]:rounded-lg no-hover"
                   >
                     {RenderActions?.(
                       user,
@@ -98,7 +98,7 @@ const UserListItems = ({
                         <div className="h-px bg-(--foreground-secondary)/20 mx-2 my-1" />
                         <button
                           type="button"
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500 bg-red-500/15 text-red-350 transition-all duration-200 mt-2"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500 mt-2 !hover:bg-red-500/10 dark:hover:bg-red-500/15 no-hover"
                           onClick={() => {
                             setConfirmBoxUserId(user._id);
                             setIsConfirmOpen(true);

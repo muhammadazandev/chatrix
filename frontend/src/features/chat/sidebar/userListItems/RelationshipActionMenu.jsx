@@ -151,7 +151,7 @@ function ActionButton({
   return (
     <button
       type="button"
-      className="text-sm text-(--foreground-primary) w-full flex items-center gap-3 px-4 py-2.5"
+      className="text-sm w-full flex items-center gap-3 px-4 py-2.5 no-hover text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100"
       onClick={handleClick}
     >
       <IconsWrapper
