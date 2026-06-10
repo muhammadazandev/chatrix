@@ -9,16 +9,29 @@ import toast from "react-hot-toast";
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
 import Tooltip from "../../../../components/Tooltip";
+import useTypingIndicator from "../../../../hooks/useTypingIndicator";
+
+const shakeVariants = {
+  error: {
+    x: [-10, 10, -10, 10, -5, 5, 0],
+    borderColor: "#ef4444",
+    transition: { duration: 0.4 },
+  },
+  normal: {
+    x: 0,
+    borderColor: "transparent",
+  },
+};
 
 const MessageInput = () => {
-  const [initialValue] = useState("");
   const errorTimeoutRef = useRef(null);
-  const typingTimeoutRef = useRef(null);
-  const isTypingRef = useRef(false);
   const [isError, setIsError] = useState(false);
   const [searchParams] = useSearchParams();
+
   const conversationId = searchParams.get("conversationId");
   const conversationIdRef = useRef(conversationId);
+  conversationIdRef.current = conversationId;
+
   const {
     value,
     setValue,
@@ -26,39 +39,9 @@ const MessageInput = () => {
     handleEmojiSelect,
     closePicker,
     togglePicker,
-  } = useEmojiPicker(initialValue);
+  } = useEmojiPicker("");
 
-  const emitStartTyping = () => {
-    if (!conversationIdRef.current) return;
-
-    socket.emit(SOCKET_EVENTS.START_TYPING, {
-      conversationId: conversationIdRef.current,
-    });
-  };
-
-  const emitStopTyping = () => {
-    if (!conversationIdRef.current) return;
-
-    socket.emit(SOCKET_EVENTS.STOP_TYPING, {
-      conversationId: conversationIdRef.current,
-    });
-  };
-
-  const stopTypingNow = (conversationIdToStop) => {
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
-    if (isTypingRef.current) {
-      isTypingRef.current = false;
-      const stopId = conversationIdToStop || conversationIdRef.current;
-      if (stopId) {
-        socket.emit(SOCKET_EVENTS.STOP_TYPING, {
-          conversationId: stopId,
-        });
-      }
-    }
-  };
+  const { stopTypingNow, handleTyping } = useTypingIndicator(conversationIdRef);
 
   const sendMessage = () => {
     if (!conversationIdRef.current) return;
@@ -75,7 +58,9 @@ const MessageInput = () => {
 
       socket.emit(SOCKET_EVENTS["NEW_MESSAGE"], data, (res) => {
         if (!res?.success) {
-          toast.error("Failed to send message:" + (res?.message || ""));
+          toast.error(
+            `Failed to send message${res?.message ? `: ${res.message}` : ""}`,
+          );
         }
       });
 
@@ -98,55 +83,12 @@ const MessageInput = () => {
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current);
       }
-
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-        emitStopTyping(); // important safety call
-      }
     };
   }, []);
 
   useEffect(() => {
-    const previousConversationId = conversationIdRef.current;
-
-    if (previousConversationId && previousConversationId !== conversationId) {
-      stopTypingNow(previousConversationId);
-    }
-
-    conversationIdRef.current = conversationId;
-
     setValue("");
   }, [conversationId]);
-
-  const shakeVariants = {
-    error: {
-      x: [-10, 10, -10, 10, -5, 5, 0],
-      borderColor: "#ef4444",
-      transition: { duration: 0.4 },
-    },
-    normal: {
-      x: 0,
-      borderColor: "transparent",
-    },
-  };
-
-  const handleTyping = () => {
-    if (!conversationIdRef.current) return;
-
-    if (!isTypingRef.current) {
-      isTypingRef.current = true;
-      emitStartTyping();
-    }
-
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
-    typingTimeoutRef.current = setTimeout(() => {
-      isTypingRef.current = false;
-      emitStopTyping();
-    }, 1500);
-  };
 
   return (
     <div className="mb-5 bg-(--bg-primary) px-5">
@@ -175,8 +117,10 @@ const MessageInput = () => {
           type="text"
           placeholder="Enter Your Message"
           className="w-full outline-none bg-transparent z-50"
-          onInput={handleTyping}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            handleTyping();
+          }}
           value={value}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

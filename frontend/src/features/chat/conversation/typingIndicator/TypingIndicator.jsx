@@ -3,6 +3,7 @@ import useChatStore from "../../../../store/useChatStore";
 import { AnimatePresence, motion } from "motion/react";
 import { fade } from "../../../../motion/variants";
 import Motion from "../../../../motion/Motion";
+import { useEffect } from "react";
 
 const TypingIndicator = () => {
   const [searchParams] = useSearchParams();
@@ -10,6 +11,10 @@ const TypingIndicator = () => {
   const typingUsers = useChatStore(
     (state) => state.typingUsersByConversation[conversationId],
   );
+
+  useEffect(() => {
+    console.log(typingUsers);
+  }, [typingUsers]);
 
   function showTypingIndicator() {
     if (!typingUsers || typingUsers.length === 0) return null;
