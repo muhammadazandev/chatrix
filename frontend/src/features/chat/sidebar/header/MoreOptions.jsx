@@ -3,6 +3,7 @@ import {
   RiContrastFill,
   RiLogoutBoxFill,
   RiSettings4Fill,
+  RiGroupFill,
 } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
@@ -14,7 +15,7 @@ import Motion from "../../../../motion/Motion";
 const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_, setSearchParams] = useSearchParams();
 
   const options = useMemo(
     () => [
@@ -26,19 +27,11 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
         onBtnClick: () => setSearchParams({ view: "settings" }),
       },
       {
-        label: "Profile",
-        id: "profile",
+        label: "Create group",
+        id: "createGroup",
         variant: "primary",
-        icon: RiUser3Fill,
-        onBtnClick: () => setSearchParams({ view: "settings", tab: "profile" }),
-      },
-      {
-        label: "Appearance",
-        id: "appearance",
-        variant: "primary",
-        icon: RiContrastFill,
-        onBtnClick: () =>
-          setSearchParams({ view: "settings", tab: "appearance" }),
+        icon: RiGroupFill,
+        onBtnClick: () => setSearchParams({ view: "settings" }),
       },
       {
         label: "Log out",
@@ -67,7 +60,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
       <Motion
         variants={popLift}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="absolute -right-60  top-auto mt-2 w-56 z-50 rounded-lg border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-lg flex flex-col origin-top-left overflow-hidden py-3"
+        className="absolute -right-40 bottom-auto mt-2 w-42 z-50 rounded-xl border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-[0_0_15px_var(--foreground-primary)]/5 flex flex-col origin-top-left overflow-hidden p-1"
       >
         {options.map((opt) => {
           const isDanger = opt.variant === "danger";
@@ -80,12 +73,11 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
 
               <button
                 type="button"
-                className={`w-full px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium
-                  ${
-                    isDanger
-                      ? "text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/15"
-                      : "text-(--foreground-primary) hover:bg-(--bg-secondary)/60 opacity-85 hover:opacity-100"
-                  }`}
+                className={`w-full px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium rounded-lg no-hover ${
+                  isDanger
+                    ? "text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/15"
+                    : "text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100"
+                }`}
                 onClick={() => {
                   opt.onBtnClick();
                   if (setIsMoreOpen) setIsMoreOpen(false);

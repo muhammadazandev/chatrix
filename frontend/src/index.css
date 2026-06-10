@@ -86,7 +86,7 @@ input:not(.no-focus):focus {
 
 button,
 .like-button {
-  transition: all 300ms ease;
+  transition: all 50ms ease;
 }
 
 button:not(.no-hover),
