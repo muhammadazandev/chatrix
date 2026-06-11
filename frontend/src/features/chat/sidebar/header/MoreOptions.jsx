@@ -11,11 +11,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
 import { popLift } from "../../../../motion/variants";
 import Motion from "../../../../motion/Motion";
+import { useQueryParams } from "../../../../hooks/useQueryParams";
 
 const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const [_, setSearchParams] = useSearchParams();
+  const { updateParams } = useQueryParams();
 
   const options = useMemo(
     () => [
@@ -24,14 +25,14 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
         id: "settings",
         variant: "primary",
         icon: RiSettings4Fill,
-        onBtnClick: () => setSearchParams({ view: "settings" }),
+        onBtnClick: () => updateParams({ view: "settings" }, true),
       },
       {
         label: "Create group",
         id: "createGroup",
         variant: "primary",
         icon: RiGroupFill,
-        onBtnClick: () => setSearchParams({ view: "settings" }),
+        onBtnClick: () => updateParams({ view: "create-group" }, true),
       },
       {
         label: "Log out",
@@ -45,7 +46,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
         },
       },
     ],
-    [setSearchParams, navigate, logout, setIsMoreOpen],
+    [updateParams, navigate, logout, setIsMoreOpen],
   );
 
   return (
@@ -60,7 +61,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
       <Motion
         variants={popLift}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="absolute -right-40 bottom-auto mt-2 w-42 z-50 rounded-xl border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-[0_0_15px_var(--foreground-primary)]/5 flex flex-col origin-top-left overflow-hidden p-1"
+        className="fixed bottom-auto left-[calc(100%/3.7)] mt-2 w-42 z-50 rounded-xl border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-[0_0_15px_var(--foreground-primary)]/5 flex flex-col origin-top-left overflow-hidden p-1"
       >
         {options.map((opt) => {
           const isDanger = opt.variant === "danger";
@@ -78,9 +79,9 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
                     ? "text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/15"
                     : "text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100"
                 }`}
-                onClick={() => {
+                onClick={async () => {
+                  await setIsMoreOpen(false);
                   opt.onBtnClick();
-                  if (setIsMoreOpen) setIsMoreOpen(false);
                 }}
               >
                 <div

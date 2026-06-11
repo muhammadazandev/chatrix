@@ -108,21 +108,20 @@ async function getConversations(req, res) {
     const formatted = conversations.map((con) => {
       const friend = con.participants.find((p) => p._id.toString() !== userId);
 
+      const isDirect = con.type === "direct"
+
       return {
         _id: con._id,
+        type: con.type,
         lastMessageText: con.lastMessageText,
         lastMessageAt: con.lastMessageAt,
-        type: con.type,
 
-        friend: {
-          _id: friend._id,
-          username: friend.username,
-          profilePicture: friend.profilePicture,
-          bio: friend.bio,
-        },
+        friendId: isDirect ? friend._id : null,
 
-        createdAt: con.createdAt,
-        updatedAt: con.updatedAt,
+        title: isDirect ? friend.username : con.name,
+        avatar: isDirect ? friend.profilePicture : con.avatar,
+
+        membersCount: isDirect ? null : con.participants.length,
       };
     });
 

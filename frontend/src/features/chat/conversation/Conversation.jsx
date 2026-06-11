@@ -10,7 +10,7 @@ import TypingIndicator from "./typingIndicator/TypingIndicator";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
-  const [searchParam, setSearchParam] = useSearchParams();
+  const [searchParam] = useSearchParams();
   const conId = searchParam.get("conversationId");
   const messages = useChatStore((state) => state.messages);
 

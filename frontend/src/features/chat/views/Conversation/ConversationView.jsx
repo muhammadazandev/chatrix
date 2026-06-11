@@ -37,8 +37,8 @@ const ConversationView = () => {
             <div className="flex items-center gap-3.5 min-w-0 flex-1">
               <div className="relative shrink-0">
                 <img
-                  src={con.friend.profilePicture}
-                  alt={`${con.friend.username} profile`}
+                  src={con.avatar}
+                  alt={`${con.title} profile`}
                   className="rounded-full w-12 h-12 object-cover border border-(--foreground-secondary)/20 group-hover:border-(--foreground-primary)/40"
                 />
               </div>
@@ -46,7 +46,7 @@ const ConversationView = () => {
               <div>
                 <div className="overflow-hidden">
                   <h3 className="text-sm font-semibold text-(--foreground-primary) tracking-wide">
-                    {con.friend.username}
+                    {con.title}
                   </h3>
                 </div>
                 <p className="text-xs font-medium opacity-50 truncate max-w-60 mt-0.5">

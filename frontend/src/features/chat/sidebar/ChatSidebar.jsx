@@ -23,7 +23,9 @@ const ChatSidebar = () => {
   const currentView = searchParams.get("view") || "conversation";
 
   const isDifferentView =
-    currentView === "settings" || currentView === "profile";
+    currentView === "settings" ||
+    currentView === "profile" ||
+    currentView === "create-group";
 
   const isSearching = !isDifferentView && query.trim().length > 1;
 
@@ -50,46 +52,50 @@ const ChatSidebar = () => {
 
   return (
     <FocusProvider>
-      <div className="bg-(--bg-primary) border-r border-(--foreground-primary)/20 max-w-[calc(100%/3.5)] min-w-[calc(100%/3.5)] py-5 px-4 min-h-screen relative">
-        <AnimatePresence mode="wait">
-          {!isDifferentView && (
-            <Motion key="sidebar-chrome" variants={slideFade}>
-              <Header />
+      <div className="bg-(--bg-primary) border-r border-(--foreground-primary)/20 max-w-[calc(100%/3.5)] min-w-[calc(100%/3.5)] min-h-screen max-h-screen relative flex flex-col">
+        <div className={`shrink-0 px-4 pt-6`}>
+          <AnimatePresence mode="wait">
+            {!isDifferentView && (
+              <Motion key="sidebar-chrome" variants={slideFade}>
+                <Header />
 
-              <SearchInput
-                query={query}
-                setQuery={setQuery}
-                setResults={setResults}
-                setIsLoading={setIsLoading}
-                setSearchError={setSearchError}
-              />
+                <SearchInput
+                  query={query}
+                  setQuery={setQuery}
+                  setResults={setResults}
+                  setIsLoading={setIsLoading}
+                  setSearchError={setSearchError}
+                />
 
-              <AnimatePresence mode="wait">
-                {!isSearching && (
-                  <Motion key="view-tabs" variants={fade}>
-                    <ViewTabs currentView={currentView} />
-                  </Motion>
-                )}
-              </AnimatePresence>
-            </Motion>
-          )}
-        </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  {!isSearching && (
+                    <Motion key="view-tabs" variants={fade}>
+                      <ViewTabs currentView={currentView} />
+                    </Motion>
+                  )}
+                </AnimatePresence>
+              </Motion>
+            )}
+          </AnimatePresence>
+        </div>
 
-        <AnimatePresence mode="wait">
-          {isSearching ? (
-            <Motion key="search" variants={fade}>
-              {renderSearch()}
-            </Motion>
-          ) : currentView === "settings" || currentView === "profile" ? (
-            <Motion key="settings" variants={slideInLeft}>
-              <SidebarViewRenderer currentView={currentView} />
-            </Motion>
-          ) : (
-            <Motion key={currentView} variants={fade}>
-              <SidebarViewRenderer currentView={currentView} />
-            </Motion>
-          )}
-        </AnimatePresence>
+        <div className="overflow-y-auto flex-1 px-4 pb-5">
+          <AnimatePresence mode="wait">
+            {isSearching ? (
+              <Motion key="search" variants={fade}>
+                {renderSearch()}
+              </Motion>
+            ) : currentView === "settings" || currentView === "profile" ? (
+              <Motion key="settings" variants={slideInLeft}>
+                <SidebarViewRenderer currentView={currentView} />
+              </Motion>
+            ) : (
+              <Motion key={currentView} variants={fade}>
+                <SidebarViewRenderer currentView={currentView} />
+              </Motion>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </FocusProvider>
   );
