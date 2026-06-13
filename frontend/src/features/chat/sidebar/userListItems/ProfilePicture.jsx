@@ -16,11 +16,13 @@ const ProfilePicture = ({ user }) => {
         onClick={() => {
           updateOpenedUserProfile(user || null);
 
-          updateParams({
-            view: "profile",
-            userId: user._id,
-            conversationId: null,
-          });
+          updateParams(
+            {
+              view: "profile",
+              userId: user._id,
+            },
+            true,
+          );
         }}
       />
     </>

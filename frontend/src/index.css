@@ -86,7 +86,7 @@ input:not(.no-focus):focus {
 
 button,
 .like-button {
-  transition: all 50ms ease;
+  transition: all 200ms ease;
 }
 
 button:not(.no-hover),
@@ -102,7 +102,7 @@ button:not(.no-hover)::before,
   inset: 0;
   background: rgba(130, 130, 140, 0.4);
   opacity: 0;
-  transition: opacity 300ms ease;
+  transition: opacity 200ms ease;
   z-index: 1;
 }
 

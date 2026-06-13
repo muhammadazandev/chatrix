@@ -5,11 +5,12 @@ import toast from "react-hot-toast";
 import { SOCKET_EVENTS } from "../socket/events";
 import { socket } from "../socket/socket";
 
-const useChatStore = create((set) => ({
-  allConversations: [],
+const useChatStore = create((set, get) => ({
+  conversations: [],
   conversationFriend: null,
   messages: [],
   typingUsersByConversation: {},
+  isLoading: false,
 
   accessConversation: async (targetUserId, onSuccessNavigate) => {
     try {
@@ -36,11 +37,11 @@ const useChatStore = create((set) => ({
     }
   },
 
-  getAllConversations: async () => {
+  getConversations: async () => {
     try {
       const res = await authApi.get("/conversation/");
 
-      set({ allConversations: res.data.conversations });
+      set({ conversations: res.data.conversations });
     } catch (error) {
       const message = handleError(error);
       if (message) {
@@ -112,6 +113,26 @@ const useChatStore = create((set) => ({
         typingUsersByConversation: copy,
       };
     });
+  },
+
+  createGroup: async (formData, updateParams) => {
+    set({ isLoading: true });
+
+    try {
+      const res = await authApi.post("/group/create-group", formData);
+
+      toast.success(res.data?.message);
+
+      updateParams({ view: null, conversationId: res.data?.group._id });
+      navigate();
+    } catch (error) {
+      const message = handleError(error);
+      if (message) {
+        toast.error(message);
+      }
+    } finally {
+      set({ isLoading: false });
+    }
   },
 }));
 

@@ -13,7 +13,7 @@ export const registerNewMessage = (socket) => {
 
       useChatStore.setState((state) => ({
         messages: [...(state.messages || []), message],
-        allConversations: state.allConversations.map((con) => {
+        conversations: state.conversations.map((con) => {
           if (con._id !== message.conversationId) return con;
 
           return {

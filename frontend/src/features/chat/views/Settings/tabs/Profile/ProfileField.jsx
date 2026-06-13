@@ -126,7 +126,7 @@ function ProfileField({
         />
 
         <SharedEmojiPicker
-          classes="absolute left-[105%] -translate-y-1/3 ml-4 origin-bottom-left"
+          classes="fixed left-[calc(100%_/_3.5)] ml-4 origin-bottom-left"
           isOpen={isOpen}
           handleEmojiSelect={handleEmojiSelect}
           closePicker={closePicker}

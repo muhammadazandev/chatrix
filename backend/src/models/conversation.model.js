@@ -15,15 +15,25 @@ const conversationSchema = new mongoose.Schema(
       },
     ],
 
-    name: { type: String },
+    // Group fields
+    name: { type: String, maxLength: 50, trim: true, default: null },
 
-    avatar: { type: String },
+    avatar: {
+      type: String,
+    },
+
+    participantRoles: {
+      type: Map,
+      of: String,
+      default: {},
+    },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
 
+    // Last message fields
     lastMessageText: { type: String },
 
     lastMessageAt: { type: Date },
@@ -36,6 +46,7 @@ const conversationSchema = new mongoose.Schema(
 conversationSchema.index({
   participants: 1,
 });
+conversationSchema.index({ name: 1, createdBy: 1 }, { unique: true });
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 

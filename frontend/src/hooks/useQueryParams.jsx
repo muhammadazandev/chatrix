@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 export const useQueryParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const updateParams = (updates) => {
+  const updateParams = (updates, isRemoveConId) => {
     const params = new URLSearchParams(searchParams);
 
     Object.entries(updates).forEach(([key, value]) => {
@@ -12,6 +12,8 @@ export const useQueryParams = () => {
       } else {
         params.set(key, value);
       }
+
+      if (isRemoveConId) params.delete("conversationId");
     });
 
     setSearchParams(params);

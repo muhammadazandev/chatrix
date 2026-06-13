@@ -4,6 +4,7 @@ import Blocked from "./Blocked/Blocked";
 import Settings from "./Settings/Settings";
 import ConversationView from "./Conversation/ConversationView";
 import Profile from "./Profile/Profile";
+import CreateGroup from "./CreateGroup/CreateGroup";
 
 const SIDEBAR_VIEWS = {
   friends: FriendList,
@@ -12,6 +13,7 @@ const SIDEBAR_VIEWS = {
   settings: Settings,
   conversation: ConversationView,
   profile: Profile,
+  "create-group": CreateGroup,
 };
 
 const SidebarViewRenderer = ({ currentView }) => {

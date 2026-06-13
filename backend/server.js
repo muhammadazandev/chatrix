@@ -10,6 +10,7 @@ import friendRouter from "./src/routes/friend.routes.js";
 import settingRouter from "./src/routes/setting.routes.js";
 import conversationRouter from "./src/routes/conversation.routes.js";
 import messageRouter from "./src/routes/message.routes.js";
+import groupRouter from "./src/routes/group.routes.js";
 import protect from "./src/middleware/protect.js";
 import http from "http";
 import { Server } from "socket.io";
@@ -48,6 +49,7 @@ app.use("/api/friend", protect, friendRouter);
 app.use("/api/setting", protect, settingRouter);
 app.use("/api/conversation", protect, conversationRouter);
 app.use("/api/message", protect, messageRouter);
+app.use("/api/group", protect, groupRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {
