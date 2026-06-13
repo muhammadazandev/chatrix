@@ -3,15 +3,18 @@ import useChatStore from "../../../../store/useChatStore";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
 
 const ConversationView = () => {
-  const getAllConversations = useChatStore(
-    (state) => state.getAllConversations,
+  const getConversations = useChatStore(
+    (state) => state.getConversations,
   );
-  const allConversations = useChatStore((state) => state.allConversations);
+  const conversations = useChatStore((state) => state.conversations);
   const verifyConversation = useChatStore((state) => state.verifyConversation);
   const { searchParams, updateParams } = useQueryParams();
-  const sortedConversations = [...allConversations].sort(
-    (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt),
-  );
+  const sortedConversations = conversations
+    ? [...conversations].sort(
+        (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt),
+      )
+    : [];
+
 
   async function handleConversationClick(conversationId) {
     await verifyConversation(conversationId);
@@ -22,7 +25,7 @@ const ConversationView = () => {
   }
 
   useEffect(() => {
-    getAllConversations();
+    getConversations();
   }, []);
 
   return (

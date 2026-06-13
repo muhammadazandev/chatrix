@@ -12,10 +12,6 @@ const TypingIndicator = () => {
     (state) => state.typingUsersByConversation[conversationId],
   );
 
-  useEffect(() => {
-    console.log(typingUsers);
-  }, [typingUsers]);
-
   function showTypingIndicator() {
     if (!typingUsers || typingUsers.length === 0) return null;
 

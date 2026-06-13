@@ -174,6 +174,7 @@ const CreateGroup = () => {
       <AnimatePresence>
         {isGroupProfile && (
           <GroupProfile
+            selectedFriends={selectedFriends}
             isGroupProfile={isGroupProfile}
             setIsGroupProfile={setIsGroupProfile}
           />

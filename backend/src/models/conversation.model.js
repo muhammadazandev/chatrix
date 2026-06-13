@@ -15,26 +15,25 @@ const conversationSchema = new mongoose.Schema(
       },
     ],
 
-    name: { type: String },
+    // Group fields
+    name: { type: String, maxLength: 50, trim: true, default: null },
 
     avatar: {
       type: String,
-      default:
-        "https://res.cloudinary.com/dbzdwitoa/image/upload/q_auto/f_auto/v1778327421/contact-dark-mode-glyph-ui-icon-address-book-profile-page-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector_sjfa4p.jpg",
     },
 
-    admins: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    participantRoles: {
+      type: Map,
+      of: String,
+      default: {},
+    },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
 
+    // Last message fields
     lastMessageText: { type: String },
 
     lastMessageAt: { type: Date },
@@ -47,6 +46,7 @@ const conversationSchema = new mongoose.Schema(
 conversationSchema.index({
   participants: 1,
 });
+conversationSchema.index({ name: 1, createdBy: 1 }, { unique: true });
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 
