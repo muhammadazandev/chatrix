@@ -12,6 +12,7 @@ const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       isOtpSent: false,
+      authChecked: false,
 
       checkAuth: async () => {
         set({ isLoading: true });
@@ -24,13 +25,25 @@ const useAuthStore = create(
             user: res.data.user,
           });
         } catch (error) {
+          const status = error?.response?.status;
+
+          if (status === 401) {
+            set({
+              isAuthenticated: false,
+              user: null,
+            });
+          }
+
           const message = handleError(error);
+
           if (message) {
             toast.error(message);
           }
-          set({ isAuthenticated: false });
         } finally {
-          set({ isLoading: false });
+          set({
+            isLoading: false,
+            authChecked: true,
+          });
         }
       },
 
