@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { createUiSlice } from "./slices/uiSlice";
-import { createRequestSlice } from "./slices/requestSlice";
-import { createRelationshipSlice } from "./slices/relationshipSlice";
+import { createUiSlice } from "./slices/friendshipSlices/uiSlice";
+import { createRequestSlice } from "./slices/friendshipSlices/requestSlice";
+import { createRelationshipSlice } from "./slices/friendshipSlices/relationshipSlice";
 
 const useFriendshipStore = create(
   persist(

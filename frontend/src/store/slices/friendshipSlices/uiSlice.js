@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
-import { authApi } from "../../utils/api";
-import handleError from "../../utils/handleError";
+import { authApi } from "../../../utils/api";
+import handleError from "../../../utils/handleError";
 
 export const createUiSlice = (set, get) => ({
   isLoading: false,
