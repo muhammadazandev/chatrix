@@ -11,7 +11,6 @@ const Blocked = () => {
     (state) => state.getAllBlockedUsers,
   );
   const blocked = useFriendshipStore((state) => state.blocked);
-  const unblockUser = useFriendshipStore((state) => state.unblockUser);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -39,9 +38,7 @@ const Blocked = () => {
   }
 
   return (
-    <Motion variants={slideInRight}
-      className="mt-6 mb-4"
-    >
+    <Motion variants={slideInRight} className="mt-6 mb-4">
       {users?.length > 0 ? (
         <UserListItems
           users={users}

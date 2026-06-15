@@ -6,7 +6,7 @@ import { authApi } from "../../../utils/api";
 
 export const createConversationSlice = (set) => ({
   conversations: [],
-  conversationFriend: null,
+  currentConversation: null,
 
   accessConversation: async (targetUserId, onSuccessNavigate) => {
     try {
@@ -24,7 +24,12 @@ export const createConversationSlice = (set) => ({
 
       const verifyRes = await authApi.get(`/conversation/${conversationId}`);
 
-      set({ conversationFriend: verifyRes?.data?.friend });
+      set({
+        currentConversation:
+          verifyRes.data?.type === "direct"
+            ? verifyRes.data?.friend
+            : verifyRes.data?.conversation,
+      });
     } catch (error) {
       const message = handleError(error);
       if (message) {
@@ -52,7 +57,12 @@ export const createConversationSlice = (set) => ({
 
       const res = await authApi.get(`/conversation/${conversationId}`);
 
-      set({ conversationFriend: res?.data?.friend });
+      set({
+        currentConversation:
+          res.data?.type === "direct"
+            ? res.data?.friend
+            : res.data?.conversation,
+      });
     } catch (error) {
       const message = handleError(error);
       if (message) {

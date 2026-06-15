@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import { FriendListsEmptyState } from "../../sidebar/components/EmptyStates";
 ConfirmBox

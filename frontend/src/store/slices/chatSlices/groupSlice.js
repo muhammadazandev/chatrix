@@ -14,6 +14,8 @@ export const createGroupSlice = (set) => ({
       toast.success(res.data?.message);
 
       updateParams({ view: null, conversationId: res.data?.group._id });
+
+      set({ currentConversation: res.data?.group });
     } catch (error) {
       const message = handleError(error);
       if (message) {

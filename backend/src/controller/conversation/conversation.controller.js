@@ -108,7 +108,7 @@ async function getConversations(req, res) {
     const formatted = conversations.map((con) => {
       const friend = con.participants.find((p) => p._id.toString() !== userId);
 
-      const isDirect = con.type === "direct"
+      const isDirect = con.type === "direct";
 
       return {
         _id: con._id,
@@ -175,19 +175,24 @@ async function verifyConversation(req, res) {
       });
     }
 
-    const friendId = conversation.participants.find(
-      (f) => f._id.toString() !== userId.toString(),
-    );
+    let friend = null;
 
-    const friend = await User.findById(friendId).select(
-      "username profilePicture bio",
-    );
+    if (conversation.type === "direct") {
+      const friendId = conversation.participants.find(
+        (f) => f._id.toString() !== userId.toString(),
+      );
+
+      friend = await User.findById(friendId).select(
+        "username profilePicture bio",
+      );
+    }
 
     return res.status(200).json({
       success: true,
       message: "Verified",
       conversation,
       friend,
+      type: conversation.type,
     });
   } catch (error) {
     console.error(error);
