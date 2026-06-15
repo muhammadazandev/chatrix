@@ -11,8 +11,8 @@ let lastJoinedConversation = null;
 
 socket.on("connect", () => {
   const params = new URLSearchParams(window.location.search);
-  const conId = params.get('conversationId');
-  
+  const conId = params.get("conversationId");
+
   if (conId) {
     lastJoinedConversation = conId;
 
@@ -21,6 +21,5 @@ socket.on("connect", () => {
 });
 
 socket.on("disconnect", () => {
-  
   lastJoinedConversation = null;
 });

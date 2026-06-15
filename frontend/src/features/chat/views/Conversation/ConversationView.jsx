@@ -40,6 +40,7 @@ const ConversationView = () => {
             <div className="flex items-center gap-3.5 min-w-0 flex-1">
               <div className="relative shrink-0">
                 <img
+                  loading="lazy"
                   src={con.avatar}
                   alt={`${con.title} profile`}
                   className="rounded-full w-12 h-12 object-cover border border-(--foreground-secondary)/20 group-hover:border-(--foreground-primary)/40"

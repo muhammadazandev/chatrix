@@ -135,6 +135,8 @@ function ActionButton({
       return;
     }
 
+    setMoreOpenIndex?.(null);
+
     await performAction({
       actionKey,
       requestId,
@@ -144,8 +146,6 @@ function ActionButton({
       searchParams,
       onStartChat,
     });
-
-    setMoreOpenIndex?.(null);
   };
 
   return (

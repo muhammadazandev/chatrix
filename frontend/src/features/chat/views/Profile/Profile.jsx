@@ -84,6 +84,7 @@ const Profile = () => {
             <div className="mt-5">
               <div className="flex justify-center">
                 <img
+                  loading="lazy"
                   className="rounded-full h-40 w-40 object-cover shadow-[0_5px_10px_var(--bg-secondary)]"
                   src={openedUserProfile?.profilePicture}
                   alt="Profile Picture"

@@ -88,6 +88,7 @@ const GroupProfile = ({ selectedFriends, setIsGroupProfile }) => {
       <div className="flex items-center flex-col">
         <div className="flex mt-5 relative mr-5">
           <img
+            loading="lazy"
             src={
               imageUrl === "default"
                 ? "https://res.cloudinary.com/dbzdwitoa/image/upload/q_auto/f_auto/v1778327421/contact-dark-mode-glyph-ui-icon-address-book-profile-page-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector_sjfa4p.jpg"
