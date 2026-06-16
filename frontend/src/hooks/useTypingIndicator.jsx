@@ -56,7 +56,7 @@ const useTypingIndicator = (conversationIdRef) => {
     typingTimeoutRef.current = setTimeout(() => {
       isTypingRef.current = false;
       emitStopTyping();
-    }, 1500);
+    }, 15000);
   };
 
   const activeRoomId = conversationIdRef.current;

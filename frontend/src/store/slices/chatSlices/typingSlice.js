@@ -1,7 +1,7 @@
 export const createTypingSlice = (set) => ({
   typingUsersByConversation: {},
 
-  addTypingUser: (conversationId, userId, username) => {
+  addTypingUser: (conversationId, userId, profilePicture, username) => {
     set((state) => {
       const current = state.typingUsersByConversation[conversationId] || [];
 
@@ -10,7 +10,7 @@ export const createTypingSlice = (set) => ({
       return {
         typingUsersByConversation: {
           ...state.typingUsersByConversation,
-          [conversationId]: [...current, { userId, username }],
+          [conversationId]: [...current, { userId, profilePicture, username }],
         },
       };
     });
@@ -19,7 +19,9 @@ export const createTypingSlice = (set) => ({
   removeTypingUser: (conversationId, userId) => {
     set((state) => {
       const current = state.typingUsersByConversation[conversationId] || [];
+
       const updated = current.filter((user) => user.userId !== userId);
+
       const copy = { ...state.typingUsersByConversation };
 
       if (updated.length === 0) {

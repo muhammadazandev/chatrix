@@ -7,10 +7,12 @@ export function registerTyping(socket) {
 
   socket.on(
     SOCKET_EVENTS.UPDATE_TYPING,
-    ({ conversationId, userId, isTyping, username }) => {
-    isTyping
-        ? addTypingUser(conversationId, userId, username)
-        : removeTypingUser(conversationId, userId, username);
+    ({ conversationId, userId, isTyping, profilePicture, username }) => {
+      if (isTyping) {
+        addTypingUser(conversationId, userId, profilePicture, username);
+      } else {
+        removeTypingUser(conversationId, userId);
+      }
     },
   );
 }

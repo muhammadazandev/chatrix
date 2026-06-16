@@ -4,15 +4,18 @@ export function registerTyping(socket) {
   socket.on("start_typing", ({ conversationId }) => {
     if (!conversationId) return;
 
-    const key = `${socket.id}:${conversationId}`;
+    const key = `${socket.user.userId}:${conversationId}`;
 
     if (typingUsers.has(key)) return;
 
     typingUsers.add(key);
 
+    console.log(socket.user);
+
     socket.to(conversationId).emit("update_typing", {
       conversationId,
       userId: socket.user.userId,
+      profilePicture: socket.user.profilePicture,
       username: socket.user.username,
       isTyping: true,
     });
@@ -21,7 +24,7 @@ export function registerTyping(socket) {
   socket.on("stop_typing", ({ conversationId }) => {
     if (!conversationId) return;
 
-    const key = `${socket.id}:${conversationId}`;
+    const key = `${socket.user.userId}:${conversationId}`;
 
     typingUsers.delete(key);
 

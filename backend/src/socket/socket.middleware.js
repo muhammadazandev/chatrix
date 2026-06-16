@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
+import User from "../models/user.model.js";
 
-export const socketAuth = (socket, next) => {
+export const socketAuth = async (socket, next) => {
   try {
     const cookies = socket.handshake.headers.cookie;
 
@@ -15,7 +16,15 @@ export const socketAuth = (socket, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
-    socket.user = decoded;
+    const userDoc = await User.findById(decoded?.userId).select(
+      "profilePicture",
+    );
+    
+    const profilePicture = userDoc?.profilePicture;
+
+    const fullUserInfo = { ...decoded, profilePicture: profilePicture };
+
+    socket.user = fullUserInfo;
 
     next();
   } catch (err) {
