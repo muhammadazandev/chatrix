@@ -19,18 +19,7 @@ import { setIo } from "./src/socket/socket.instance.js";
 
 const app = express();
 
-// API rate limiter for whole app
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests
-  message: "Too many requests from this IP, please try again later",
-});
-
-app.use(globalLimiter);
-
-// connect to mongodb
-connectMongodb();
-
+// App middlewares
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -41,6 +30,23 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+
+// rate limiter for most routes
+export const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests",
+  },
+});
+
+app.use(globalLimiter);
+
+// connect to mongodb
+connectMongodb();
 
 // Routes
 app.use("/api/auth", authRouter);

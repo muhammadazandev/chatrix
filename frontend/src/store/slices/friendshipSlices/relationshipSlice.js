@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
-import handleError from "../../utils/handleError";
-import { authApi } from "../../utils/api";
+import handleError from "../../../utils/handleError";
+import { authApi } from "../../../utils/api";
 
-export const createRelationshipSlice = (set, get) => ({
+export const createRelationshipSlice = (set) => ({
   friends: [],
   blocked: [],
 

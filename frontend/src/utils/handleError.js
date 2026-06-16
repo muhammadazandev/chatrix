@@ -1,5 +1,7 @@
 const handleError = (error) => {
-  if (!error.response) return "";
+  if (!error.response) {
+    return "Network error";
+  }
 
   const status = error.response.status;
 
@@ -7,7 +9,7 @@ const handleError = (error) => {
     error.response.data.message === "No token, access denied" ||
     error.response.data.message === "No refresh token"
   )
-    return;
+    return null;
   if (status === 429) return "Too many requests";
   if (status === 401) return null;
   if (status >= 500) return "Server error";

@@ -6,6 +6,11 @@ import useAuthStore from "./store/useAuthStore";
 
 const App = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   useEffect(() => {
     if (isAuthenticated && !socket.connected) {

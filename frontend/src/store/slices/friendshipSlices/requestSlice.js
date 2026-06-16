@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
-import handleError from "../../utils/handleError";
-import { authApi } from "../../utils/api";
+import handleError from "../../../utils/handleError";
+import { authApi } from "../../../utils/api";
 
 export const createRequestSlice = (set, get) => ({
   pendingSentRequests: [],

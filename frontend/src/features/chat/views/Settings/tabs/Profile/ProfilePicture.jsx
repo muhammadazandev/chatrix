@@ -41,6 +41,7 @@ const ProfilePicture = ({ user }) => {
     <div>
       <div className="flex flex-col items-center">
         <img
+          loading="lazy"
           src={profilePictureUrl}
           alt="Profile Picture"
           className="rounded-full h-40 w-40 object-cover shadow-[0_5px_10px_var(--bg-secondary)] cursor-pointer"

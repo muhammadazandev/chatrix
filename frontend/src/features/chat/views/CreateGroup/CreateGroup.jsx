@@ -24,6 +24,7 @@ function Lists({ friend = {}, isSelected, moveElement }) {
       }}
     >
       <img
+        loading="lazy"
         src={friend?.profilePicture}
         className={`rounded-full object-cover border border-(--foreground-secondary)/20 transition duration-300 ${isSelected ? "w-8 h-8" : "w-12 h-12 group-hover:border-(--foreground-primary)/40 "}`}
         alt={friend?.username}
