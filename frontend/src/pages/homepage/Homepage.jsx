@@ -1,16 +1,10 @@
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import Loader from "../../components/Loader";
 
 const Homepage = () => {
   const isLoading = useAuthStore((state) => state.isLoading);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const checkAuth = useAuthStore((state) => state.checkAuth);
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
 
   if (isLoading) {
     return (
