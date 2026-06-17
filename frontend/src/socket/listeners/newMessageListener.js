@@ -6,8 +6,6 @@ export const registerNewMessage = (socket) => {
     try {
       const message = data?.message ?? data;
 
-      const time = new Date(message.createdAt);
-
       if (!message) {
         return;
       }
@@ -21,15 +19,6 @@ export const registerNewMessage = (socket) => {
 
         return {
           messages: [...(state.messages || []), message],
-          conversations: state.conversations.map((con) => {
-            if (con._id !== message.conversationId) return con;
-
-            return {
-              ...con,
-              lastMessageAt: time,
-              lastMessageText: message.text,
-            };
-          }),
         };
       });
     } catch (err) {

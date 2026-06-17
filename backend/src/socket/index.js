@@ -15,6 +15,8 @@ export const registerSocket = (io) => {
       onlineUsers.set(userId, new Set());
     }
 
+    socket.join(`user:${userId}`);
+
     onlineUsers.get(userId).add(socket.id);
 
     registerFriendsPresence(io, socket);
@@ -34,7 +36,7 @@ export const registerSocket = (io) => {
 
           typingUsers.delete(key);
 
-          io.to(conversationId).emit("update_typing", {
+          io.to(`conversation:${conversationId}`).emit("update_typing", {
             conversationId,
             userId: socket.user.userId,
             isTyping: false,
