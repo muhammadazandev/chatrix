@@ -3,6 +3,8 @@ import { SOCKET_EVENTS } from "../events";
 
 export const registerNewMessage = (socket) => {
   socket.on(SOCKET_EVENTS["NEW_MESSAGE"], (data) => {
+    console.log(data);
+
     try {
       const message = data?.message ?? data;
 
