@@ -27,16 +27,26 @@ export function registerNewMessage(io, socket) {
         text: message,
       });
 
+      const atDate = Date.now();
+
       // Set the message as latest message in Conversation
       await Conversation.findByIdAndUpdate(data.conversationId, {
         lastMessageText: data.message,
-        lastMessageAt: Date.now(),
+        lastMessageAt: atDate,
       });
 
       // Send the messages to all connected sockets on this conversation
       io.to(`conversation:${conversationId}`).emit("new_message", {
         message: newMessage,
         conversationId,
+      });
+
+      conversation.participants.forEach((id) => {
+        io.to(`user:${id}`).emit("conversation_updated", {
+          conversationId,
+          lastMessage: newMessage.text,
+          lastMessageAt: atDate,
+        });
       });
 
       callback({

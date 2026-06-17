@@ -6,6 +6,7 @@ export const SOCKET_EVENTS = {
   // Conversation
   JOIN_CONVERSATION: "join_conversation",
   LEAVE_CONVERSATION: "leave_conversation",
+  CONVERSATION_UPDATED: "conversation_updated",
 
   // Messages
   NEW_MESSAGE: "new_message",
