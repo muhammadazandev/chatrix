@@ -12,7 +12,7 @@ export function registerTyping(socket) {
 
     console.log(socket.user);
 
-    socket.to(conversationId).emit("update_typing", {
+    socket.to(`conversation:${conversationId}`).emit("update_typing", {
       conversationId,
       userId: socket.user.userId,
       profilePicture: socket.user.profilePicture,
@@ -28,7 +28,7 @@ export function registerTyping(socket) {
 
     typingUsers.delete(key);
 
-    socket.to(conversationId).emit("update_typing", {
+    socket.to(`conversation:${conversationId}`).emit("update_typing", {
       conversationId,
       userId: socket.user.userId,
       isTyping: false,

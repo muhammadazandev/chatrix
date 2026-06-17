@@ -38,7 +38,7 @@ export const registerConversationConnections = (io, socket) => {
 
       socket.currentConversation = conversationId;
 
-      socket.join(conversationId);
+      socket.join(`conversation:${conversationId}`);
 
       callback?.({
         success: true,
@@ -52,7 +52,7 @@ export const registerConversationConnections = (io, socket) => {
 
   socket.on("leave_conversation", (conversationId) => {
     if (socket.currentConversation === conversationId) {
-      socket.leave(conversationId);
+      socket.leave(`conversation:${conversationId}`);
       socket.currentConversation = null;
     }
   });

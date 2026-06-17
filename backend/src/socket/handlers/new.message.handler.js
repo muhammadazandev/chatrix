@@ -34,7 +34,7 @@ export function registerNewMessage(io, socket) {
       });
 
       // Send the messages to all connected sockets on this conversation
-      io.to(conversationId).emit("new_message", {
+      io.to(`conversation:${conversationId}`).emit("new_message", {
         message: newMessage,
         conversationId,
       });
