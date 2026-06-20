@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import useAuthStore from "../../../../store/useAuthStore";
 import OptionsMenu from "./OptionsMenu";
 import { AnimatePresence } from "motion/react";
+import IconsWrapper from "../../../../utils/IconsWrapper";
+import { RiForbidLine } from "@remixicon/react";
 
 const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
   const user = useAuthStore((state) => state.user);
@@ -26,15 +28,15 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
     return () => window.removeEventListener("click", closeMenu);
   }, []);
 
-  function contextMenu(e, messageId) {
+  function contextMenu(e, messageId, isDeleted) {
     e.preventDefault();
     e.stopPropagation();
 
-    const rect = e.currentTarget.getBoundingClientRect();
+    if (isDeleted) return;
 
     setMenuCoords({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: e.clientX,
+      y: e.clientY,
     });
 
     setOpenMessageMenuId(messageId);
@@ -67,7 +69,7 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
               {showHeader && (
                 <div className="flex items-center gap-2 mb-1 ml-1">
                   <img
-                    alt={message.sender.username}
+                    alt={message.sender?.username || "User"}
                     src={message.sender?.profilePicture}
                     className="w-5 h-5 rounded-full object-cover"
                   />
@@ -78,8 +80,10 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
               )}
 
               <div
-                className={`relative max-w-[70%] border border-(--foreground-secondary)/20 cursor-pointer px-3 py-2 ${isMe ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none" : "bg-(--bg-secondary) rounded-xl rounded-bl-none"}`}
-                onContextMenu={(e) => contextMenu(e, message._id)}
+                className={`relative max-w-[70%] border border-(--foreground-secondary)/20 flex px-3 py-2 ${isMe ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none" : "bg-(--bg-secondary) rounded-xl rounded-bl-none"} ${message.isDeleted ? "cursor-default" : "cursor-pointer"}`}
+                onContextMenu={(e) =>
+                  contextMenu(e, message._id, message.isDeleted)
+                }
               >
                 <AnimatePresence>
                   {openMessageMenuId === message._id && (
@@ -94,11 +98,24 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
                   )}
                 </AnimatePresence>
 
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                  {message.text}
-                </p>
+                {message.isDeleted ? (
+                  <div className="flex gap-2">
+                    <IconsWrapper
+                      icon={RiForbidLine}
+                      className="opacity-50"
+                      size={20}
+                    />
+                    <p className="text-sm opacity-70">
+                      This message was deleted
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    {message.text}
+                  </p>
+                )}
 
-                <div className="mt-1 flex justify-end gap-4">
+                <div className="mt-4 flex justify-end gap-2 mx-1">
                   <span className="text-[10px] opacity-40 tracking-wider">
                     {message.isEdited ? "Edited" : null}
                   </span>
