@@ -1,7 +1,8 @@
-import { RiFileCopyLine } from "@remixicon/react";
+import { RiEdit2Line, RiFileCopyLine } from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import Motion from "../../../../motion/Motion";
 import { fade } from "../../../../motion/variants";
+import useAuthStore from "../../../../store/useAuthStore";
 
 const actionButtons = [
   {
@@ -9,9 +10,21 @@ const actionButtons = [
     label: "Copy Message",
     actionFun: "handleCopy",
   },
+  {
+    icon: RiEdit2Line,
+    label: "Edit Message",
+    actionFun: "handleEdit",
+  },
 ];
 
-const OptionsMenu = ({ message, coords, isMe, onClose }) => {
+const OptionsMenu = ({
+  message,
+  coords,
+  isMe,
+  onClose,
+  setMessageInput,
+  setEditingMessage,
+}) => {
   const handleCopy = async (e) => {
     e.stopPropagation();
     try {
@@ -21,9 +34,17 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       console.error("Failed to copy text: ", err);
     }
   };
+  const user = useAuthStore((state) => state.user);
+
+  const handleEdit = async () => {
+    setEditingMessage(message);
+    setMessageInput(message.text);
+    onClose();
+  };
 
   const actions = {
     handleCopy: handleCopy,
+    handleEdit: handleEdit,
   };
 
   return (
@@ -35,6 +56,13 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       className={`absolute z-50 rounded-xl py-1.5 w-40 top-1/2 -translate-y-1/2 bg-(--bg-secondary) border border-(--foreground-secondary)/20 ${isMe ? "-translate-x-full" : ""}`}
     >
       {actionButtons.map((btn) => {
+        if (
+          btn.actionFun === "handleEdit" &&
+          (Date.now() - new Date(message.createdAt).getTime() > 900000 ||
+            message.senderId !== user._id)
+        )
+          return;
+
         return (
           <button
             onClick={actions[btn.actionFun]}

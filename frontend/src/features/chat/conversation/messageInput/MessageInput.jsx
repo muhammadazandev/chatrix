@@ -1,4 +1,8 @@
-import { RiEmotionHappyLine, RiSendPlane2Fill } from "@remixicon/react";
+import {
+  RiCloseLine,
+  RiEmotionHappyLine,
+  RiSendPlane2Fill,
+} from "@remixicon/react";
 import IconsWrapper from "../../../../utils/IconsWrapper";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
@@ -23,7 +27,12 @@ const shakeVariants = {
   },
 };
 
-const MessageInput = () => {
+const MessageInput = ({
+  setMessageInput,
+  messageInput,
+  editingMessage,
+  setEditingMessage,
+}) => {
   const errorTimeoutRef = useRef(null);
   const [isError, setIsError] = useState(false);
   const [searchParams] = useSearchParams();
@@ -42,30 +51,36 @@ const MessageInput = () => {
   } = useEmojiPicker("");
 
   const { stopTypingNow, handleTyping } = useTypingIndicator(conversationIdRef);
+  const inputRef = useRef(null);
 
-  const sendMessage = () => {
-    if (!conversationIdRef.current) return;
-    stopTypingNow();
-    closePicker();
+  const cancelEditing = () => {
+    setMessageInput(null);
+    setEditingMessage(null);
+  };
 
-    const message = value.trim();
+  const handleEditMessage = (text) => {
+    if (!text) {
+      toast.error("Message cannot be empty");
+      return;
+    }
 
-    if (message) {
-      const data = {
-        message,
-        conversationId: conversationIdRef.current,
-      };
-
-      socket.emit(SOCKET_EVENTS["NEW_MESSAGE"], data, (res) => {
+    socket.emit(
+      SOCKET_EVENTS.EDIT_MESSAGE,
+      { messageId: editingMessage._id, editedMessage: text },
+      (res) => {
         if (!res?.success) {
-          toast.error(
-            `Failed to send message${res?.message ? `: ${res.message}` : ""}`,
+          return toast.error(
+            `Failed to edit message ${res?.message ? `: ${res.message}` : ""}`,
           );
         }
-      });
 
-      setValue("");
-    } else {
+        cancelEditing();
+      },
+    );
+  };
+
+  const handleNewMessage = (text) => {
+    if (!text) {
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current);
       }
@@ -75,8 +90,45 @@ const MessageInput = () => {
       errorTimeoutRef.current = setTimeout(() => {
         setIsError(false);
       }, 500);
+
+      return;
+    }
+
+    const data = {
+      message: text,
+      conversationId: conversationIdRef.current,
+    };
+
+    socket.emit(SOCKET_EVENTS.NEW_MESSAGE, data, (res) => {
+      if (!res?.success) {
+        toast.error(
+          `Failed to send message${res?.message ? `: ${res.message}` : ""}`,
+        );
+      }
+    });
+
+    setValue("");
+  };
+
+  const sendMessage = () => {
+    if (!conversationIdRef.current) return;
+    stopTypingNow();
+    closePicker();
+
+    const inputText = editingMessage ? messageInput : value;
+
+    if (editingMessage) {
+      handleEditMessage(inputText.trim());
+    } else {
+      handleNewMessage(inputText.trim());
     }
   };
+
+  useEffect(() => {
+    if (editingMessage) {
+      inputRef.current?.focus();
+    }
+  }, [editingMessage]);
 
   useEffect(() => {
     return () => {
@@ -88,6 +140,7 @@ const MessageInput = () => {
 
   useEffect(() => {
     setValue("");
+    cancelEditing();
   }, [conversationId]);
 
   return (
@@ -95,7 +148,7 @@ const MessageInput = () => {
       <motion.div
         variants={shakeVariants}
         animate={isError ? "error" : "normal"}
-        className="w-full rounded-full bg-(--bg-secondary) py-2 px-3 flex gap-4 border-2 border-transparent"
+        className={`w-full rounded-full bg-(--bg-secondary) py-2 px-3 flex gap-4 border-2 border-transparent`}
       >
         <Tooltip content="Open Emoji Picker" delay={[1000, 0]}>
           <button
@@ -117,24 +170,51 @@ const MessageInput = () => {
           type="text"
           placeholder="Enter Your Message"
           className="w-full outline-none bg-transparent z-50"
+          ref={inputRef}
           onChange={(e) => {
-            setValue(e.target.value);
+            if (editingMessage) {
+              setMessageInput(e.target.value);
+            } else {
+              setValue(e.target.value);
+            }
             handleTyping();
           }}
-          value={value}
+          value={editingMessage ? messageInput : value}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               sendMessage();
+            } else if (e.key === "Escape") {
+              cancelEditing();
             }
           }}
         />
 
-        <button
-          className="p-3 bg-(--accent-color-primary) rounded-full shrink-0 z-50"
-          onClick={sendMessage}
+        {editingMessage && (
+          <Tooltip content="Cancel Editing" delay={[1000, 0]}>
+            <button
+              className="p-3 bg-(--bg-secondary) shrink-0 rounded-full border border-(--foreground-secondary)/10"
+              onClick={cancelEditing}
+            >
+              <IconsWrapper
+                icon={RiCloseLine}
+                size={16}
+                className="scale-120"
+              />
+            </button>
+          </Tooltip>
+        )}
+
+        <Tooltip
+          content={`${editingMessage ? "Edit" : "Send"} Message`}
+          delay={[1000, 0]}
         >
-          <IconsWrapper icon={RiSendPlane2Fill} size={18} />
-        </button>
+          <button
+            className="p-3 bg-(--accent-color-primary) rounded-full shrink-0 z-50"
+            onClick={sendMessage}
+          >
+            <IconsWrapper icon={RiSendPlane2Fill} size={18} />
+          </button>
+        </Tooltip>
       </motion.div>
     </div>
   );

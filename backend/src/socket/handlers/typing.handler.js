@@ -10,8 +10,6 @@ export function registerTyping(socket) {
 
     typingUsers.add(key);
 
-    console.log(socket.user);
-
     socket.to(`conversation:${conversationId}`).emit("update_typing", {
       conversationId,
       userId: socket.user.userId,

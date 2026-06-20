@@ -1,4 +1,5 @@
 import { registerConversationConnections } from "./handlers/conversation.connection.handler.js";
+import { registerEditMessage } from "./handlers/edit.message.handler.js";
 import { registerFriendsPresence } from "./handlers/friends.presence.handler.js";
 import { registerNewMessage } from "./handlers/new.message.handler.js";
 import { registerTyping } from "./handlers/typing.handler.js";
@@ -20,12 +21,10 @@ export const registerSocket = (io) => {
     onlineUsers.get(userId).add(socket.id);
 
     registerFriendsPresence(io, socket);
-
     registerConversationConnections(io, socket);
-
     registerNewMessage(io, socket);
-
     registerTyping(socket);
+    registerEditMessage(io, socket);
 
     socket.on("disconnect", (reason) => {
       // clean up any typing entries for this socket and notify rooms
