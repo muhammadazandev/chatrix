@@ -4,6 +4,27 @@ import { fade, slideFadeScale } from "../motion/variants";
 import Motion from "../motion/Motion";
 
 const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
+  const message = () => {
+    let msg = "";
+
+    switch (confirmWhat) {
+      case "block":
+        msg =
+          "This user will be blocked. You will no longer be able to communicate with them.";
+        break;
+      case "deleteMessage":
+        msg = "Are you sure, you want to delete this message";
+        break;
+
+      default:
+        msg =
+          "This action is irreversible. Are you certain you want to proceed?";
+        break;
+    }
+
+    return msg;
+  };
+
   return createPortal(
     <Motion
       variants={fade}
@@ -24,9 +45,7 @@ const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
             Are you sure?
           </h2>
           <p className="mt-2 text-center text-sm text-(--foreground-primary)/70 leading-relaxed">
-            {confirmWhat === "block"
-              ? "This user will be blocked. You will no longer be able to communicate with them."
-              : "This action is irreversible. Are you certain you want to proceed?"}
+            {message()}
           </p>
         </div>
 

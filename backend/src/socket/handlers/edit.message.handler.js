@@ -27,6 +27,14 @@ export function registerEditMessage(io, socket) {
         });
       }
 
+      // Check that message is deleted
+      if (message.isDeleted) {
+        return callback({
+          success: false,
+          message: "Deleted messages cannot be edit",
+        });
+      }
+
       // Check that a message is 15 minutes old
       if (new Date() - message.createdAt > 900000) {
         return callback({

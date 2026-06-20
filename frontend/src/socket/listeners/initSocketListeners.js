@@ -1,6 +1,7 @@
 import useFriendshipStore from "../../store/useFriendshipStore";
 import { socket } from "../socket";
 import { registerConversationListener } from "./conversationListener";
+import { registerDeleteMessage } from "./deleteMessageListener";
 import { registerEditMessage } from "./editMessageListener";
 import { registerFriendsListener } from "./friendsPresenceListener";
 import { registerNewMessage } from "./newMessageListener";
@@ -19,4 +20,5 @@ export const initSocketListeners = () => {
   registerTyping(socket);
   registerConversationListener(socket);
   registerEditMessage(socket);
+  registerDeleteMessage(socket);
 };

@@ -11,6 +11,7 @@ export const SOCKET_EVENTS = {
   // Messages
   NEW_MESSAGE: "new_message",
   EDIT_MESSAGE: "edit_message",
+  DELETE_MESSAGE: "delete_message",
 
   // Typing
   START_TYPING: "start_typing",
