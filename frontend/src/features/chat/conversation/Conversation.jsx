@@ -7,12 +7,15 @@ import MessagesList from "./messagesList/MessagesList";
 import { socket } from "../../../socket/socket";
 import { SOCKET_EVENTS } from "../../../socket/events";
 import TypingIndicator from "./typingIndicator/TypingIndicator";
+import { useState } from "react";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
   const [searchParam] = useSearchParams();
   const conId = searchParam.get("conversationId");
   const messages = useChatStore((state) => state.messages);
+  const [editingMessage, setEditingMessage] = useState(null);
+  const [messageInput, setMessageInput] = useState(null);
 
   useEffect(() => {
     if (!conId) return;
@@ -37,9 +40,18 @@ const Conversation = () => {
   return (
     <div className="flex-1 flex flex-col bg-(--bg-primary) h-screen relative overflow-hidden">
       <Header />
-      <MessagesList messages={messages} />
+      <MessagesList
+        messages={messages}
+        setEditingMessage={setEditingMessage}
+        setMessageInput={setMessageInput}
+      />
       <TypingIndicator />
-      <MessageInput />
+      <MessageInput
+        messageInput={messageInput}
+        setMessageInput={setMessageInput}
+        editingMessage={editingMessage}
+        setEditingMessage={setEditingMessage}
+      />
     </div>
   );
 };

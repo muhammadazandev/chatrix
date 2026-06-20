@@ -10,6 +10,7 @@ export const SOCKET_EVENTS = {
 
   // Messages
   NEW_MESSAGE: "new_message",
+  EDIT_MESSAGE: "edit_message",
 
   // Typing
   START_TYPING: "start_typing",
