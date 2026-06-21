@@ -5,7 +5,7 @@ import {
   RiContrastLine,
   RiLogoutBoxLine,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 import Profile from "./tabs/Profile/Profile";

@@ -5,7 +5,7 @@ import {
   RiSettings4Fill,
   RiGroupFill,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";

@@ -3,7 +3,7 @@ import Motion from "../../../../motion/Motion";
 import { slideInRight } from "../../../../motion/variants";
 import Tooltip from "../../../../components/Tooltip";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { useEffect, useState } from "react";
 import RenderActionButtons from "../../sidebar/userListItems/RelationshipActionMenu";
 import { AnimatePresence } from "motion/react";

@@ -53,11 +53,19 @@ async function getOldMessages(req, res) {
       .sort({
         createdAt: 1,
       })
-      .lean();
+      .lean()
+      .populate("senderId", "username profilePicture");
+
+    const formatted = messages.map((m) => ({
+      ...m,
+      sender: m.senderId,
+      senderId: m.senderId._id,
+      conversationType: conversation.type,
+    }));
 
     return res.status(200).json({
       success: true,
-      messages,
+      messages: formatted,
     });
   } catch (error) {
     console.error(error);

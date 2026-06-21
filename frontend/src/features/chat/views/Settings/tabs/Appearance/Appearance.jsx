@@ -1,6 +1,6 @@
 import { RiArrowLeftLine } from "@remixicon/react";
 import { useNavigate } from "react-router-dom";
-import IconsWrapper from "../../../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../../../components/IconsWrapper";
 import Theme from "./Theme";
 import AccentColor from "./AccentColor";
 import AnimationSettings from "./AnimationSettings";

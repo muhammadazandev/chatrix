@@ -3,7 +3,7 @@ import {
   RiEdit2Line,
   RiFileCopyLine,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import Motion from "../../../../motion/Motion";
 import { fade } from "../../../../motion/variants";
 import useAuthStore from "../../../../store/useAuthStore";

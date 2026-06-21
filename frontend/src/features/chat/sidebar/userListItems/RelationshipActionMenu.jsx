@@ -5,7 +5,7 @@ import {
   RiUserUnfollowFill,
   RiChat3Fill,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { friendshipStore } from "../../../../store/useFriendshipStore";
 import { getChatState } from "../../../../store/useChatStore";
 import { useSearchParams } from "react-router-dom";

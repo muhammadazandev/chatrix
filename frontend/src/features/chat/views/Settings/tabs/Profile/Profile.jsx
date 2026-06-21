@@ -1,6 +1,6 @@
 import { RiArrowLeftLine, RiFileCopyLine } from "@remixicon/react";
 import { useNavigate } from "react-router-dom";
-import IconsWrapper from "../../../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../../../components/IconsWrapper";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import Tooltip from "../../../../../../components/Tooltip";
 import toast from "react-hot-toast";

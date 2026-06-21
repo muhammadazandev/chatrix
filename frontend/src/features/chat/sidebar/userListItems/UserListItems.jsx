@@ -1,5 +1,5 @@
 import { RiMore2Fill } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { RiUserForbidFill } from "@remixicon/react";
