@@ -1,5 +1,5 @@
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
-import IconsWrapper from "../../utils/IconsWrapper";
+import IconsWrapper from "../../components/IconsWrapper";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useSettingsStore from "../../store/useSettingsStore";

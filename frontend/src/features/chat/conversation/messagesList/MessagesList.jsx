@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useAuthStore from "../../../../store/useAuthStore";
 import OptionsMenu from "./OptionsMenu";
 import { AnimatePresence } from "motion/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { RiForbidLine } from "@remixicon/react";
 
 const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {

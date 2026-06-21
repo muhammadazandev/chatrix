@@ -3,7 +3,7 @@ import {
   RiEmotionHappyLine,
   RiSendPlane2Fill,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { socket } from "../../../../socket/socket";

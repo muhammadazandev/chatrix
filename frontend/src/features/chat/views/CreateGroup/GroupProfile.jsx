@@ -5,7 +5,7 @@ import {
 } from "@remixicon/react";
 import Motion from "../../../../motion/Motion";
 import { slideInFromLeft } from "../../../../motion/variants";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { useEffect, useState } from "react";
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";

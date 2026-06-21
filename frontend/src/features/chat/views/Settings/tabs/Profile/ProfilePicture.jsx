@@ -1,5 +1,5 @@
 import { RiCamera4Line } from "@remixicon/react";
-import IconsWrapper from "../../../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../../../components/IconsWrapper";
 import { useRef, useState } from "react";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import { authApi } from "../../../../../../utils/api";

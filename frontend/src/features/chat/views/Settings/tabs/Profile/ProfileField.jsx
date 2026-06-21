@@ -1,8 +1,12 @@
 import { useState } from "react";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import Tooltip from "../../../../../../components/Tooltip";
-import IconsWrapper from "../../../../../../utils/IconsWrapper";
-import { RiCheckLine, RiEmotionHappyLine, RiPencilLine } from "@remixicon/react";
+import IconsWrapper from "../../../../../../components/IconsWrapper";
+import {
+  RiCheckLine,
+  RiEmotionHappyLine,
+  RiPencilLine,
+} from "@remixicon/react";
 import toast from "react-hot-toast";
 import { authApi } from "../../../../../../utils/api";
 import useEmojiPicker from "../../../../../../hooks/useEmojiPicker";
@@ -20,8 +24,14 @@ function ProfileField({
 }) {
   const [loading, setLoading] = useState(false);
   const updateUser = useAuthStore((state) => state.updateUser);
-  const { value, setValue, isOpen, handleEmojiSelect, closePicker, togglePicker } =
-    useEmojiPicker(initialValue);
+  const {
+    value,
+    setValue,
+    isOpen,
+    handleEmojiSelect,
+    closePicker,
+    togglePicker,
+  } = useEmojiPicker(initialValue);
 
   function validation() {
     let error = null;

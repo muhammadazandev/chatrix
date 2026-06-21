@@ -1,15 +1,12 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState, useEffect, useRef } from "react";
-import IconsWrapper from "../../../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../../../components/IconsWrapper";
 import { RiCloseLine, RiCheckLine, RiShuffleLine } from "@remixicon/react";
 import { accentColors } from "./accentColors";
 import Tooltip from "../../../../../../components/Tooltip";
 import useSettingsStore from "../../../../../../store/useSettingsStore";
 import Motion from "../../../../../../motion/Motion";
-import {
-  fade,
-  slideInRight,
-} from "../../../../../../motion/variants";
+import { fade, slideInRight } from "../../../../../../motion/variants";
 
 const AccentColor = () => {
   const [isColorsBoxOpen, setIsColorsBoxOpen] = useState(false);

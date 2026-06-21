@@ -1,5 +1,5 @@
 import { RiArrowDownSLine, RiCheckLine } from "@remixicon/react";
-import IconsWrapper from "../../../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../../../components/IconsWrapper";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import useSettingsStore from "../../../../../../store/useSettingsStore";

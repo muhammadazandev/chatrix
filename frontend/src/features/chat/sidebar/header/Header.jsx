@@ -2,15 +2,13 @@ import { AnimatePresence } from "motion/react";
 import MoreOptions from "./MoreOptions";
 import { useState } from "react";
 import { RiMore2Fill } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 
 const Header = () => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   return (
-    <header
-      className="w-full flex justify-between"
-    >
+    <header className="w-full flex justify-between">
       <h2 className="text-2xl">Chatrix</h2>
 
       <button

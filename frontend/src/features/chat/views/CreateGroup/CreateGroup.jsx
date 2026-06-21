@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { RiArrowRightLine, RiCloseFill } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import Motion from "../../../../motion/Motion";
 import { popLift, slideInRight } from "../../../../motion/variants";
 import useSlidePanelClose from "../../../../hooks/useSlidePanelClose";

@@ -1,5 +1,5 @@
 import { RiSearch2Line } from "@remixicon/react";
-import IconsWrapper from "../../../../utils/IconsWrapper";
+import IconsWrapper from "../../../../components/IconsWrapper";
 import { useEffect } from "react";
 import { authApi } from "../../../../utils/api";
 import { useFocusInput } from "../../../../Context/InputFocusContext";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { RiMailLine } from "@remixicon/react";
-import IconsWrapper from "../../utils/IconsWrapper";
+import IconsWrapper from "../../components/IconsWrapper";
 import useAuthStore from "../../store/useAuthStore";
 import toast from "react-hot-toast";
 
