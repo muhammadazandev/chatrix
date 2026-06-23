@@ -13,10 +13,18 @@ const App = () => {
   }, [checkAuth]);
 
   useEffect(() => {
-    if (isAuthenticated && !socket.connected) {
-      socket.connect();
-      initSocketListeners();
-    } else if (!isAuthenticated && socket.connected) {
+    initSocketListeners();
+    return () => {
+      socket.off();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (!socket.connected) {
+        socket.connect();
+      }
+    } else {
       socket.disconnect();
     }
   }, [isAuthenticated]);

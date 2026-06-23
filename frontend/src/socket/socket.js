@@ -1,5 +1,4 @@
 import { io } from "socket.io-client";
-import useChatStore from "../store/useChatStore";
 import { SOCKET_EVENTS } from "./events";
 
 export const socket = io(import.meta.env.VITE_API_URL, {
@@ -11,7 +10,7 @@ let lastJoinedConversation = null;
 
 socket.on("connect", () => {
   const params = new URLSearchParams(window.location.search);
-  const conId = params.get("conversationId");
+  const conId = params.get("conversationId") || lastJoinedConversation;
 
   if (conId) {
     lastJoinedConversation = conId;
@@ -20,6 +19,10 @@ socket.on("connect", () => {
   }
 });
 
-socket.on("disconnect", () => {
-  lastJoinedConversation = null;
+socket.on("disconnect", (reason) => {
+  console.log(`Disconnected due to: ${reason}`);
+  
+  if (reason === "io client disconnect") {
+    lastJoinedConversation = null;
+  }
 });
