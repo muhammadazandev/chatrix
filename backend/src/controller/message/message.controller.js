@@ -47,21 +47,43 @@ async function getOldMessages(req, res) {
       });
     }
 
-    const messages = await Message.find({
-      conversationId,
-    })
-      .sort({
-        createdAt: 1,
+    const messages = await Message.find({ conversationId })
+      .sort({ createdAt: 1 })
+      .populate("senderId", "username profilePicture")
+      .populate({
+        path: "replyTo",
+        select: "text senderId",
+        populate: {
+          path: "senderId",
+          select: "username profilePicture",
+        },
       })
-      .lean()
-      .populate("senderId", "username profilePicture");
+      .lean();
 
-    const formatted = messages.map((m) => ({
-      ...m,
-      sender: m.senderId,
-      senderId: m.senderId._id,
-      conversationType: conversation.type,
-    }));
+    const formatted = messages.map((m) => {
+      const senderInfo = m.senderId || {};
+
+      let formattedReplyTo = null;
+      if (m.replyTo) {
+        formattedReplyTo = {
+          _id: m.replyTo._id,
+          text: m.replyTo.text,
+          sender: m.replyTo.senderId || null, 
+        };
+      }
+
+      return {
+        ...m,
+        conversationType: conversation.type,
+        senderId: senderInfo._id || null,
+        sender: {
+          _id: senderInfo._id || null,
+          username: senderInfo.username || "User",
+          profilePicture: senderInfo.profilePicture || "",
+        },
+        replyTo: formattedReplyTo,
+      };
+    });
 
     return res.status(200).json({
       success: true,

@@ -5,7 +5,7 @@ import { AnimatePresence } from "motion/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import { RiForbidLine } from "@remixicon/react";
 
-const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
+const MessagesList = ({ messages }) => {
   const user = useAuthStore((state) => state.user);
   const latestMessageRef = useRef(null);
   const [openMessageMenuId, setOpenMessageMenuId] = useState(null);
@@ -44,14 +44,12 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto bg-transparent">
-      <div className="flex flex-col px-4 py-6">
+      <div className="flex flex-col px-4 py-6 gap-2">
         {messages?.map((message, index) => {
           if (!message) return null;
 
           const isLast = index === messages.length - 1;
-          const senderId = message.sender
-            ? message.sender._id
-            : message.senderId;
+          const senderId = message.sender?._id || message.senderId;
 
           const isMe = senderId === user?._id;
 
@@ -91,47 +89,66 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
               )}
 
               <div
-                className={`relative max-w-[70%] border border-(--foreground-secondary)/20 px-3 py-2 flex flex-col ${
+                className={`relative max-w-[70%] border border-(--foreground-secondary)/20 py-1.5 px-0.5 flex flex-col ${
                   isMe
                     ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
-                    : "bg-(--bg-secondary) rounded-xl rounded-bl-none"
+                    : "bg-(--bg-secondary) rounded-xl rounded-bl-none px-1.5"
                 } ${message.isDeleted ? "cursor-default" : "cursor-pointer"}`}
                 onContextMenu={(e) =>
                   contextMenu(e, message._id, message.isDeleted)
                 }
               >
-                {showHeader && (
-                  <span className="text-[12px] font-medium text-green-500 mb-1">
-                    {message.sender?.username}
-                  </span>
-                )}
+                {message.replyTo && (
+                  <div className="w-full rounded-sm bg-(--bg-primary)/40 flex">
+                    <span className="bg-(--accent-color-secondary) w-1 rounded-l-full h-full" />
 
-                {message.isDeleted ? (
-                  <div className="flex gap-2 items-center">
-                    <IconsWrapper
-                      icon={RiForbidLine}
-                      className="opacity-50"
-                      size={20}
-                    />
+                    <div className="px-2 pb-1">
+                      <span className="text-[12px] text-(--accent-color-secondary)">
+                        {message.replyTo.sender._id === user._id
+                          ? "You"
+                          : message.replyTo.sender.username}
+                      </span>
 
-                    <p className="text-sm opacity-70 italic">
-                      This message was deleted
-                    </p>
+                      <p className="text-sm opacity-50">
+                        {message.replyTo.text}
+                      </p>
+                    </div>
                   </div>
-                ) : (
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-                    {message.text}
-                  </p>
                 )}
-
-                <div className="mt-1 flex justify-end items-center gap-2">
-                  {message.isEdited && (
-                    <span className="text-[10px] opacity-40">Edited</span>
+                <div className={`${message.replyTo ? "px-2 py-1" : "px-1"}`}>
+                  {showHeader && (
+                    <span className="text-[12px] font-medium text-(--accent-color-secondary) mb-1">
+                      {message.sender?.username}
+                    </span>
                   )}
 
-                  <span className="text-[10px] opacity-40">
-                    {message.createdAt ? formatTime(message.createdAt) : ""}
-                  </span>
+                  {message.isDeleted ? (
+                    <div className="flex gap-2 items-center">
+                      <IconsWrapper
+                        icon={RiForbidLine}
+                        className="opacity-50"
+                        size={20}
+                      />
+
+                      <p className="text-sm opacity-70 italic mr-14">
+                        This message was deleted
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap mr-12">
+                      {message.text}
+                    </p>
+                  )}
+
+                  <div className="flex justify-end items-center gap-2">
+                    {message.isEdited && (
+                      <span className="text-[10px] opacity-40">Edited</span>
+                    )}
+
+                    <span className="text-[10px] opacity-40">
+                      {message.createdAt ? formatTime(message.createdAt) : ""}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -142,8 +159,6 @@ const MessagesList = ({ messages, setMessageInput, setEditingMessage }) => {
                     coords={menuCoords}
                     isMe={isMe}
                     onClose={() => setOpenMessageMenuId(null)}
-                    setEditingMessage={setEditingMessage}
-                    setMessageInput={setMessageInput}
                   />
                 )}
               </AnimatePresence>
