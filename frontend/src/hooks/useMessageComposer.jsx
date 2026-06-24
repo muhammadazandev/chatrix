@@ -88,7 +88,7 @@ const useMessageComposer = ({
   };
 
   useEffect(() => {
-    if (messageMode.type === "edit") {
+    if (messageMode.type === "edit" || messageMode.type === "reply") {
       setValue(messageMode.payload.text);
       inputRef.current?.focus();
     }

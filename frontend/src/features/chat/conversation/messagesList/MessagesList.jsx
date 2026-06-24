@@ -4,6 +4,7 @@ import OptionsMenu from "./OptionsMenu";
 import { AnimatePresence } from "motion/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import { RiForbidLine } from "@remixicon/react";
+import ReplyCard from "../shared/ReplyCard";
 
 const MessagesList = ({ messages }) => {
   const user = useAuthStore((state) => state.user);
@@ -99,21 +100,7 @@ const MessagesList = ({ messages }) => {
                 }
               >
                 {message.replyTo && (
-                  <div className="w-full rounded-sm bg-(--bg-primary)/40 flex">
-                    <span className="bg-(--accent-color-secondary) w-1 rounded-l-full h-full" />
-
-                    <div className="px-2 pb-1">
-                      <span className="text-[12px] text-(--accent-color-secondary)">
-                        {message.replyTo.sender._id === user._id
-                          ? "You"
-                          : message.replyTo.sender.username}
-                      </span>
-
-                      <p className="text-sm opacity-50">
-                        {message.replyTo.text}
-                      </p>
-                    </div>
-                  </div>
+                  <ReplyCard replyMessage={message.replyTo} />
                 )}
                 <div className={`${message.replyTo ? "px-2 py-1" : "px-1"}`}>
                   {showHeader && (
