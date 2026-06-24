@@ -117,7 +117,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
                 btn.actionFun !== "handleDelete" ? onClose() : null;
               }}
               key={btn.label}
-              className={`w-full text-left px-3.5 py-2 text-xs font-semibold transition-colors flex items-center gap-2.5 text-(--foreground-primary) ${btn.danger ? "text-red-300 hover:bg-red-500/10" : ""}`}
+              className={`w-full text-left px-3.5 py-2 text-xs transition-colors flex items-center gap-2.5 ${btn.danger ? "danger-action no-hover" : "text-(--foreground-primary) font-semibold"}`}
             >
               <IconsWrapper
                 icon={btn.icon}
