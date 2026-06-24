@@ -1,16 +1,19 @@
 import { RiArrowLeftLine } from "@remixicon/react";
-import { useNavigate } from "react-router-dom";
 import IconsWrapper from "../../../../../../components/IconsWrapper";
 import Theme from "./Theme";
 import AccentColor from "./AccentColor";
 import AnimationSettings from "./AnimationSettings";
+import { useQueryParams } from "../../../../../../hooks/useQueryParams";
 
 const Appearance = () => {
-  const navigate = useNavigate();
+  const { updateParams } = useQueryParams();
 
   return (
     <div className="pointer-events-auto bg-(--bg-primary) h-[95vh] w-full absolute top-0 left-0 z-50">
-      <button className="p-2.5 rounded-full" onClick={() => navigate(-1)}>
+      <button
+        className="p-2.5 rounded-full"
+        onClick={() => updateParams({ tab: null })}
+      >
         <IconsWrapper icon={RiArrowLeftLine} />
       </button>
 

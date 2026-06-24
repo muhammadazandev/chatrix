@@ -93,7 +93,7 @@ const Settings = () => {
               {tabs.map((tab) => {
                 return (
                   <button
-                    className={`rounded-md py-3 px-4 inline-flex items-center gap-6 ${tab.variant === "danger" ? "bg-red-400/10 text-red-700" : ""}`}
+                    className={`rounded-md py-3 px-4 inline-flex items-center gap-6 hover:bg-(--bg-secondary) no-hover ${tab.variant === "danger" ? "bg-red-200/10 text-red-600" : ""}`}
                     key={tab?.id}
                     onClick={async () => {
                       if (tab.id === "logOut") {
