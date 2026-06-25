@@ -132,7 +132,7 @@ const Profile = () => {
                     {openedUserProfile.relationshipStatus !== "blocked" ? (
                       <button
                         type="button"
-                        className="text-sm text-(--foreground-primary) w-full flex items-center gap-3 px-4 py-2.5 bg-red-500/10"
+                        className="text-sm text-(--foreground-primary) w-full flex items-center gap-3 px-4 py-2.5 danger-surface no-hover"
                         onClick={() => {
                           setIsConfirmOpen(true);
                           setConfirmAction("block");

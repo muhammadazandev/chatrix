@@ -82,8 +82,6 @@ const useAuthStore = create(
           if (res?.data?.success) {
             await get().login(email, password);
           }
-
-          toast.success("Signup successful");
         } catch (error) {
           const message = handleError(error);
           if (message) {
@@ -107,7 +105,7 @@ const useAuthStore = create(
 
           set({ isAuthenticated: true, user: res?.data?.user });
 
-          await useSettingsStore().getState().getSetting();
+          await useSettingsStore.getState().getSetting();
         } catch (error) {
           const message = handleError(error);
           if (message) {

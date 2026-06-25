@@ -91,6 +91,8 @@ const useMessageComposer = ({
     if (messageMode.type === "edit") {
       setValue(messageMode.payload.text);
       inputRef.current?.focus();
+    } else if (messageMode.type === "reply") {
+      inputRef.current?.focus();
     }
   }, [messageMode.type]);
 

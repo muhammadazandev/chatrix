@@ -1,16 +1,16 @@
 import { RiArrowLeftLine, RiFileCopyLine } from "@remixicon/react";
-import { useNavigate } from "react-router-dom";
 import IconsWrapper from "../../../../../../components/IconsWrapper";
 import useAuthStore from "../../../../../../store/useAuthStore";
 import Tooltip from "../../../../../../components/Tooltip";
 import toast from "react-hot-toast";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ProfileField from "./ProfileField";
 import ProfilePicture from "./ProfilePicture";
+import { useQueryParams } from "../../../../../../hooks/useQueryParams";
 
 const Profile = () => {
   const user = useAuthStore((state) => state.user);
-  const navigate = useNavigate();
+  const { updateParams } = useQueryParams();
   const [activeField, setActiveField] = useState(null);
   const inputsRef = useRef({});
   const [formData, setFormData] = useState({
@@ -21,7 +21,10 @@ const Profile = () => {
   return (
     <div className="pointer-events-auto bg-(--bg-primary) h-[95vh] w-full absolute top-0 left-0 z-40">
       <Tooltip content="Back" delay={[1000, 0]}>
-        <button className="p-2.5 rounded-full" onClick={() => navigate(-1)}>
+        <button
+          className="p-2.5 rounded-full"
+          onClick={() => updateParams({ tab: null })}
+        >
           <IconsWrapper icon={RiArrowLeftLine} />
         </button>
       </Tooltip>

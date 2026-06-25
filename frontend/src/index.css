@@ -146,3 +146,11 @@ button:active,
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.danger-action {
+  @apply text-red-500 hover:bg-red-500/15 dark:hover:bg-red-500/20;
+}
+
+.danger-surface {
+  @apply bg-red-500/10 text-red-500 hover:bg-red-100/10;
+}

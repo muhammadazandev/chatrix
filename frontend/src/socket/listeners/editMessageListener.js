@@ -5,6 +5,16 @@ export function registerEditMessage(socket) {
   socket.on(SOCKET_EVENTS.EDIT_MESSAGE, (data) => {
     useChatStore.setState((state) => ({
       messages: state.messages.map((mes) => {
+        if (mes.replyTo?._id === data.messageId) {
+          return {
+            ...mes,
+            replyTo: {
+              ...mes.replyTo,
+              text: data.patch.text,
+            },
+          };
+        }
+
         if (mes._id !== data.messageId) return mes;
 
         return {

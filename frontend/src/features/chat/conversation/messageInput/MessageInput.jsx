@@ -13,7 +13,7 @@ import Tooltip from "../../../../components/Tooltip";
 import useTypingIndicator from "../../../../hooks/useTypingIndicator";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import useMessageComposer from "../../../../hooks/useMessageComposer";
-import ReplyPreview from "./ReplyPreview";
+import ReplyCard from "../shared/ReplyCard";
 
 const shakeVariants = {
   error: {
@@ -83,9 +83,11 @@ const MessageInput = () => {
       >
         <AnimatePresence>
           {messageMode.type === "reply" && (
-            <ReplyPreview
-              message={messageMode.payload}
-              clearMessageMode={clearMessageMode}
+            <ReplyCard
+              replyMessage={messageMode.payload}
+              showCloseButton
+              onClose={clearMessageMode}
+              animated
             />
           )}
         </AnimatePresence>

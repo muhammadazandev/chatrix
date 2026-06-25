@@ -98,7 +98,7 @@ const UserListItems = ({
                         <div className="h-px bg-(--foreground-secondary)/20 mx-2 my-1" />
                         <button
                           type="button"
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500 mt-2 !hover:bg-red-500/10 dark:hover:bg-red-500/15 no-hover"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium mt-2 danger-action no-hover"
                           onClick={() => {
                             setConfirmBoxUserId(user._id);
                             setIsConfirmOpen(true);

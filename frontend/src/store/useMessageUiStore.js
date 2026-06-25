@@ -5,10 +5,12 @@ const useMessageUiStore = create((set) => ({
     type: "normal",
     payload: null,
   },
+  jumpToMessageId: null,
 
   setMessageMode: (mode) => set({ messageMode: mode }),
   clearMessageMode: () =>
     set({ messageMode: { type: "normal", payload: null } }),
+  setJumpToMessageId: (msg) => set({ jumpToMessageId: msg }),
 }));
 
 export default useMessageUiStore;

@@ -76,7 +76,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
                 type="button"
                 className={`w-full px-3 py-2.5 my-0.5 inline-flex gap-3.5 items-center text-sm font-medium rounded-lg no-hover ${
                   isDanger
-                    ? "text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/15"
+                    ? "no-hover danger-action"
                     : "text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100"
                 }`}
                 onClick={async () => {
@@ -85,7 +85,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
                 }}
               >
                 <div
-                  className={`flex items-center justify-center transition-transform duration-150 group-hover:scale-105 ${isDanger ? "text-red-500" : "opacity-75"}`}
+                  className={`flex items-center justify-center transition-transform duration-150 group-hover:scale-105 ${isDanger ? "danger-action" : "opacity-75"}`}
                 >
                   <IconsWrapper icon={opt.icon} size={18} />
                 </div>
