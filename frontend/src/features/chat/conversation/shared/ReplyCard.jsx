@@ -2,6 +2,7 @@ import { RiCloseLine } from "@remixicon/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
 import Motion from "../../../../motion/Motion";
+import useMessageUiStore from "../../../../store/useMessageUiStore";
 
 const ReplyCard = ({
   replyMessage,
@@ -11,9 +12,15 @@ const ReplyCard = ({
   className = "",
 }) => {
   const user = useAuthStore((state) => state.user);
+  const setJumpToMessageId = useMessageUiStore(
+    (state) => state.setJumpToMessageId,
+  );
 
   const content = (
-    <div className={`w-full rounded-sm bg-(--bg-primary)/40 flex ${className}`}>
+    <div
+      className={`w-full rounded-sm bg-(--bg-primary)/40 flex ${className}`}
+      onClick={() => setJumpToMessageId(replyMessage._id)}
+    >
       <span className="bg-(--accent-color-secondary) w-1 rounded-l-full" />
 
       <div className="px-3 py-2 flex w-full justify-between">

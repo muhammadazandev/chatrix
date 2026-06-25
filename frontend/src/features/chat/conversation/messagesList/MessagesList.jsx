@@ -5,12 +5,19 @@ import { AnimatePresence } from "motion/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import { RiForbidLine } from "@remixicon/react";
 import ReplyCard from "../shared/ReplyCard";
+import useMessageUiStore from "../../../../store/useMessageUiStore";
 
 const MessagesList = ({ messages }) => {
   const user = useAuthStore((state) => state.user);
-  const latestMessageRef = useRef(null);
+  const messageRefs = useRef({});
   const [openMessageMenuId, setOpenMessageMenuId] = useState(null);
   const [menuCoords, setMenuCoords] = useState({ x: 0, y: 0 });
+  const jumpToMessageId = useMessageUiStore(
+    (state) => state.jumpToMessageId,
+  );
+  const setJumpToMessageId = useMessageUiStore(
+    (state) => state.setJumpToMessageId,
+  );
   const formatTime = (date) =>
     new Date(date).toLocaleTimeString([], {
       hour: "2-digit",
@@ -18,10 +25,31 @@ const MessagesList = ({ messages }) => {
     });
 
   useEffect(() => {
-    latestMessageRef.current?.scrollIntoView({
+    const lastMessage = messages[messages.length - 1];
+
+    if (!lastMessage || jumpToMessageId) return;
+
+    messageRefs.current[lastMessage._id]?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages]);
+
+  useEffect(() => {
+    const replyToElement = messageRefs.current[jumpToMessageId];
+
+    if (!replyToElement) return;
+
+    replyToElement.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    const tm = setTimeout(() => {
+      setJumpToMessageId(null);
+    }, 1000);
+
+    return () => clearTimeout(tm);
+  }, [jumpToMessageId, setJumpToMessageId]);
 
   useEffect(() => {
     const closeMenu = () => setOpenMessageMenuId(null);
@@ -49,7 +77,6 @@ const MessagesList = ({ messages }) => {
         {messages?.map((message, index) => {
           if (!message) return null;
 
-          const isLast = index === messages.length - 1;
           const senderId = message.sender?._id || message.senderId;
 
           const isMe = senderId === user?._id;
@@ -72,7 +99,13 @@ const MessagesList = ({ messages }) => {
           return (
             <div
               key={message._id}
-              ref={isLast ? latestMessageRef : null}
+              ref={(el) => {
+                if (el) {
+                  messageRefs.current[message._id] = el;
+                } else {
+                  delete messageRefs.current[message._id];
+                }
+              }}
               className={`flex ${
                 isMe ? "justify-end" : "justify-start"
               } ${startsBlock ? "mt-4" : "mt-1"}`}
