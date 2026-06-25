@@ -31,7 +31,11 @@ const ReplyCard = ({
               : replyMessage?.sender?.username}
           </p>
 
-          <p className="text-sm opacity-50 truncate">{replyMessage?.text}</p>
+          <p className="text-sm opacity-50 truncate">
+            {replyMessage?.isDeleted
+            ? "This message was deleted"
+              : replyMessage?.text}
+          </p>
         </div>
 
         {showCloseButton && (

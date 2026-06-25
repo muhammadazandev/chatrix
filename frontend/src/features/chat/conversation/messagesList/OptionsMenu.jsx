@@ -107,7 +107,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
           return;
 
         return (
-          <>
+          <div key={btn.actionFun}>
             {btn.actionFun === "handleDelete" ? (
               <div className="h-[0.1px] my-2 bg-(--foreground-primary)/20" />
             ) : null}
@@ -116,7 +116,6 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
                 actions[btn.actionFun](e);
                 btn.actionFun !== "handleDelete" ? onClose() : null;
               }}
-              key={btn.label}
               className={`w-full text-left px-3.5 py-2 text-xs transition-colors flex items-center gap-2.5 ${btn.danger ? "danger-action no-hover" : "text-(--foreground-primary) font-semibold"}`}
             >
               <IconsWrapper
@@ -126,7 +125,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
               />
               {btn.label}
             </button>
-          </>
+          </div>
         );
       })}
 
