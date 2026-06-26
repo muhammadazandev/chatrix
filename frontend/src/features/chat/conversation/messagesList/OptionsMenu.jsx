@@ -3,6 +3,7 @@ import {
   RiDeleteBin3Line,
   RiEdit2Line,
   RiFileCopyLine,
+  RiShareForwardLine,
 } from "@remixicon/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
@@ -32,6 +33,11 @@ const actionButtons = [
     actionFun: "handleReply",
   },
   {
+    icon: RiShareForwardLine,
+    label: "Forward Message",
+    actionFun: "handleForward",
+  },
+  {
     icon: RiDeleteBin3Line,
     label: "Delete Message",
     actionFun: "handleDelete",
@@ -41,8 +47,12 @@ const actionButtons = [
 
 const OptionsMenu = ({ message, coords, isMe, onClose }) => {
   const user = useAuthStore((state) => state.user);
+  const isMine = message.senderId === user._id;
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const setMessageMode = useMessageUiStore((state) => state.setMessageMode);
+  const setForwardMessageId = useMessageUiStore(
+    (state) => state.setForwardMessageId,
+  );
 
   const handleCopy = async (e) => {
     e.stopPropagation();
@@ -77,6 +87,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
     handleEdit: () => setMessageMode({ type: "edit", payload: message }),
     handleDelete: () => setIsConfirmOpen(true),
     handleReply: () => setMessageMode({ type: "reply", payload: message }),
+    handleForward: () => setForwardMessageId(message._id),
   };
 
   useEffect(() => {
@@ -97,7 +108,6 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       className={`absolute z-99 rounded-xl py-1.5 w-40 top-1/2 -translate-y-1/2 bg-(--bg-secondary) border border-(--foreground-secondary)/20 ${isMe ? "-translate-x-full" : ""}`}
     >
       {actionButtons.map((btn) => {
-        const isMine = message.senderId === user._id;
         if (
           (btn.actionFun === "handleEdit" &&
             (Date.now() - new Date(message.createdAt).getTime() > 900000 ||

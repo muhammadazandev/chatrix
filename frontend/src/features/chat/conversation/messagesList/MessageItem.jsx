@@ -2,7 +2,7 @@ import { AnimatePresence } from "motion/react";
 import useAuthStore from "../../../../store/useAuthStore";
 import OptionsMenu from "./OptionsMenu";
 import IconsWrapper from "../../../../components/IconsWrapper";
-import { RiForbidLine } from "@remixicon/react";
+import { RiForbidLine, RiShareForwardLine } from "@remixicon/react";
 import ReplyCard from "../shared/ReplyCard";
 
 const formatTime = (date) =>
@@ -71,6 +71,24 @@ const MessageItem = ({
         } ${message.isDeleted ? "cursor-default" : "cursor-pointer"}`}
         onContextMenu={(e) => contextMenu(e, message._id, message.isDeleted)}
       >
+        {message.isForwarded && (
+          <div
+            className={`flex items-center gap-1 px-2 pt-1 ${
+              isMe ? "text-white/70" : "text-(--foreground-secondary)"
+            }`}
+          >
+            <IconsWrapper
+              icon={RiShareForwardLine}
+              size={13}
+              className="opacity-70"
+            />
+
+            <span className="text-[11px] italic opacity-70 select-none">
+              Forwarded
+            </span>
+          </div>
+        )}
+
         {message.replyTo && <ReplyCard replyMessage={message.replyTo} />}
         <div className={`${message.replyTo ? "px-2 py-1" : "px-1"}`}>
           {showHeader && (

@@ -1,6 +1,7 @@
 import { registerConversationConnections } from "./handlers/conversation.connection.handler.js";
 import { registerDeleteMessage } from "./handlers/delete.message.handler.js";
 import { registerEditMessage } from "./handlers/edit.message.handler.js";
+import { registerForwardMessage } from "./handlers/forward.message.handler.js";
 import { registerFriendsPresence } from "./handlers/friends.presence.handler.js";
 import { registerNewMessage } from "./handlers/new.message.handler.js";
 import { registerTyping } from "./handlers/typing.handler.js";
@@ -27,6 +28,7 @@ export const registerSocket = (io) => {
     registerTyping(socket);
     registerEditMessage(io, socket);
     registerDeleteMessage(io, socket);
+    registerForwardMessage(io, socket);
 
     socket.on("disconnect", (reason) => {
       // clean up any typing entries for this socket and notify rooms
