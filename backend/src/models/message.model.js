@@ -20,32 +20,23 @@ const messageSchema = mongoose.Schema(
       default: "text",
     },
 
-    text: {
-      type: String,
-      default: "",
-    },
+    text: { type: String, default: "" },
 
     mediaUrl: { type: String },
 
-    isEdited: {
-      type: Boolean,
-      default: false,
-    },
+    isEdited: { type: Boolean, default: false },
 
-    editedAt: {
-      type: Date,
-    },
+    editedAt: { type: Date },
 
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
+    isDeleted: { type: Boolean, default: false },
 
     replyTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
       default: null,
     },
+
+    isForwarded: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

@@ -3,6 +3,7 @@ import IconsWrapper from "../../../../components/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
 import Motion from "../../../../motion/Motion";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
+import Tooltip from "../../../../components/Tooltip";
 
 const ReplyCard = ({
   replyMessage,
@@ -18,8 +19,11 @@ const ReplyCard = ({
 
   const content = (
     <div
-      className={`w-full rounded-sm bg-(--bg-primary)/40 flex ${className}`}
-      onClick={() => setJumpToMessageId(replyMessage._id)}
+      className={`w-full rounded-sm bg-(--bg-primary)/40 flex cursor-pointer ${className}`}
+      onClick={(e) => {
+        if (e.target.tagName === "BUTTON") return;
+        setJumpToMessageId(replyMessage._id);
+      }}
     >
       <span className="bg-(--accent-color-secondary) w-1 rounded-l-full" />
 
@@ -33,18 +37,20 @@ const ReplyCard = ({
 
           <p className="text-sm opacity-50 truncate">
             {replyMessage?.isDeleted
-            ? "This message was deleted"
+              ? "This message was deleted"
               : replyMessage?.text}
           </p>
         </div>
 
         {showCloseButton && (
-          <button
-            className="rounded-full max-w-fit max-h-fit p-2"
-            onClick={onClose}
-          >
-            <IconsWrapper icon={RiCloseLine} />
-          </button>
+          <Tooltip content="Cancel" delay={[1000, 0]}>
+            <button
+              className="rounded-full max-w-fit max-h-fit p-2"
+              onClick={onClose}
+            >
+              <IconsWrapper icon={RiCloseLine} />
+            </button>
+          </Tooltip>
         )}
       </div>
     </div>
