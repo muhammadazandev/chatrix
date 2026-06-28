@@ -23,6 +23,7 @@ export async function registerDeleteMessage(socket) {
           isDeleted: data.patch.isDeleted,
           isEdited: data.patch.isEdited,
           editedAt: data.patch.editedAt,
+          text: data.patch.text,
           mediaUrl: data.patch.mediaUrl,
         };
       }),

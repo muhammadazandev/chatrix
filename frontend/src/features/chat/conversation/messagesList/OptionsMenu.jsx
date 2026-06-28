@@ -3,6 +3,7 @@ import {
   RiDeleteBin3Line,
   RiEdit2Line,
   RiFileCopyLine,
+  RiPushpin2Line,
   RiShareForwardLine,
 } from "@remixicon/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
@@ -15,6 +16,7 @@ import { socket } from "../../../../socket/socket";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
+import useChatStore from "../../../../store/useChatStore";
 
 const actionButtons = [
   {
@@ -38,6 +40,11 @@ const actionButtons = [
     actionFun: "handleForward",
   },
   {
+    icon: RiPushpin2Line,
+    label: "Pin Message",
+    actionFun: "handlePin",
+  },
+  {
     icon: RiDeleteBin3Line,
     label: "Delete Message",
     actionFun: "handleDelete",
@@ -46,6 +53,7 @@ const actionButtons = [
 ];
 
 const OptionsMenu = ({ message, coords, isMe, onClose }) => {
+  const pinnedMessages = useChatStore((state) => state.pinnedMessages);
   const user = useAuthStore((state) => state.user);
   const isMine = message.senderId === user._id;
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -53,6 +61,12 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
   const setForwardMessageId = useMessageUiStore(
     (state) => state.setForwardMessageId,
   );
+  const isPinned = pinnedMessages.some(
+    (msg) => msg.message._id === message._id,
+  );
+  const pin = pinnedMessages.find((p) => p.message._id === message._id);
+
+  const canUnpin = !pin || pin.pinnedBy._id === user._id;
 
   const handleCopy = async (e) => {
     e.stopPropagation();
@@ -82,12 +96,38 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
     onClose();
   };
 
+  const handlePin = () => {
+    const data = {
+      messageId: message._id,
+      conversationId: message.conversationId,
+    };
+
+    if (!isPinned) {
+      socket.emit(SOCKET_EVENTS.PIN_MESSAGE, data, (res) => {
+        if (!res?.success) {
+          toast.error(
+            `Failed to pin message${res?.message ? `: ${res.message}` : ""}`,
+          );
+        }
+      });
+    } else {
+      socket.emit(SOCKET_EVENTS.UNPIN_MESSAGE, data, (res) => {
+        if (!res?.success) {
+          toast.error(
+            `Failed to unpin message${res?.message ? `: ${res.message}` : ""}`,
+          );
+        }
+      });
+    }
+  };
+
   const actions = {
     handleCopy: handleCopy,
     handleEdit: () => setMessageMode({ type: "edit", payload: message }),
     handleDelete: () => setIsConfirmOpen(true),
     handleReply: () => setMessageMode({ type: "reply", payload: message }),
     handleForward: () => setForwardMessageId(message._id),
+    handlePin: handlePin,
   };
 
   useEffect(() => {
@@ -112,7 +152,9 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
           (btn.actionFun === "handleEdit" &&
             (Date.now() - new Date(message.createdAt).getTime() > 900000 ||
               !isMine)) ||
-          (btn.actionFun === "handleDelete" && !isMine)
+          (btn.actionFun === "handleDelete" && !isMine) ||
+          (btn.actionFun === "handlePin" && isPinned && !canUnpin) ||
+          pinnedMessages.length === 5
         )
           return;
 
@@ -133,7 +175,11 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
                 size={15}
                 className={btn.actionFun === "handleCopy" ? "rotate-180" : ""}
               />
-              {btn.label}
+              {btn.actionFun === "handlePin"
+                ? isPinned
+                  ? "Unpin Message"
+                  : "Pin Message"
+                : btn.label}
             </button>
           </div>
         );

@@ -51,7 +51,7 @@ const MessageItem = ({
         isMe ? "justify-end" : "justify-start"
       } ${startsBlock ? "mt-4" : "mt-1"}`}
     >
-      {!isMe && (
+      {!isMe && message.conversationType === "group" && (
         <div className="w-10 shrink-0 flex justify-center">
           {showHeader && (
             <img
@@ -110,7 +110,7 @@ const MessageItem = ({
               </p>
             </div>
           ) : (
-            <p className="text-sm leading-relaxed whitespace-pre-wrap mr-12">
+            <p className="text-sm leading-relaxed whitespace-pre-wrap mr-12 break-all">
               {message.text}
             </p>
           )}

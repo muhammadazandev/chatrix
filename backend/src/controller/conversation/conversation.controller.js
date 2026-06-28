@@ -151,13 +151,15 @@ async function verifyConversation(req, res) {
     }
 
     if (!conversationId) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "Conversation ID are required",
       });
     }
 
-    const conversation = await Conversation.findById(conversationId);
+    const conversation = await Conversation.findById(conversationId)
+      .populate("pinnedMessages.pinnedBy", "username")
+      .populate("pinnedMessages.message", "text");
 
     if (!conversation) {
       return res.status(404).json({
@@ -175,24 +177,42 @@ async function verifyConversation(req, res) {
       });
     }
 
-    let friend = null;
+    let currentConversationData = {};
 
     if (conversation.type === "direct") {
       const friendId = conversation.participants.find(
         (f) => f._id.toString() !== userId.toString(),
       );
 
-      friend = await User.findById(friendId).select(
+      const friend = await User.findById(friendId).select(
         "username profilePicture bio",
       );
+
+      currentConversationData = {
+        _id: conversation._id,
+        type: conversation.type,
+        pinnedMessages: conversation.pinnedMessages,
+        friendId: friend._id,
+        name: friend.username,
+        avatar: friend.profilePicture,
+        bio: friend.bio,
+      };
+    } else {
+      currentConversationData = {
+        _id: conversation._id,
+        type: conversation.type,
+        pinnedMessages: conversation.pinnedMessages,
+        name: conversation.name,
+        avatar: conversation.avatar,
+        participants: conversation.participants,
+        roles: conversation.participantRoles,
+      };
     }
 
     return res.status(200).json({
       success: true,
       message: "Verified",
-      conversation,
-      friend,
-      type: conversation.type,
+      currentConversation: currentConversationData,
     });
   } catch (error) {
     console.error(error);
