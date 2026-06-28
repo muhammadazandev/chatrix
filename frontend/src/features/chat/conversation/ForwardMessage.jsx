@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { RiCheckLine, RiCloseLine, RiSearchLine } from "@remixicon/react";
 import Motion from "../../../motion/Motion";
 import { popLift } from "../../../motion/variants";
@@ -8,10 +8,13 @@ import Tooltip from "../../../components/Tooltip";
 import { SOCKET_EVENTS } from "../../../socket/events";
 import { socket } from "../../../socket/socket";
 import toast from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
 
 const ForwardMessage = ({ forwardMessageId, conversations }) => {
   const [search, setSearch] = useState("");
-  const [selectedConversations, setSelectedConversations] = useState([]);
+  const [selectedConversations, setSelectedConversations] = useState([]);  
+  const [searchParam] = useSearchParams();
+  const currentConversationId = searchParam.get("conversationId");
 
   const setForwardMessageId = useMessageUiStore(
     (state) => state.setForwardMessageId,
@@ -20,12 +23,14 @@ const ForwardMessage = ({ forwardMessageId, conversations }) => {
   const filteredConversations = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    if (!query) return conversations;
+    return conversations.filter((con) => {
+      if (con._id === currentConversationId) return false;
 
-    return conversations.filter((con) =>
-      con.title.toLowerCase().includes(query),
-    );
-  }, [search, conversations]);
+      if (!query) return true;
+
+      return con.title.toLowerCase().includes(query);
+    });
+  }, [search, conversations, currentConversationId]);
 
   function toggleConversation(conversationId) {
     setSelectedConversations((prev) =>

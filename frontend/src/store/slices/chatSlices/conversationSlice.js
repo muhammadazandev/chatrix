@@ -25,10 +25,8 @@ export const createConversationSlice = (set) => ({
       const verifyRes = await authApi.get(`/conversation/${conversationId}`);
 
       set({
-        currentConversation:
-          verifyRes.data?.type === "direct"
-            ? verifyRes.data?.friend
-            : verifyRes.data?.conversation,
+        currentConversation: verifyRes.data?.currentConversation,
+        pinnedMessages: verifyRes.data?.currentConversation.pinnedMessages,
       });
     } catch (error) {
       const message = handleError(error);
@@ -58,10 +56,8 @@ export const createConversationSlice = (set) => ({
       const res = await authApi.get(`/conversation/${conversationId}`);
 
       set({
-        currentConversation:
-          res.data?.type === "direct"
-            ? res.data?.friend
-            : res.data?.conversation,
+        currentConversation: res.data?.currentConversation,
+        pinnedMessages: res.data?.currentConversation.pinnedMessages,
       });
     } catch (error) {
       const message = handleError(error);

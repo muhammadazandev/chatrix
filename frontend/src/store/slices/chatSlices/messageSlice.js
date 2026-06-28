@@ -4,6 +4,7 @@ import { authApi } from "../../../utils/api";
 
 export const createMessageSlice = (set) => ({
   messages: [],
+  pinnedMessages: [],
 
   getMessages: async (conversationId) => {
     try {

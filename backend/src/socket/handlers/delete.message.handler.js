@@ -1,3 +1,4 @@
+import Conversation from "../../models/conversation.model.js";
 import Message from "../../models/message.model.js";
 
 export function registerDeleteMessage(io, socket) {
@@ -39,6 +40,19 @@ export function registerDeleteMessage(io, socket) {
       message.text = "";
       message.mediaUrl = "";
       await message.save();
+
+      // Delete from pinned messages if pinned
+      const con = await Conversation.findById(message.conversationId,
+        "pinnedMessages"
+      );
+      const index = con.pinnedMessages.findIndex(
+        (pin) => pin.message.toString() === message._id.toString(),
+      );
+
+      if (index !== -1) {
+        con.pinnedMessages.splice(index, 1);
+        await con.save();
+      }
 
       // broadcast message
       io.to(`conversation:${message.conversationId}`).emit("delete_message", {

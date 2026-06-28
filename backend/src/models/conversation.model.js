@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
   {
+    // Basic fields
     type: {
       type: String,
       enum: ["direct", "group"],
@@ -33,10 +34,25 @@ const conversationSchema = new mongoose.Schema(
       ref: "User",
     },
 
-    // Last message fields
+    // Messages related fields
     lastMessageText: { type: String },
 
     lastMessageAt: { type: Date },
+
+    pinnedMessages: [
+      {
+        message: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Message",
+          required: true,
+        },
+        pinnedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

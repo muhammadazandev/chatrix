@@ -5,6 +5,7 @@ import { registerDeleteMessage } from "./deleteMessageListener";
 import { registerEditMessage } from "./editMessageListener";
 import { registerFriendsListener } from "./friendsPresenceListener";
 import { registerNewMessage } from "./newMessageListener";
+import { registerPinMessage } from "./pinMessageListener";
 import { registerTyping } from "./typingListener";
 
 let isRegistered = false;
@@ -21,4 +22,5 @@ export const initSocketListeners = () => {
   registerConversationListener(socket);
   registerEditMessage(socket);
   registerDeleteMessage(socket);
+  registerPinMessage(socket);
 };
