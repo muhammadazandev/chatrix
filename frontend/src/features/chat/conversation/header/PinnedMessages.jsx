@@ -7,6 +7,8 @@ import IconsWrapper from "../../../../components/IconsWrapper";
 import { useEffect, useState } from "react";
 import Tooltip from "../../../../components/Tooltip";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
+import { slideHeightExpand } from "../../../../motion/variants";
+import Motion from "../../../../motion/Motion";
 
 const PinnedMessages = ({ pinnedMessages }) => {
   if (!pinnedMessages || pinnedMessages.length === 0) return null;
@@ -31,7 +33,11 @@ const PinnedMessages = ({ pinnedMessages }) => {
   const msg = pinnedMessages[selectedMessage];
 
   return (
-    <div className="px-4 py-3 border-b border-(--foreground-primary)/20">
+    <Motion
+      variants={slideHeightExpand}
+      transition="subtle"
+      className="px-4 py-3 border-b border-(--foreground-primary)/20"
+    >
       <div className="flex justify-between gap-3">
         <div
           className="flex gap-4 items-center cursor-pointer flex-1 min-w-0"
@@ -84,7 +90,7 @@ const PinnedMessages = ({ pinnedMessages }) => {
           </Tooltip>
         </div>
       </div>
-    </div>
+    </Motion>
   );
 };
 
