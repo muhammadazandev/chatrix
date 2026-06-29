@@ -1,4 +1,3 @@
-import useFriendshipStore from "../../store/useFriendshipStore";
 import { socket } from "../socket";
 import { registerConversationListener } from "./conversationListener";
 import { registerDeleteMessage } from "./deleteMessageListener";
@@ -14,9 +13,7 @@ export const initSocketListeners = () => {
   if (isRegistered) return;
   isRegistered = true;
 
-  const updateFriendStatus = useFriendshipStore.getState().updateFriendStatus;
-
-  registerFriendsListener(socket, updateFriendStatus);
+  registerFriendsListener(socket);
   registerNewMessage(socket);
   registerTyping(socket);
   registerConversationListener(socket);

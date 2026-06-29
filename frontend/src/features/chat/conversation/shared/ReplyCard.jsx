@@ -4,6 +4,7 @@ import useAuthStore from "../../../../store/useAuthStore";
 import Motion from "../../../../motion/Motion";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import Tooltip from "../../../../components/Tooltip";
+import { slideHeightExpand } from "../../../../motion/variants";
 
 const ReplyCard = ({
   replyMessage,
@@ -61,9 +62,7 @@ const ReplyCard = ({
   return (
     <Motion
       className="mb-3 w-full z-10 overflow-hidden flex justify-center"
-      initial={{ height: 0, y: 5 }}
-      animate={{ height: "auto", y: 0 }}
-      exit={{ height: 0, y: 5 }}
+      variants={slideHeightExpand}
       transition="subtle"
     >
       {content}

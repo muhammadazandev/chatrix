@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import MessageItem from "./MessageItem";
 
@@ -58,23 +58,71 @@ const MessagesList = ({ messages }) => {
     setOpenMessageMenuId(messageId);
   }
 
-  const closeMenu = () => setOpenMessageMenuId(null)
+  const closeMenu = () => setOpenMessageMenuId(null);
+
+  function getDateLabel(messageDate) {
+    const today = new Date();
+    const message = new Date(messageDate);
+
+    const todayOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+    const messageOnly = new Date(
+      message.getFullYear(),
+      message.getMonth(),
+      message.getDate(),
+    );
+
+    const diffInDays = (todayOnly - messageOnly) / (1000 * 60 * 60 * 24);
+
+    if (diffInDays === 0) return "Today";
+    if (diffInDays === 1) return "Yesterday";
+    return message.toLocaleDateString();
+  }
+
+  function isDifferentDate(currentDate, previousDate) {
+    if (!previousDate) return true;
+
+    const current = new Date(currentDate);
+    const previous = new Date(previousDate);
+
+    return (
+      current.getFullYear() !== previous.getFullYear() ||
+      current.getMonth() !== previous.getMonth() ||
+      current.getDate() !== previous.getDate()
+    );
+  }
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto bg-transparent">
       <div className="flex flex-col px-4 py-6 gap-2">
         {messages.map((message, index) => {
+          const showDateHeader = isDifferentDate(
+            message.createdAt,
+            messages[index - 1]?.createdAt,
+          );
+
           return (
-            <MessageItem
-              key={message._id}
-              message={message}
-              contextMenu={contextMenu}
-              prevMessage={messages[index - 1]}
-              openMessageMenuId={openMessageMenuId}
-              messageRefs={messageRefs}
-              menuCoords={menuCoords}
-              closeMenu={closeMenu}
-            />
+            <Fragment key={message._id}>
+              {showDateHeader && (
+                <div className="w-full flex justify-center opacity-90 tracking-wider my-2">
+                  <p className="bg-(--bg-secondary)/50 rounded-md px-4 py-2 text-[12px]">
+                    {getDateLabel(message.createdAt)}
+                  </p>
+                </div>
+              )}
+              <MessageItem
+                message={message}
+                contextMenu={contextMenu}
+                prevMessage={messages[index - 1]}
+                openMessageMenuId={openMessageMenuId}
+                messageRefs={messageRefs}
+                menuCoords={menuCoords}
+                closeMenu={closeMenu}
+              />
+            </Fragment>
           );
         })}
       </div>

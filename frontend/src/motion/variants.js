@@ -85,6 +85,12 @@ const slideInFromLeft = {
   exit: { x: "-100%" },
 };
 
+const slideHeightExpand = {
+  initial: { height: 0, y: 5 },
+  animate: { height: "auto", y: 0 },
+  exit: { height: 0, y: 5 },
+};
+
 export {
   slideFade,
   fade,
@@ -93,4 +99,5 @@ export {
   popLift,
   slideInRight,
   slideInFromLeft,
+  slideHeightExpand,
 };
