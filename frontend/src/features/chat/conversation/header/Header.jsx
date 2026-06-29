@@ -23,7 +23,21 @@ const Header = () => {
     verify();
   }, [conId, currentConversation, verifyConversation]);
 
+  const isDirect = currentConversation?.type === "direct";
+
   if (!currentConversation) return null;
+
+  function subtitleText() {
+    if (isDirect) {
+      return currentConversation.isOnline ? "Online" : "Offline";
+    } else {
+      const onlineCount = currentConversation.participants.filter(
+        (p) => p.isOnline,
+      ).length;
+
+      return `${currentConversation.participants.length} members • ${onlineCount} online`;
+    }
+  }
 
   return (
     <div>
@@ -31,6 +45,9 @@ const Header = () => {
         <div className="p-3.5 flex items-center justify-between gap-4 relative">
           <div className="flex items-center gap-3.5 min-w-0 flex-1">
             <div className="relative shrink-0">
+              <span
+                className={`inline-block p-1.5 mr-2 rounded-full opacity-50 absolute bottom-0 -left-1 ${!isDirect ? "hidden" : isDirect && currentConversation.isOnline ? "bg-green-500" : "bg-(--foreground-primary)/40"}`}
+              />
               <img
                 loading="lazy"
                 src={currentConversation.avatar}
@@ -40,10 +57,12 @@ const Header = () => {
             </div>
 
             <div>
-              <div className="overflow-hidden">
+              <div className="overflow-hidden flex flex-col">
                 <h2 className="text-md font-semibold text-(--foreground-primary) tracking-wide">
                   {currentConversation.name}
                 </h2>
+
+                <p className="text-xs opacity-50">{subtitleText()}</p>
               </div>
             </div>
           </div>
@@ -52,7 +71,9 @@ const Header = () => {
 
       <div>
         <AnimatePresence>
-          {pinnedMessages.length > 0 && <PinnedMessages pinnedMessages={pinnedMessages} />}
+          {pinnedMessages.length > 0 && (
+            <PinnedMessages pinnedMessages={pinnedMessages} />
+          )}
         </AnimatePresence>
       </div>
     </div>

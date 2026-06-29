@@ -3,6 +3,7 @@ import Conversation from "../../models/conversation.model.js";
 import Relationship from "../../models/relationship.model.js";
 import verifyParticipant from "../../utils/verifyConversationParticipant.js";
 import User from "../../models/user.model.js";
+import { onlineUsers } from "../../socket/socket.store.js";
 
 async function accessConversationController(req, res) {
   try {
@@ -196,15 +197,26 @@ async function verifyConversation(req, res) {
         name: friend.username,
         avatar: friend.profilePicture,
         bio: friend.bio,
+        isOnline: onlineUsers.has(friend._id.toString()),
       };
     } else {
+      const participantsWithOnlineStatus = conversation.participants.map(
+        (part) => {
+          const status = onlineUsers.has(part.toString());
+          return {
+            _id: part,
+            isOnline: status,
+          };
+        },
+      );
+
       currentConversationData = {
         _id: conversation._id,
         type: conversation.type,
         pinnedMessages: conversation.pinnedMessages,
         name: conversation.name,
         avatar: conversation.avatar,
-        participants: conversation.participants,
+        participants: participantsWithOnlineStatus,
         roles: conversation.participantRoles,
       };
     }

@@ -54,7 +54,7 @@ const UserListItems = ({
                 {user.isOnline === null ||
                 user.isOnline === undefined ? null : (
                   <div
-                    className={`absolute p-1.5 bottom-1 left-1 border border-(--foreground-primary)/50 rounded-full ${user.isOnline ? "bg-green-600" : "bg-transparent"}`}
+                    className={`absolute p-1.5 bottom-3 left-3 rounded-full ${user.isOnline ? "bg-green-600" : "bg-(--foreground-primary)/30"}`}
                   />
                 )}
               </div>
