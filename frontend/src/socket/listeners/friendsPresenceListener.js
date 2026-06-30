@@ -19,24 +19,36 @@ function setCurrentConversationPresence(userId, isOnline) {
       };
     }
 
-    const exists = con.participants.some(
-      (p) => p._id === userId,
-    );
+    const exists = con.participants.some((p) => p._id === userId);
 
     if (!exists) return state;
 
     return {
       currentConversation: {
         ...con,
-        participants: con.participants.map(
-          (participant) =>
-            participant._id === userId
-              ? { ...participant, isOnline }
-              : participant,
+        participants: con.participants.map((participant) =>
+          participant._id === userId
+            ? { ...participant, isOnline }
+            : participant,
         ),
       },
     };
   });
+}
+
+function updateParticipantsData(userId, isOnline) {
+  if (useChatStore.getState().participantsData) {
+    useChatStore.setState((state) => ({
+      participantsData: state.participantsData.map((participant) => {
+        if (participant._id !== userId) return participant;
+
+        return {
+          ...participant,
+          isOnline: false,
+        };
+      }),
+    }));
+  }
 }
 
 export const registerFriendsListener = (socket) => {
@@ -46,11 +58,15 @@ export const registerFriendsListener = (socket) => {
     updateFriendStatus(userId, true);
 
     setCurrentConversationPresence(userId, true);
-  });
 
+    updateParticipantsData(userId, true)
+  });
+  
   socket.on(SOCKET_EVENTS.FRIEND_OFFLINE, ({ userId }) => {
     updateFriendStatus(userId, false);
-
+    
     setCurrentConversationPresence(userId, false);
+
+    updateParticipantsData(userId, false)
   });
 };

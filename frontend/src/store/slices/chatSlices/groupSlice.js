@@ -4,6 +4,7 @@ import { authApi } from "../../../utils/api";
 
 export const createGroupSlice = (set) => ({
   isLoading: false,
+  participantsData: [],
 
   createGroup: async (formData, updateParams) => {
     set({ isLoading: true });
@@ -23,6 +24,19 @@ export const createGroupSlice = (set) => ({
       }
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  getParticipantsData: async (groupId) => {
+    try {
+      const res = await authApi.get(`/group/participants/${groupId}`);
+
+      set({ participantsData: res.data?.participants });
+    } catch (error) {
+      const message = handleError(error);
+      if (message) {
+        toast.error(message);
+      }
     }
   },
 });

@@ -49,7 +49,7 @@ const PinnedMessages = ({ pinnedMessages }) => {
 
           <div className="min-w-0 flex-1">
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] text-(--foreground-secondary)/40">
+              <p className="text-[13px] text-(--foreground-secondary)/60">
                 Pinned by {msg?.pinnedBy?.username}
               </p>
 

@@ -3,7 +3,7 @@ import useChatStore from "../../../../store/useChatStore";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
 import { ConversationEmptyState } from "../../sidebar/components/EmptyStates";
 
-const ConversationView = () => {
+const ConversationLists = () => {
   const getConversations = useChatStore((state) => state.getConversations);
   const conversations = useChatStore((state) => state.conversations);
   const verifyConversation = useChatStore((state) => state.verifyConversation);
@@ -67,4 +67,4 @@ const ConversationView = () => {
   );
 };
 
-export default ConversationView;
+export default ConversationLists;

@@ -153,8 +153,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
             (Date.now() - new Date(message.createdAt).getTime() > 900000 ||
               !isMine)) ||
           (btn.actionFun === "handleDelete" && !isMine) ||
-          (btn.actionFun === "handlePin" && isPinned && !canUnpin) ||
-          pinnedMessages.length === 5
+          (btn.actionFun === "handlePin" && isPinned && !canUnpin)
         )
           return;
 
