@@ -8,6 +8,7 @@ import { useQueryParams } from "../../../../hooks/useQueryParams";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import { AnimatePresence } from "motion/react";
 import GroupProfile from "./GroupProfile";
+import Tooltip from "../../../../components/Tooltip";
 
 function Lists({ friend = {}, isSelected, moveElement }) {
   return (
@@ -91,16 +92,18 @@ const CreateGroup = () => {
     <Motion variants={slideInRight} ref={scope} className="h-full">
       <div className="flex flex-col gap-5 relative h-full">
         <header className="flex gap-4 items-center">
-          <button
-            type="button"
-            className="rounded-full p-2"
-            onClick={async () => {
-              await close();
-              updateParams({ view: null });
-            }}
-          >
-            <IconsWrapper icon={RiCloseFill} />
-          </button>
+          <Tooltip content="Back" delay={[1000, 0]}>
+            <button
+              type="button"
+              className="rounded-full p-2"
+              onClick={async () => {
+                await close();
+                updateParams({ view: null });
+              }}
+            >
+              <IconsWrapper icon={RiCloseFill} />
+            </button>
+          </Tooltip>
           <p>Add group members</p>
         </header>
         <div className="grid grid-cols-2 min-w-full max-h-40 overflow-y-auto">

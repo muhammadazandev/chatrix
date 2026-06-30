@@ -34,7 +34,7 @@ const Profile = () => {
   useEffect(() => {
     if (!userId) return;
     getUserProfileInfo(userId);
-  }, [userId]);
+  }, [userId, getUserProfileInfo]);
 
   async function onConfirmClick() {
     if (!userId || !openedUserProfile) return;
@@ -64,7 +64,7 @@ const Profile = () => {
         {openedUserProfile ? (
           <div className="bg-(--bg-primary) w-full">
             <div className="flex justify-between">
-              <Tooltip content="Back" delay={[1000, 0]}>
+              <Tooltip content="Back" delay={[1000,0]}>
                 <button
                   className="p-2.5 rounded-full"
                   onClick={async () => {

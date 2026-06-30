@@ -25,7 +25,8 @@ const ChatSidebar = () => {
   const isDifferentView =
     currentView === "settings" ||
     currentView === "profile" ||
-    currentView === "create-group";
+    currentView === "create-group" ||
+    currentView === "conversation-info";
 
   const isSearching = !isDifferentView && query.trim().length > 1;
 

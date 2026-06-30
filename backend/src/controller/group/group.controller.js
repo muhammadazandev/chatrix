@@ -1,5 +1,6 @@
 import Conversation from "../../models/conversation.model.js";
 import mongoose from "mongoose";
+import { onlineUsers } from "../../socket/socket.store.js";
 
 async function createGroup(req, res) {
   try {
@@ -87,4 +88,55 @@ async function createGroup(req, res) {
   }
 }
 
-export { createGroup };
+async function getParticipants(req, res) {
+  try {
+    const groupId = req.params.groupId;
+    const userId = req.user.id;
+
+    if (!groupId || !mongoose.Types.ObjectId.isValid(groupId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid group id",
+      });
+    }
+
+    const group = await Conversation.findOne({
+      _id: groupId,
+      participants: userId,
+      type: "group",
+    });
+
+    if (!group) {
+      return res.status(404).json({
+        success: false,
+        message: "Group not found",
+      });
+    }
+
+    const participantsInfo = await group.populate(
+      "participants",
+      "username profilePicture bio",
+    );
+
+    const formatted = participantsInfo.participants.map((p) => {
+      return {
+        ...p.toObject(),
+        role: participantsInfo.participantRoles.get(p._id),
+        isOnline: onlineUsers.has(p._id.toString()),
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      participants: formatted,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+}
+
+export { createGroup, getParticipants };

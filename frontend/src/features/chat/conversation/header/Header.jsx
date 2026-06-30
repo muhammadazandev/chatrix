@@ -1,12 +1,12 @@
-import { useSearchParams } from "react-router-dom";
 import useChatStore from "../../../../store/useChatStore";
 import { useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import PinnedMessages from "./PinnedMessages";
+import { useQueryParams } from "../../../../hooks/useQueryParams";
 
 const Header = () => {
-  const [searchParam] = useSearchParams();
-  const conId = searchParam.get("conversationId");
+  const { updateParams, searchParams } = useQueryParams();
+  const conId = searchParams.get("conversationId");
   const currentConversation = useChatStore(
     (state) => state.currentConversation,
   );
@@ -41,7 +41,10 @@ const Header = () => {
 
   return (
     <div>
-      <div className="min-w-full px-3 py-2  bg-(--bg-primary) border-b border-(--foreground-primary)/20">
+      <div
+        className="min-w-full px-3 py-2  bg-(--bg-primary) border-b border-(--foreground-primary)/20 cursor-pointer"
+        onClick={() => updateParams({ view: "conversation-info" })}
+      >
         <div className="p-3.5 flex items-center justify-between gap-4 relative">
           <div className="flex items-center gap-3.5 min-w-0 flex-1">
             <div className="relative shrink-0">
