@@ -24,19 +24,27 @@ const Header = () => {
   }, [conId, currentConversation, verifyConversation]);
 
   const isDirect = currentConversation?.type === "direct";
+  const onlineDotClasses =
+    !isDirect || currentConversation.relationshipStatus === "blocked"
+      ? "hidden"
+      : currentConversation.isOnline
+        ? "bg-green-500"
+        : "bg-(--foreground-primary)/40";
 
   if (!currentConversation) return null;
 
   function subtitleText() {
+    if (currentConversation?.relationshipStatus === "blocked") return "Blocked";
+
     if (isDirect) {
       return currentConversation.isOnline ? "Online" : "Offline";
-    } else {
-      const onlineCount = currentConversation.participants.filter(
-        (p) => p.isOnline,
-      ).length;
-
-      return `${currentConversation.participants.length} members • ${onlineCount} online`;
     }
+
+    const onlineCount = currentConversation.participants.filter(
+      (p) => p.isOnline,
+    ).length;
+
+    return `${currentConversation.participants.length} members • ${onlineCount} online`;
   }
 
   return (
@@ -49,7 +57,7 @@ const Header = () => {
           <div className="flex items-center gap-3.5 min-w-0 flex-1">
             <div className="relative shrink-0">
               <span
-                className={`inline-block p-1.5 mr-2 rounded-full opacity-50 absolute bottom-0 -left-1 ${!isDirect ? "hidden" : isDirect && currentConversation.isOnline ? "bg-green-500" : "bg-(--foreground-primary)/40"}`}
+                className={`inline-block p-1.5 mr-2 rounded-full opacity-50 absolute bottom-0 -left-1 ${onlineDotClasses}`}
               />
               <img
                 loading="lazy"

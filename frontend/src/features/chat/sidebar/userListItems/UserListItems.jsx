@@ -34,7 +34,7 @@ const UserListItems = ({
 
         return (
           <div
-            key={user._id}
+            key={user?._id}
             className="group p-3.5 flex items-center justify-between gap-4 transition-all duration-200 rounded-lg relative border-b border-(--foreground-secondary)/30 hover:bg-(--bg-secondary)/50"
           >
             {/* User Profile Card Section */}
@@ -48,13 +48,13 @@ const UserListItems = ({
                   {user?.username}
                 </h3>
                 <p className="text-xs font-medium opacity-50 truncate max-w-60 mt-0.5">
-                  {user.bio || "No bio available"}
+                  {user?.bio || "No bio available"}
                 </p>
 
-                {user.isOnline === null ||
-                user.isOnline === undefined ? null : (
+                {user?.isOnline === null ||
+                user?.isOnline === undefined ? null : (
                   <div
-                    className={`absolute p-1.5 bottom-3 left-3 rounded-full ${user.isOnline ? "bg-green-600" : "bg-(--foreground-primary)/30"}`}
+                    className={`absolute p-1.5 bottom-3 left-3 rounded-full ${user?.isOnline ? "bg-green-600" : "bg-(--foreground-primary)/30"}`}
                   />
                 )}
               </div>
@@ -100,7 +100,7 @@ const UserListItems = ({
                           type="button"
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium mt-2 danger-action no-hover"
                           onClick={() => {
-                            setConfirmBoxUserId(user._id);
+                            setConfirmBoxUserId(user?._id);
                             setIsConfirmOpen(true);
                           }}
                         >

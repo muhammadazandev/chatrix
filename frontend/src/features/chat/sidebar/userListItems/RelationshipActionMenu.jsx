@@ -123,6 +123,7 @@ function ActionButton({
   setConfirmBoxUserId,
   setConfirmAction,
   onStartChat,
+  setIsUnblockClicked,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -133,7 +134,8 @@ function ActionButton({
       setMoreOpenIndex?.(null);
       setConfirmAction?.("friend");
       return;
-    }
+    } else if (actionKey === "unblock" && setIsUnblockClicked)
+      setIsUnblockClicked(true);
 
     setMoreOpenIndex?.(null);
 
@@ -181,8 +183,20 @@ export default function RenderActionButtons({
   setConfirmBoxUserId,
   setConfirmAction,
   onStartChat,
+  setIsUnblockClicked,
+  isBlockedByMe,
 }) {
-  const actionKeys = RELATIONSHIP_ACTIONS[status] || [];
+  let actionKeys = RELATIONSHIP_ACTIONS[status] || [];
+
+  if (status === "blocked" && !isBlockedByMe) {
+    actionKeys = [];
+  }
+
+  if (actionKeys.length === 0) return (
+    <div className="text-sm w-full flex items-center gap-3 px-4 py-2.5 no-hover text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100 text-nowrap transiton duration-200 rounded-md border border-dashed border-(--foreground-secondary)/40">
+      No action button
+    </div>
+  );
 
   return (
     <>
@@ -197,6 +211,7 @@ export default function RenderActionButtons({
           setConfirmBoxUserId={setConfirmBoxUserId}
           setConfirmAction={setConfirmAction}
           onStartChat={onStartChat}
+          setIsUnblockClicked={setIsUnblockClicked}
         />
       ))}
     </>

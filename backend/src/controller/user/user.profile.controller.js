@@ -67,6 +67,10 @@ export async function getUserProfile(req, res) {
         }
 
         userInfo.requestId = relationship._id;
+      } else if (relationship.status === "blocked") {
+        relationshipStatus = relationship.status;
+        userInfo.isBlockedByMe =
+          relationship.blockedBy.toString() === userId.toString();
       } else {
         relationshipStatus = relationship.status;
       }

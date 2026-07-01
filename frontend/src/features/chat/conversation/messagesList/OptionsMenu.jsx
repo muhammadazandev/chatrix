@@ -86,7 +86,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       (res) => {
         if (!res?.success) {
           toast.error(
-            `Failed to delete message${res?.message ? `: ${res.message}` : ""}`,
+            `${res?.message ? `${res.message}` : ""}`,
           );
         }
       },
@@ -106,7 +106,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       socket.emit(SOCKET_EVENTS.PIN_MESSAGE, data, (res) => {
         if (!res?.success) {
           toast.error(
-            `Failed to pin message${res?.message ? `: ${res.message}` : ""}`,
+            `${res?.message ? `${res.message}` : ""}`,
           );
         }
       });
@@ -114,7 +114,7 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       socket.emit(SOCKET_EVENTS.UNPIN_MESSAGE, data, (res) => {
         if (!res?.success) {
           toast.error(
-            `Failed to unpin message${res?.message ? `: ${res.message}` : ""}`,
+            `${res?.message ? `${res.message}` : ""}`,
           );
         }
       });

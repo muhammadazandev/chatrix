@@ -18,16 +18,16 @@ const validateIds = (userId, targetId) => {
 async function block(req, res) {
   try {
     const { id: userId } = req.user;
-    const { userId: blockingUserId } = req.params; // Fix param name
+    const { userId: targetUserId } = req.params; // Fix param name
 
-    const validation = validateIds(userId, blockingUserId);
+    const validation = validateIds(userId, targetUserId);
     if (!validation.valid) {
       return res
         .status(409)
         .json({ success: false, message: validation.message });
     }
 
-    const key = makeKey(userId, blockingUserId);
+    const key = makeKey(userId, targetUserId);
     const existing = await Relationship.findOne({ key }).lean();
 
     if (existing?.status === "blocked") {
@@ -39,7 +39,7 @@ async function block(req, res) {
     await Relationship.findOneAndUpdate(
       { key },
       {
-        $setOnInsert: { user1: userId, user2: blockingUserId, key },
+        $setOnInsert: { user1: userId, user2: targetUserId, key },
         $set: {
           status: "blocked",
           blockedBy: userId,
@@ -65,9 +65,9 @@ async function block(req, res) {
 async function unblock(req, res) {
   try {
     const { id: userId } = req.user;
-    const { userId: blockingUserId } = req.params;
+    const { userId: targetUserId } = req.params;
 
-    const validation = validateIds(userId, blockingUserId);
+    const validation = validateIds(userId, targetUserId);
 
     if (!validation.valid) {
       return res
@@ -75,13 +75,14 @@ async function unblock(req, res) {
         .json({ success: false, message: validation.message });
     }
 
-    const key = makeKey(userId, blockingUserId);
+    const key = makeKey(userId, targetUserId);
 
     const deleted = await Relationship.findOneAndDelete({
       key,
       status: "blocked",
+      blockedBy: userId,
     });
-    
+
     if (!deleted) {
       return res
         .status(409)

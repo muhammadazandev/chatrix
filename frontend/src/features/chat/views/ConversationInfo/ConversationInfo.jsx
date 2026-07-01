@@ -55,9 +55,11 @@ const ConversationInfo = () => {
         </div>
         {isDirect && (
           <div className="flex gap-3">
-            <div className="rounded-full px-3 py-1.5 bg-(--accent-color-primary)/20 border border-(--foreground-secondary)/30 text-sm text-center">
-              {currentConversation?.isOnline ? "Online" : "Offline"}
-            </div>
+            {currentConversation.relationshipStatus !== "blocked" && (
+              <div className="rounded-full px-3 py-1.5 bg-(--accent-color-primary)/20 border border-(--foreground-secondary)/30 text-sm text-center">
+                {currentConversation?.isOnline ? "Online" : "Offline"}
+              </div>
+            )}
 
             <Tooltip content="Open Profile">
               <button
@@ -127,7 +129,10 @@ const ConversationInfo = () => {
 
           <div className="mt-5">
             {currentConversation && (
-              <ActionButtons currentConversation={currentConversation} close={close} />
+              <ActionButtons
+                currentConversation={currentConversation}
+                close={close}
+              />
             )}
           </div>
         </div>

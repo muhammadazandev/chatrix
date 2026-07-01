@@ -189,6 +189,19 @@ async function verifyConversation(req, res) {
         "username profilePicture bio",
       );
 
+      const relationship = await Relationship.findOne({
+        $or: [
+          { user1: userId, user2: friend._id },
+          { user1: friend._id, user2: userId },
+        ],
+      });
+
+      const relationshipStatus = relationship?.status ?? null;
+
+      const isOnline =
+        relationship?.status !== "blocked" &&
+        onlineUsers.has(friend._id.toString());
+
       currentConversationData = {
         _id: conversation._id,
         type: conversation.type,
@@ -197,7 +210,8 @@ async function verifyConversation(req, res) {
         name: friend.username,
         avatar: friend.profilePicture,
         bio: friend.bio,
-        isOnline: onlineUsers.has(friend._id.toString()),
+        isOnline: isOnline,
+        relationshipStatus,
       };
     } else {
       const participantsWithOnlineStatus = conversation.participants.map(
