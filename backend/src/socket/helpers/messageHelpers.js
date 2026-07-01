@@ -1,5 +1,6 @@
 import Conversation from "../../models/conversation.model.js";
 import Message from "../../models/message.model.js";
+import isBlocked from "../../utils/isBlocked.js";
 
 async function validateConversationParticipant(conversationId, senderId) {
   const conversation = await Conversation.findOne({
@@ -14,6 +15,22 @@ async function validateConversationParticipant(conversationId, senderId) {
         message: "No conversation found",
       },
     };
+  }
+
+  if (conversation.type === "direct") {
+    const [user1, user2] = conversation.participants;
+
+    const isBlock = await isBlocked(user1, user2);
+
+    if (isBlock) {
+      return {
+        errValidate: {
+          success: false,
+          message:
+            "Cannot send messages in a conversation with a blocked user.",
+        },
+      };
+    }
   }
 
   return { conversation };

@@ -9,28 +9,34 @@ import { SOCKET_EVENTS } from "../../../socket/events";
 import { socket } from "../../../socket/socket";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
+import useFriendshipStore from "../../../store/useFriendshipStore";
 
 const ForwardMessage = ({ forwardMessageId, conversations }) => {
   const [search, setSearch] = useState("");
-  const [selectedConversations, setSelectedConversations] = useState([]);  
+  const [selectedConversations, setSelectedConversations] = useState([]);
   const [searchParam] = useSearchParams();
   const currentConversationId = searchParam.get("conversationId");
-
   const setForwardMessageId = useMessageUiStore(
     (state) => state.setForwardMessageId,
   );
+  const blocked = useFriendshipStore((state) => state.blocked);
 
   const filteredConversations = useMemo(() => {
     const query = search.trim().toLowerCase();
 
+    // Create a set for fast O(1) lookups
+    const blockedIds = new Set(blocked.map((b) => b._id));
+
     return conversations.filter((con) => {
       if (con._id === currentConversationId) return false;
+
+      if (con.friendId && blockedIds.has(con.friendId)) return false;
 
       if (!query) return true;
 
       return con.title.toLowerCase().includes(query);
     });
-  }, [search, conversations, currentConversationId]);
+  }, [search, conversations, currentConversationId, blocked]);
 
   function toggleConversation(conversationId) {
     setSelectedConversations((prev) =>
@@ -48,9 +54,7 @@ const ForwardMessage = ({ forwardMessageId, conversations }) => {
 
     socket.emit(SOCKET_EVENTS.FORWARD_MESSAGE, data, (res) => {
       if (!res?.success) {
-        toast.error(
-          `Failed to send message${res?.message ? `: ${res.message}` : ""}`,
-        );
+        toast.error(`${res?.message ? `${res.message}` : ""}`);
       }
     });
 

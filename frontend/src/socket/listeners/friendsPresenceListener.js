@@ -44,7 +44,7 @@ function updateParticipantsData(userId, isOnline) {
 
         return {
           ...participant,
-          isOnline: false,
+          isOnline: isOnline,
         };
       }),
     }));
@@ -59,14 +59,14 @@ export const registerFriendsListener = (socket) => {
 
     setCurrentConversationPresence(userId, true);
 
-    updateParticipantsData(userId, true)
+    updateParticipantsData(userId, true);
   });
-  
+
   socket.on(SOCKET_EVENTS.FRIEND_OFFLINE, ({ userId }) => {
     updateFriendStatus(userId, false);
-    
+
     setCurrentConversationPresence(userId, false);
 
-    updateParticipantsData(userId, false)
+    updateParticipantsData(userId, false);
   });
 };

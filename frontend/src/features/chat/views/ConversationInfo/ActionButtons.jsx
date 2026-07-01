@@ -23,6 +23,7 @@ function DirectActions({ currentConversation, close }) {
   const updateOpenedUserRelationship = useFriendshipStore(
     (state) => state.updateOpenedUserRelationship,
   );
+  const [isUnblockClicked, setIsUnblockClicked] = useState(false);
 
   async function onConfirmClick() {
     if (!openedUserProfile) return;
@@ -37,13 +38,18 @@ function DirectActions({ currentConversation, close }) {
 
     setIsConfirmOpen(false);
     await close();
-    updateParams({ view: "conversation" });
+    updateParams({ view: "conversation", conversationId: null });
   }
 
   useEffect(() => {
     if (!currentConversation.friendId) return;
     getUserProfileInfo(currentConversation.friendId);
   }, [currentConversation.friendId, getUserProfileInfo]);
+
+  useEffect(() => {
+    if (isUnblockClicked)
+      updateParams({ view: "conversation", conversationId: null });
+  }, [isUnblockClicked]);
 
   return (
     <div
@@ -55,6 +61,8 @@ function DirectActions({ currentConversation, close }) {
         requestId={openedUserProfile?.requestId}
         setIsConfirmOpen={setIsConfirmOpen}
         setConfirmAction={setConfirmAction}
+        setIsUnblockClicked={setIsUnblockClicked}
+        isBlockedByMe={openedUserProfile?.isBlockedByMe}
       />
 
       <div>
@@ -95,7 +103,10 @@ const ActionButtons = ({ close, currentConversation }) => {
     return (
       <div>
         <h4 className="opacity-50">Actions</h4>
-        <DirectActions currentConversation={currentConversation} close={close} />
+        <DirectActions
+          currentConversation={currentConversation}
+          close={close}
+        />
       </div>
     );
   }

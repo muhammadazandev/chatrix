@@ -29,7 +29,7 @@ const useMessageComposer = ({
       (res) => {
         if (!res?.success) {
           return toast.error(
-            `Failed to edit message ${res?.message ? `: ${res.message}` : ""}`,
+            `${res?.message ? `: ${res.message}` : ""}`,
           );
         }
       },
@@ -62,7 +62,7 @@ const useMessageComposer = ({
     socket.emit(SOCKET_EVENTS.NEW_MESSAGE, data, (res) => {
       if (!res?.success) {
         toast.error(
-          `Failed to send message${res?.message ? `: ${res.message}` : ""}`,
+          `${res?.message ? `${res.message}` : ""}`,
         );
       }
     });

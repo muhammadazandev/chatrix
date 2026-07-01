@@ -1,6 +1,7 @@
 import Conversation from "../../models/conversation.model.js";
 import mongoose from "mongoose";
 import { onlineUsers } from "../../socket/socket.store.js";
+import Relationship from "../../models/relationship.model.js";
 
 async function createGroup(req, res) {
   try {
@@ -118,11 +119,28 @@ async function getParticipants(req, res) {
       "username profilePicture bio",
     );
 
+    const blockedRelationships = await Relationship.find({
+      status: "blocked",
+      $or: [{ user1: userId }, { user2: userId }],
+    });
+
+    const blockedIds = new Set();
+
+    for (const rel of blockedRelationships) {
+      if (rel.user1.toString() === userId.toString()) {
+        blockedIds.add(rel.user2.toString());
+      } else {
+        blockedIds.add(rel.user1.toString());
+      }
+    }
+
     const formatted = participantsInfo.participants.map((p) => {
       return {
         ...p.toObject(),
         role: participantsInfo.participantRoles.get(p._id),
-        isOnline: onlineUsers.has(p._id.toString()),
+        isOnline:
+          !blockedIds.has(p._id.toString()) &&
+          onlineUsers.has(p._id.toString()),
       };
     });
 

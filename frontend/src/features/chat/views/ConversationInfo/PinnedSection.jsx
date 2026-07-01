@@ -40,7 +40,7 @@ const PinnedSection = ({ currentConversation, pinnedMessages }) => {
       (res) => {
         if (!res?.success) {
           toast.error(
-            `Failed to unpin message${res?.message ? `: ${res.message}` : ""}`,
+            `${res?.message ? `${res.message}` : ""}`,
           );
         }
       },
