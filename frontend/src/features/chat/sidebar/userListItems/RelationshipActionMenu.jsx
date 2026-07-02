@@ -188,7 +188,7 @@ export default function RenderActionButtons({
 }) {
   let actionKeys = RELATIONSHIP_ACTIONS[status] || [];
 
-  if (status === "blocked" && !isBlockedByMe) {
+  if (status === "blocked" && isBlockedByMe === false) {
     actionKeys = [];
   }
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Layout from "./Layout";
-import { initSocketListeners } from "./socket/listeners/initSocketListeners";
+import { registerListeners } from "./socket/listeners/register";
 import { socket } from "./socket/socket";
 import useAuthStore from "./store/useAuthStore";
 
@@ -13,7 +13,7 @@ const App = () => {
   }, [checkAuth]);
 
   useEffect(() => {
-    initSocketListeners();
+    registerListeners();
     return () => {
       socket.off();
     };

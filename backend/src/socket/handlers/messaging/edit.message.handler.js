@@ -1,4 +1,4 @@
-import Message from "../../models/message.model.js";
+import Message from "../../../models/message.model.js";
 
 export function registerEditMessage(io, socket) {
   socket.on("edit_message", async (data, callback) => {

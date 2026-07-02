@@ -1,6 +1,6 @@
-import Conversation from "../../models/conversation.model.js";
-import Message from "../../models/message.model.js";
-import verifyParticipant from "../../utils/verifyConversationParticipant.js";
+import Conversation from "../../../models/conversation.model.js";
+import Message from "../../../models/message.model.js";
+import verifyParticipant from "../../../utils/verifyConversationParticipant.js";
 
 export function registerPinMessage(io, socket) {
   async function validateAndGetConversation(

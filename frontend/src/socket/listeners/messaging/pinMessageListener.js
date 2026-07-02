@@ -1,5 +1,5 @@
-import useChatStore from "../../store/useChatStore";
-import { SOCKET_EVENTS } from "../events";
+import useChatStore from "../../../store/useChatStore";
+import { SOCKET_EVENTS } from "../../events";
 
 export function registerPinMessage(socket) {
   socket.on(SOCKET_EVENTS.PIN_MESSAGE, (data) => {

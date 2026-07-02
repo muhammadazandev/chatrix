@@ -1,5 +1,5 @@
-import useChatStore from "../../store/useChatStore";
-import { SOCKET_EVENTS } from "../events";
+import useChatStore from "../../../store/useChatStore";
+import { SOCKET_EVENTS } from "../../events";
 
 export function registerTyping(socket) {
   const addTypingUser = useChatStore.getState().addTypingUser;

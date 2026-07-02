@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import Message from "../../models/message.model.js";
+import Message from "../../../models/message.model.js";
 import {
   broadcastMessage,
   createAndPopulateMessage,
   formatMessage,
   validateConversationParticipant,
-} from "../helpers/messageHelpers.js";
+} from "../../helpers/messageHelpers.js";
 
 export function registerForwardMessage(io, socket) {
   socket.on("forward_message", async (data, callback) => {
@@ -45,8 +45,8 @@ export function registerForwardMessage(io, socket) {
       if (message.isDeleted) {
         return callback({
           success: false,
-          message: "Deleted message cannot be forward"
-        })
+          message: "Deleted message cannot be forward",
+        });
       }
 
       for (const id of conversationIds) {

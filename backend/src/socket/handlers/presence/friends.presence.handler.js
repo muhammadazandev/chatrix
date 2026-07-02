@@ -1,5 +1,5 @@
-import Relationship from "../../models/relationship.model.js";
-import { onlineUsers } from "../socket.store.js";
+import Relationship from "../../../models/relationship.model.js";
+import { onlineUsers } from "../../socket.store.js";
 
 const getFriendsId = async (userId) => {
   const relationships = await Relationship.find({
