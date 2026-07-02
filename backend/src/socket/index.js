@@ -1,11 +1,4 @@
-import { registerConversationConnections } from "./handlers/conversation.connection.handler.js";
-import { registerDeleteMessage } from "./handlers/delete.message.handler.js";
-import { registerEditMessage } from "./handlers/edit.message.handler.js";
-import { registerForwardMessage } from "./handlers/forward.message.handler.js";
-import { registerFriendsPresence } from "./handlers/friends.presence.handler.js";
-import { registerNewMessage } from "./handlers/new.message.handler.js";
-import { registerPinMessage } from "./handlers/pin.message.handler.js";
-import { registerTyping } from "./handlers/typing.handler.js";
+import { registerHandlers } from "./handlers/register.js";
 import { socketAuth } from "./socket.middleware.js";
 import { onlineUsers, typingUsers } from "./socket.store.js";
 
@@ -23,14 +16,7 @@ export const registerSocket = (io) => {
 
     onlineUsers.get(userId).add(socket.id);
 
-    registerFriendsPresence(io, socket);
-    registerConversationConnections(io, socket);
-    registerNewMessage(io, socket);
-    registerTyping(socket);
-    registerEditMessage(io, socket);
-    registerDeleteMessage(io, socket);
-    registerForwardMessage(io, socket);
-    registerPinMessage(io, socket);
+    registerHandlers(io, socket)
 
     socket.on("disconnect", (reason) => {
       // clean up any typing entries for this socket and notify rooms

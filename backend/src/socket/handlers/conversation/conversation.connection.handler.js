@@ -1,6 +1,6 @@
-import Conversation from "../../models/conversation.model.js";
-import verifyParticipant from "../../utils/verifyConversationParticipant.js";
-import { typingUsers } from "../socket.store.js";
+import Conversation from "../../../models/conversation.model.js";
+import verifyParticipant from "../../../utils/verifyConversationParticipant.js";
+import { typingUsers } from "../../socket.store.js";
 
 export const registerConversationConnections = (io, socket) => {
   const userId = socket.user.userId.toString();

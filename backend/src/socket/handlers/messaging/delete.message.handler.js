@@ -1,5 +1,5 @@
-import Conversation from "../../models/conversation.model.js";
-import Message from "../../models/message.model.js";
+import Conversation from "../../../models/conversation.model.js";
+import Message from "../../../models/message.model.js";
 
 export function registerDeleteMessage(io, socket) {
   socket.on("delete_message", async (data, callback) => {
@@ -42,8 +42,9 @@ export function registerDeleteMessage(io, socket) {
       await message.save();
 
       // Delete from pinned messages if pinned
-      const con = await Conversation.findById(message.conversationId,
-        "pinnedMessages"
+      const con = await Conversation.findById(
+        message.conversationId,
+        "pinnedMessages",
       );
       const index = con.pinnedMessages.findIndex(
         (pin) => pin.message.toString() === message._id.toString(),

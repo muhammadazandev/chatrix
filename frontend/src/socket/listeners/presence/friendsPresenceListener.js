@@ -1,6 +1,6 @@
-import useChatStore from "../../store/useChatStore";
-import useFriendshipStore from "../../store/useFriendshipStore";
-import { SOCKET_EVENTS } from "../events";
+import useChatStore from "../../../store/useChatStore";
+import useFriendshipStore from "../../../store/useFriendshipStore";
+import { SOCKET_EVENTS } from "../../events";
 
 function setCurrentConversationPresence(userId, isOnline) {
   useChatStore.setState((state) => {

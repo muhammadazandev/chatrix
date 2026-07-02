@@ -1,5 +1,5 @@
-import useChatStore from "../../store/useChatStore";
-import { SOCKET_EVENTS } from "../events";
+import useChatStore from "../../../store/useChatStore";
+import { SOCKET_EVENTS } from "../../events";
 
 export const registerNewMessage = (socket) => {
   socket.on(SOCKET_EVENTS["NEW_MESSAGE"], (data) => {

@@ -1,4 +1,4 @@
-import { typingUsers } from "../socket.store.js";
+import { typingUsers } from "../../socket.store.js";
 
 export function registerTyping(socket) {
   socket.on("start_typing", ({ conversationId }) => {

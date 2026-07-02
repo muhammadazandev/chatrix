@@ -1,8 +1,8 @@
-import useChatStore from "../../store/useChatStore";
-import { SOCKET_EVENTS } from "../events";
+import useChatStore from "../../../store/useChatStore";
+import { SOCKET_EVENTS } from "../../events";
 
-export function registerEditMessage(socket) {
-  socket.on(SOCKET_EVENTS.EDIT_MESSAGE, (data) => {
+export async function registerDeleteMessage(socket) {
+  socket.on(SOCKET_EVENTS.DELETE_MESSAGE, (data) => {
     useChatStore.setState((state) => ({
       messages: state.messages.map((mes) => {
         if (mes.replyTo?._id === data.messageId) {
@@ -10,7 +10,8 @@ export function registerEditMessage(socket) {
             ...mes,
             replyTo: {
               ...mes.replyTo,
-              text: data.patch.text,
+              isDeleted: data.patch.isDeleted,
+              text: "",
             },
           };
         }
@@ -19,9 +20,11 @@ export function registerEditMessage(socket) {
 
         return {
           ...mes,
+          isDeleted: data.patch.isDeleted,
           isEdited: data.patch.isEdited,
-          text: data.patch.text,
           editedAt: data.patch.editedAt,
+          text: data.patch.text,
+          mediaUrl: data.patch.mediaUrl,
         };
       }),
     }));
