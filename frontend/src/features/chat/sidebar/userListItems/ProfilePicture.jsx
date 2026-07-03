@@ -22,7 +22,6 @@ const ProfilePicture = ({ user }) => {
               view: "profile",
               userId: user._id,
             },
-            true,
           );
         }}
       />

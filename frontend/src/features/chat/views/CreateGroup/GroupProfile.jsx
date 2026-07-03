@@ -76,7 +76,8 @@ const GroupProfile = ({ selectedFriends, setIsGroupProfile }) => {
   return (
     <Motion
       variants={slideInFromLeft}
-      className="absolute top-0 h-screen w-[96%] z-100 bg-(--bg-primary) border-r border-(--foreground-primary)/20 py-5"
+      transition="smooth"
+      className="fixed top-0 h-screen max-w-[calc(100%/3.65)] min-w-[calc(100%/3.65)] z-100 bg-(--bg-primary) border-r border-(--foreground-primary)/20 py-5"
     >
       <button
         className="rounded-full p-2"
