@@ -20,4 +20,8 @@ export const SOCKET_EVENTS = {
   START_TYPING: "start_typing",
   STOP_TYPING: "stop_typing",
   UPDATE_TYPING: "update_typing",
+
+  // Groups
+  ADD_PARTICIPANT: "add_participant",
+  REMOVE_PARTICIPANT: "remove_participant"
 };

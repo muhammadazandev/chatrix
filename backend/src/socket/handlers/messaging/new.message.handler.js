@@ -3,7 +3,7 @@ import {
   createAndPopulateMessage,
   formatMessage,
   broadcastMessage,
-} from "../../helpers/messageHelpers.js";
+} from "../../helpers/new.message.helpers.js";
 
 export function registerNewMessage(io, socket) {
   socket.on("new_message", async (data, callback) => {

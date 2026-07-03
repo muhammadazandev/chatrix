@@ -5,7 +5,7 @@ import {
   createAndPopulateMessage,
   formatMessage,
   validateConversationParticipant,
-} from "../../helpers/messageHelpers.js";
+} from "../../helpers/new.message.helpers.js";
 
 export function registerForwardMessage(io, socket) {
   socket.on("forward_message", async (data, callback) => {

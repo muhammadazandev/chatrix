@@ -72,7 +72,6 @@ const ConversationInfo = () => {
                       view: "profile",
                       userId: currentConversation.friendId,
                     },
-                    true,
                   );
                 }}
               >
