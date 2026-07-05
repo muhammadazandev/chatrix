@@ -6,11 +6,12 @@ import { slideInRight } from "../../../../motion/variants";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
 import useSlidePanelClose from "../../../../hooks/useSlidePanelClose";
 import useChatStore from "../../../../store/useChatStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import PinnedSection from "./PinnedSection";
 import ParticipantsList from "./ParticipantsList";
 import ActionButtons from "./ActionButtons";
+import ProfileInfo from "./ProfileInfo";
 
 const ConversationInfo = () => {
   const { searchParams, updateParams } = useQueryParams();
@@ -21,7 +22,6 @@ const ConversationInfo = () => {
   );
   const verifyConversation = useChatStore((state) => state.verifyConversation);
   const pinnedMessages = useChatStore((state) => state.pinnedMessages);
-  const [isTruncateBio, setIsTruncateBio] = useState(false);
   const updateOpenedUserProfile = useFriendshipStore(
     (state) => state.updateOpenedUserProfile,
   );
@@ -83,31 +83,8 @@ const ConversationInfo = () => {
       </header>
 
       <div className="flex flex-col mt-5">
-        <div className="flex justify-center">
-          <img
-            src={currentConversation?.avatar}
-            alt={currentConversation?.name}
-            className="rounded-full h-40 w-40 object-cover shadow-[0_5px_10px_var(--bg-secondary)]"
-          />
-        </div>
-
         <div className="flex flex-col gap-5 px-3">
-          <div className="mt-15">
-            <h4 className="opacity-50">Name</h4>
-            <p className="pt-4">{currentConversation?.name}</p>
-          </div>
-
-          {isDirect && (
-            <div>
-              <h4 className="opacity-50">Bio</h4>
-              <p
-                className={`pt-4 ${isTruncateBio ? "truncate max-w-full" : ""} cursor-pointer`}
-                onClick={() => setIsTruncateBio(!isTruncateBio)}
-              >
-                {currentConversation?.bio}
-              </p>
-            </div>
-          )}
+          <ProfileInfo currentConversation={currentConversation} />
 
           <div className="mt-5">
             <h4 className="opacity-50">Pin messages</h4>
