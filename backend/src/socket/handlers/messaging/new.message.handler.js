@@ -27,6 +27,9 @@ export function registerNewMessage(io, socket) {
       // Format reply to message
       const messageToSend = formatMessage(messageDoc, conversation.type);
 
+      console.log("Sender rooms:");
+      console.log(socket.rooms);
+
       // Broadcast message
       broadcastMessage(
         io,

@@ -20,6 +20,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log("Auth effect", isAuthenticated, socket.connected);
+
     if (isAuthenticated) {
       if (!socket.connected) {
         socket.connect();

@@ -28,9 +28,7 @@ const useMessageComposer = ({
       { messageId: messageMode.payload._id, editedMessage: text },
       (res) => {
         if (!res?.success) {
-          return toast.error(
-            `${res?.message ? `: ${res.message}` : ""}`,
-          );
+          return toast.error(`${res?.message ? `: ${res.message}` : ""}`);
         }
       },
     );
@@ -59,11 +57,10 @@ const useMessageComposer = ({
       },
     };
 
+    console.log("Emitting NEW_MESSAGE", socket.connected, socket.id);
     socket.emit(SOCKET_EVENTS.NEW_MESSAGE, data, (res) => {
       if (!res?.success) {
-        toast.error(
-          `${res?.message ? `${res.message}` : ""}`,
-        );
+        toast.error(`${res?.message ? `${res.message}` : ""}`);
       }
     });
 
