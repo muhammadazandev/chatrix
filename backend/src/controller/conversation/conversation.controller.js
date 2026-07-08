@@ -231,7 +231,7 @@ async function verifyConversation(req, res) {
         name: conversation.name,
         avatar: conversation.avatar,
         participants: participantsWithOnlineStatus,
-        roles: conversation.participantRoles,
+        participantRoles: conversation.participantRoles,
       };
     }
 

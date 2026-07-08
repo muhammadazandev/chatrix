@@ -22,7 +22,7 @@ const ProfileInfo = ({ currentConversation }) => {
 
   const isAdminOrOwner =
     currentConversation?.type === "group" &&
-    currentConversation?.roles[userId] !== "member";
+    currentConversation?.participantRoles[userId] !== "member";
 
   useEffect(() => {
     if (!currentConversation) return;

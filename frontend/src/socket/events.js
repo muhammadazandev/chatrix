@@ -25,4 +25,5 @@ export const SOCKET_EVENTS = {
   ADD_PARTICIPANT: "add_participant",
   REMOVE_PARTICIPANT: "remove_participant",
   GROUP_UPDATED: "group_updated",
+  LEAVE_GROUP: "leave_group",
 };

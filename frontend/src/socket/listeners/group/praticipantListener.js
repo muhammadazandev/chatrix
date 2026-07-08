@@ -11,8 +11,8 @@ export function registerParticipantListener(socket) {
         currentConversation: {
           ...state.currentConversation,
           participants: data.participants,
-          roles: {
-            ...state.currentConversation.roles,
+          participantRoles: {
+            ...state.currentConversation.participantRoles,
             ...Object.fromEntries(
               data.newParticipantRoles.map((p) => [p._id, p.role]),
             ),
@@ -30,7 +30,7 @@ export function registerParticipantListener(socket) {
       if (!state.currentConversation) return state;
       if (state.currentConversation._id !== data.groupId) return state;
 
-      const roles = { ...state.currentConversation.roles };
+      const roles = { ...state.currentConversation.participantRoles };
 
       for (const id of data.removedParticipantsId) {
         delete roles[id];
