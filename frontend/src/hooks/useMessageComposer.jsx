@@ -56,8 +56,6 @@ const useMessageComposer = ({
         replyTo: messageMode.type === "reply" ? messageMode.payload._id : null,
       },
     };
-
-    console.log("Emitting NEW_MESSAGE", socket.connected, socket.id);
     socket.emit(SOCKET_EVENTS.NEW_MESSAGE, data, (res) => {
       if (!res?.success) {
         toast.error(`${res?.message ? `${res.message}` : ""}`);
