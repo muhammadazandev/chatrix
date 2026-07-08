@@ -63,65 +63,72 @@ const ParticipantsModal = ({
       </header>
 
       <div className="flex flex-col gap-3 pr-10 mt-10 overflow-y-auto flex-1">
-        {participants?.map((participant) => (
-          <div
-            key={participant._id}
-            className={`cursor-pointer flex gap-4 relative rounded-md py-3 px-4 transition duration-300 hover:bg-(--bg-secondary)/50 border ${selectedParticipants.includes(participant._id) ? "border-(--accent-color-secondary)/30" : "border-(--bg-primary)"}`}
-            onClick={() => {
-              if (selectable) {
-                setSelectedParticipants((prevItems) => {
-                  if (prevItems.includes(participant._id))
-                    return prevItems.filter((pr) => pr !== participant._id);
+        {participants?.length > 0 ? (
+          participants?.map((participant) => (
+            <div
+              key={participant._id}
+              className={`cursor-pointer flex gap-4 relative rounded-md py-3 px-4 transition duration-300 hover:bg-(--bg-secondary)/50 border ${selectedParticipants.includes(participant._id) ? "border-(--accent-color-secondary)/30" : "border-(--bg-primary)"}`}
+              onClick={() => {
+                if (selectable) {
+                  setSelectedParticipants((prevItems) => {
+                    if (prevItems.includes(participant._id))
+                      return prevItems.filter((pr) => pr !== participant._id);
 
-                  return [...prevItems, participant._id];
-                });
-              }
-            }}
-          >
-            {!blockedIds.has(participant._id) && (
-              <span
-                className={`rounded-full p-1.5 absolute bottom-3 left-3 ${participant.isOnline ? "bg-green-500" : "bg-(--foreground-secondary)/30"}`}
-              />
-            )}
-            <img
-              src={participant.profilePicture}
-              alt={participant.username}
-              className="rounded-full w-10 h-10 object-cover border border-(--foreground-secondary)/20"
-              onClick={async () => {
-                await onClose();
-                setTimeout(() => {
-                  if (participant._id === user._id) {
-                    updateParams(
-                      {
-                        view: "settings",
-                        tab: "profile",
-                      },
-                      true,
-                    );
-                  } else {
-                    updateParams({
-                      view: "profile",
-                      userId: participant._id,
-                    });
-                  }
-                }, 500);
+                    return [...prevItems, participant._id];
+                  });
+                }
               }}
-            />
+            >
+              {!blockedIds.has(participant._id) && (
+                <span
+                  className={`rounded-full p-1.5 absolute bottom-3 left-3 ${participant.isOnline ? "bg-green-500" : "bg-(--foreground-secondary)/30"}`}
+                />
+              )}
+              <img
+                src={participant.profilePicture}
+                alt={participant.username}
+                className="rounded-full w-10 h-10 object-cover border border-(--foreground-secondary)/20"
+                onClick={async () => {
+                  await onClose();
+                  setTimeout(() => {
+                    if (participant._id === user._id) {
+                      updateParams(
+                        {
+                          view: "settings",
+                          tab: "profile",
+                        },
+                        true,
+                      );
+                    } else {
+                      updateParams({
+                        view: "profile",
+                        userId: participant._id,
+                      });
+                    }
+                  }, 500);
+                }}
+              />
 
-            <div className="min-w-0 flex-1">
-              <p className="text-sm">
-                {participant._id === user._id ? "You" : participant.username}
-              </p>
-              <p className="opacity-50 text-xs truncate">{participant.bio}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm">
+                  {participant._id === user._id ? "You" : participant.username}
+                </p>
+                <p className="opacity-50 text-xs truncate">{participant.bio}</p>
+              </div>
+
+              {(participant.role === "owner" ||
+                participant.role === "admin") && (
+                <span className="text-xs opacity-60 self-center capitalize">
+                  {participant.role}
+                </span>
+              )}
             </div>
-
-            {(participant.role === "owner" || participant.role === "admin") && (
-              <span className="text-xs opacity-60 self-center capitalize">
-                {participant.role}
-              </span>
-            )}
+          ))
+        ) : (
+          <div className="h-full flex w-full justify-center items-center">
+            <p>No friends to {action}</p>
           </div>
-        ))}
+        )}
       </div>
 
       {action && (

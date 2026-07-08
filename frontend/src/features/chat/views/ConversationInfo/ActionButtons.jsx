@@ -6,15 +6,17 @@ import ConfirmBox from "../../../../components/ConfirmBox";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import { RiUserForbidFill } from "@remixicon/react";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
+import { socket } from "../../../../socket/socket";
+import { SOCKET_EVENTS } from "../../../../socket/events";
+import toast from "react-hot-toast";
 
-function DirectActions({ currentConversation, close }) {
+function DirectActions({ friendId, close, updateParams }) {
   const getUserProfileInfo = useFriendshipStore(
     (state) => state.getUserProfileInfo,
   );
   const openedUserProfile = useFriendshipStore(
     (state) => state.openedUserProfile,
   );
-  const { updateParams } = useQueryParams();
   const blockUser = useFriendshipStore((state) => state.blockUser);
   const unfriend = useFriendshipStore((state) => state.unfriend);
   const isLoading = useFriendshipStore((state) => state.isLoading);
@@ -42,9 +44,9 @@ function DirectActions({ currentConversation, close }) {
   }
 
   useEffect(() => {
-    if (!currentConversation.friendId) return;
-    getUserProfileInfo(currentConversation.friendId);
-  }, [currentConversation.friendId, getUserProfileInfo]);
+    if (!friendId) return;
+    getUserProfileInfo(friendId);
+  }, [friendId, getUserProfileInfo]);
 
   useEffect(() => {
     if (isUnblockClicked)
@@ -98,14 +100,70 @@ function DirectActions({ currentConversation, close }) {
   );
 }
 
+function GroupActions({ currentConversation, close, updateParams }) {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  function handleLeaveGroup() {
+    socket.emit(
+      SOCKET_EVENTS.LEAVE_GROUP,
+      {
+        groupId: currentConversation._id,
+      },
+      async (res) => {
+        if (!res?.success) return toast.error(res?.message);
+
+        toast.success(res?.message)
+        setIsConfirmOpen(false);
+        await close();
+        updateParams({ view: "conversation", conversationId: null });
+      },
+    );
+  }
+
+  return (
+    <div className="pt-5">
+      <button
+        className="danger-surface no-hover text-sm w-full flex items-center gap-3 px-4 py-2.5 no-hover text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100 text-nowrap rounded-sm border border-(--foreground-secondary)/30"
+        onClick={() => setIsConfirmOpen(true)}
+      >
+        Leave group
+      </button>
+
+      <AnimatePresence>
+        {isConfirmOpen && (
+          <ConfirmBox
+            confirmWhat="leaveGroup"
+            onConfirm={handleLeaveGroup}
+            setIsConfirmOpen={setIsConfirmOpen}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 const ActionButtons = ({ close, currentConversation }) => {
+  const { updateParams } = useQueryParams();
+
   if (currentConversation.type === "direct") {
     return (
       <div>
         <h4 className="opacity-50">Actions</h4>
         <DirectActions
+          updateParams={updateParams}
+          friendId={currentConversation.friendId}
+          close={close}
+        />
+      </div>
+    );
+  } else if (currentConversation.type === "group") {
+    return (
+      <div>
+        <h4 className="opacity-50">Actions</h4>
+        <GroupActions
           currentConversation={currentConversation}
           close={close}
+          updateParams={updateParams}
         />
       </div>
     );

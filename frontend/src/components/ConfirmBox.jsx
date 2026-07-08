@@ -16,6 +16,10 @@ const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
         msg = "Are you sure, you want to delete this message";
         break;
 
+      case "leaveGroup":
+        msg = "Are you sure, you want to leave this group";
+        break;
+
       default:
         msg =
           "This action is irreversible. Are you certain you want to proceed?";

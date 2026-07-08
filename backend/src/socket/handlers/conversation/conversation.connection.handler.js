@@ -6,8 +6,6 @@ export const registerConversationConnections = (io, socket) => {
   const userId = socket.user.userId.toString();
 
   socket.on("join_conversation", async (conversationId, callback) => {
-    console.log(socket.id, "joined", conversationId);
-
     try {
       const conversation = await Conversation.findById(conversationId);
 
@@ -41,9 +39,6 @@ export const registerConversationConnections = (io, socket) => {
       socket.currentConversation = conversationId;
 
       socket.join(`conversation:${conversationId}`);
-
-      console.log("After join:");
-      console.log(socket.rooms);
 
       callback?.({
         success: true,

@@ -7,6 +7,7 @@ import useAuthStore from "./store/useAuthStore";
 const App = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const checkAuth = useAuthStore((state) => state.checkAuth);
+  const authChecked = useAuthStore((state) => state.authChecked);
 
   useEffect(() => {
     checkAuth();
@@ -20,7 +21,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Auth effect", isAuthenticated, socket.connected);
+    if (!authChecked) return;
 
     if (isAuthenticated) {
       if (!socket.connected) {
@@ -29,7 +30,7 @@ const App = () => {
     } else {
       socket.disconnect();
     }
-  }, [isAuthenticated]);
+  }, [authChecked, isAuthenticated]);
 
   return <Layout />;
 };
