@@ -10,6 +10,7 @@ import TypingIndicator from "./typingIndicator/TypingIndicator";
 import useMessageUiStore from "../../../store/useMessageUiStore";
 import ForwardMessage from "./ForwardMessage";
 import { AnimatePresence } from "motion/react";
+import { useQueryParams } from "../../../hooks/useQueryParams";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
@@ -17,7 +18,11 @@ const Conversation = () => {
   const conId = searchParam.get("conversationId");
   const messages = useChatStore((state) => state.messages);
   const conversations = useChatStore((state) => state.conversations);
+  const currentConversation = useChatStore(
+    (state) => state.currentConversation,
+  );
   const forwardMessageId = useMessageUiStore((state) => state.forwardMessageId);
+  const { updateParams } = useQueryParams();
 
   useEffect(() => {
     if (!conId) return;
@@ -38,7 +43,13 @@ const Conversation = () => {
 
     get();
   }, [conId, getMessages]);
-  
+
+  useEffect(() => {
+    if (!currentConversation) {
+      updateParams({ view: null }, true);
+    }
+  }, [currentConversation]);
+
   return (
     <div className="flex-1 flex flex-col bg-(--bg-primary) h-screen relative overflow-hidden">
       <Header />

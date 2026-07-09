@@ -9,6 +9,7 @@ import { useQueryParams } from "../../../../hooks/useQueryParams";
 import { socket } from "../../../../socket/socket";
 import { SOCKET_EVENTS } from "../../../../socket/events";
 import toast from "react-hot-toast";
+import useAuthStore from "../../../../store/useAuthStore";
 
 function DirectActions({ friendId, close, updateParams }) {
   const getUserProfileInfo = useFriendshipStore(
@@ -51,7 +52,7 @@ function DirectActions({ friendId, close, updateParams }) {
   useEffect(() => {
     if (isUnblockClicked)
       updateParams({ view: "conversation", conversationId: null });
-  }, [isUnblockClicked]);
+  }, [isUnblockClicked, updateParams]);
 
   return (
     <div
@@ -101,40 +102,66 @@ function DirectActions({ friendId, close, updateParams }) {
 }
 
 function GroupActions({ currentConversation, close, updateParams }) {
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const user = useAuthStore((state) => state.user);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  function handleLeaveGroup() {
+  function onConfirm() {
+    if (!confirmAction) return;
+
+    const eventName =
+      confirmAction === "leave"
+        ? SOCKET_EVENTS.LEAVE_GROUP
+        : SOCKET_EVENTS.DELETE_GROUP;
+
+    setIsDeleting(true);
+
     socket.emit(
-      SOCKET_EVENTS.LEAVE_GROUP,
+      eventName,
       {
         groupId: currentConversation._id,
       },
       async (res) => {
+        setIsDeleting(false);
+
         if (!res?.success) return toast.error(res?.message);
 
-        toast.success(res?.message)
-        setIsConfirmOpen(false);
+        toast.success(res?.message);
+        setConfirmAction(false);
         await close();
         updateParams({ view: "conversation", conversationId: null });
       },
     );
   }
 
-  return (
-    <div className="pt-5">
+  function ActionButton({ action, label }) {
+    return (
       <button
         className="danger-surface no-hover text-sm w-full flex items-center gap-3 px-4 py-2.5 no-hover text-(--foreground-primary) hover:bg-(--bg-secondary) opacity-85 hover:opacity-100 text-nowrap rounded-sm border border-(--foreground-secondary)/30"
-        onClick={() => setIsConfirmOpen(true)}
+        onClick={() => setConfirmAction(action)}
       >
-        Leave group
+        {label}
       </button>
+    );
+  }
+
+  return (
+    <div className="pt-5">
+      <div className="flex flex-col gap-2">
+        <ActionButton action="leave" label="Leave Group" />
+
+        {currentConversation.participantRoles[user._id] === "owner" && (
+          <ActionButton action="delete" label="Delete Group" />
+        )}
+      </div>
 
       <AnimatePresence>
-        {isConfirmOpen && (
+        {confirmAction && (
           <ConfirmBox
-            confirmWhat="leaveGroup"
-            onConfirm={handleLeaveGroup}
-            setIsConfirmOpen={setIsConfirmOpen}
+            confirmWhat={`${confirmAction === "leave" ? "leaveGroup" : "deleteGroup"}`}
+            onConfirm={onConfirm}
+            setIsConfirmOpen={setConfirmAction}
+            isLoading={isDeleting}
           />
         )}
       </AnimatePresence>

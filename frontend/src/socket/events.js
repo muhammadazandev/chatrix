@@ -26,4 +26,5 @@ export const SOCKET_EVENTS = {
   REMOVE_PARTICIPANT: "remove_participant",
   GROUP_UPDATED: "group_updated",
   LEAVE_GROUP: "leave_group",
+  DELETE_GROUP: "delete_group",
 };

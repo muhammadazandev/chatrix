@@ -3,7 +3,12 @@ import { RiErrorWarningLine } from "@remixicon/react";
 import { fade, slideFadeScale } from "../motion/variants";
 import Motion from "../motion/Motion";
 
-const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
+const ConfirmBox = ({
+  confirmWhat,
+  onConfirm,
+  setIsConfirmOpen,
+  isLoading,
+}) => {
   const message = () => {
     let msg = "";
 
@@ -18,6 +23,11 @@ const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
 
       case "leaveGroup":
         msg = "Are you sure, you want to leave this group";
+        break;
+
+      case "deleteGroup":
+        msg =
+          "The group will be deleted for every participant. No one will be able to chat, and this action is irreversible.";
         break;
 
       default:
@@ -64,8 +74,9 @@ const ConfirmBox = ({ confirmWhat, onConfirm, setIsConfirmOpen }) => {
           <button
             onClick={onConfirm}
             className="flex-1 py-4 text-sm font-bold text-(--accent-color-primary) hover:bg-(--bg-secondary) transition-colors"
+            disabled={isLoading}
           >
-            Confirm
+            {isLoading ? "Processing..." : "Confirm"}
           </button>
         </div>
       </Motion>
