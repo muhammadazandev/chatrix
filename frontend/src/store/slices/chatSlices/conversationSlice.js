@@ -61,7 +61,7 @@ export const createConversationSlice = (set) => ({
       });
     } catch (error) {
       const message = handleError(error);
-      if (message) {
+      if (message && message !== "Conversation not found") {
         toast.error(message);
       }
     }

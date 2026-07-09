@@ -2,7 +2,7 @@ import useChatStore from "../../../store/useChatStore";
 import { SOCKET_EVENTS } from "../../events";
 
 export function registerLeaveListener(socket) {
-  socket.on(SOCKET_EVENTS.LEAVE_GROUP, async (data) => {
+  socket.on(SOCKET_EVENTS.LEAVE_GROUP, (data) => {
     useChatStore.setState((state) => {
       if (state.currentConversation?._id !== data.groupId) {
         return state;
