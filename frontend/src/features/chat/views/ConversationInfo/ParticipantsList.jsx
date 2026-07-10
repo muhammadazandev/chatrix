@@ -7,6 +7,7 @@ import IconsWrapper from "../../../../components/IconsWrapper";
 import { RiUserAddLine, RiUserMinusLine } from "@remixicon/react";
 import ParticipantsModal from "./ParticipantsModal";
 import { AnimatePresence } from "motion/react";
+import ParticipantsContextMenu from "./ParticipantsContextMenu";
 
 const ROLE_ORDER = {
   owner: 0,
@@ -24,6 +25,8 @@ const ParticipantsList = ({ currentConversation }) => {
   const blocked = useFriendshipStore((state) => state.blocked);
   const friends = useFriendshipStore((state) => state.friends);
   const [participantsModal, setParticipantsModal] = useState("");
+  const [menuCoords, setMenuCoords] = useState({});
+  const [openUserId, setOpenUserId] = useState(null);
 
   useEffect(() => {
     async function get() {
@@ -103,6 +106,18 @@ const ParticipantsList = ({ currentConversation }) => {
     participantsToRemove,
   ]);
 
+  function contextMenu(e, clickedUserId) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setMenuCoords({
+      x: e.clientX,
+      y: e.clientY,
+    });
+
+    setOpenUserId(clickedUserId);
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <h4 className="opacity-50">
@@ -124,10 +139,12 @@ const ParticipantsList = ({ currentConversation }) => {
             {ar === "add" ? "Add" : "Remove"} Participant
           </button>
         ))}
+
       {sortedParticipants.slice(0, 5).map((participant) => (
         <div
           key={participant._id}
           className="cursor-pointer flex gap-4 relative rounded-md hover:bg-(--bg-secondary)/50 py-3 px-2 transition duration-300"
+          onContextMenu={(e) => contextMenu(e, participant._id)}
           onClick={() => {
             if (participant._id === user._id) {
               updateParams(
@@ -168,6 +185,18 @@ const ParticipantsList = ({ currentConversation }) => {
               {participant.role}
             </span>
           )}
+
+          {openUserId === participant._id && (
+            <ParticipantsContextMenu
+              participant={participant}
+              currentConversationId={currentConversation._id}
+              coords={menuCoords}
+              onClose={() => setOpenUserId(null)}
+              isOwner={isOwner}
+              isAdmin={isAdmin}
+              userId={user._id}
+            />
+          )}
         </div>
       ))}
 
@@ -188,6 +217,11 @@ const ParticipantsList = ({ currentConversation }) => {
             onClose={() => setParticipantsModal("")}
             blockedIds={blockedIds}
             groupId={currentConversation._id}
+            participantsData={participantsData}
+            setMenuCoords={setMenuCoords}
+            setOpenUserId={setOpenUserId}
+            openUserId={openUserId}
+            menuCoords={menuCoords}
           />
         )}
       </AnimatePresence>

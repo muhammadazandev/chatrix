@@ -1,11 +1,13 @@
 import { registerDeleteListener } from "./deleteListener";
 import { registerLeaveListener } from "./leaveListener";
 import { registerParticipantListener } from "./praticipantListener";
-import { registerUpdateProfile } from "./updateProfileListener";
+import { registerRolesListener } from "./roleListener";
+import { registerUpdateProfileListener } from "./updateProfileListener";
 
 export function registerGroupListeners(socket) {
   registerParticipantListener(socket);
-  registerUpdateProfile(socket);
+  registerUpdateProfileListener(socket);
   registerLeaveListener(socket);
   registerDeleteListener(socket);
+  registerRolesListener(socket);
 }
