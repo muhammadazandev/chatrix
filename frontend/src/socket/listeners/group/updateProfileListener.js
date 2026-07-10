@@ -1,7 +1,7 @@
 import useChatStore from "../../../store/useChatStore";
 import { SOCKET_EVENTS } from "../../events";
 
-export function registerUpdateProfile(socket) {
+export function registerUpdateProfileListener(socket) {
   socket.on(SOCKET_EVENTS.GROUP_UPDATED, (data) => {
     useChatStore.setState((state) => {
       if (

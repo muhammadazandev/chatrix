@@ -6,94 +6,49 @@ import {
   RiPushpin2Line,
   RiShareForwardLine,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../components/IconsWrapper";
-import useAuthStore from "../../../../store/useAuthStore";
-import { useEffect, useState } from "react";
-import ConfirmBox from "../../../../components/ConfirmBox";
+
 import { AnimatePresence } from "motion/react";
-import { SOCKET_EVENTS } from "../../../../socket/events";
-import { socket } from "../../../../socket/socket";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { createPortal } from "react-dom";
-import useMessageUiStore from "../../../../store/useMessageUiStore";
+
+import ContextMenu from "../../../../components/ContextMenu";
+import ConfirmBox from "../../../../components/ConfirmBox";
+
+import useAuthStore from "../../../../store/useAuthStore";
 import useChatStore from "../../../../store/useChatStore";
+import useMessageUiStore from "../../../../store/useMessageUiStore";
 
-const actionButtons = [
-  {
-    icon: RiFileCopyLine,
-    label: "Copy Message",
-    actionFun: "handleCopy",
-  },
-  {
-    icon: RiEdit2Line,
-    label: "Edit Message",
-    actionFun: "handleEdit",
-  },
-  {
-    icon: RiCornerUpLeftLine,
-    label: "Reply",
-    actionFun: "handleReply",
-  },
-  {
-    icon: RiShareForwardLine,
-    label: "Forward Message",
-    actionFun: "handleForward",
-  },
-  {
-    icon: RiPushpin2Line,
-    label: "Pin Message",
-    actionFun: "handlePin",
-  },
-  {
-    icon: RiDeleteBin3Line,
-    label: "Delete Message",
-    actionFun: "handleDelete",
-    danger: true,
-  },
-];
+import { socket } from "../../../../socket/socket";
+import { SOCKET_EVENTS } from "../../../../socket/events";
 
-const OptionsMenu = ({ message, coords, isMe, onClose }) => {
-  const pinnedMessages = useChatStore((state) => state.pinnedMessages);
+const MessageOptionsMenu = ({ message, coords, isMe, onClose }) => {
   const user = useAuthStore((state) => state.user);
-  const isMine = message.senderId === user._id;
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const pinnedMessages = useChatStore((state) => state.pinnedMessages);
+
   const setMessageMode = useMessageUiStore((state) => state.setMessageMode);
   const setForwardMessageId = useMessageUiStore(
     (state) => state.setForwardMessageId,
   );
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const isMine = message.senderId === user._id;
+
   const isPinned = pinnedMessages.some(
     (msg) => msg.message._id === message._id,
   );
-  const pin = pinnedMessages.find((p) => p.message._id === message._id);
+
+  const pin = pinnedMessages.find((msg) => msg.message._id === message._id);
 
   const canUnpin = !pin || pin.pinnedBy._id === user._id;
 
-  const handleCopy = async (e) => {
-    e.stopPropagation();
+  const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(message.text);
       toast.success("Message copied successfully");
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-      toast.success("There is a problem copying text");
+    } catch {
+      toast.error("Failed to copy message");
     }
-  };
-
-  const handleOnConfirmDelete = () => {
-    socket.emit(
-      SOCKET_EVENTS.DELETE_MESSAGE,
-      { messageId: message._id },
-      (res) => {
-        if (!res?.success) {
-          toast.error(
-            `${res?.message ? `${res.message}` : ""}`,
-          );
-        }
-      },
-    );
-
-    setIsConfirmOpen(false);
-    onClose();
   };
 
   const handlePin = () => {
@@ -102,100 +57,101 @@ const OptionsMenu = ({ message, coords, isMe, onClose }) => {
       conversationId: message.conversationId,
     };
 
-    if (!isPinned) {
-      socket.emit(SOCKET_EVENTS.PIN_MESSAGE, data, (res) => {
+    socket.emit(
+      isPinned ? SOCKET_EVENTS.UNPIN_MESSAGE : SOCKET_EVENTS.PIN_MESSAGE,
+      data,
+      (res) => {
         if (!res?.success) {
-          toast.error(
-            `${res?.message ? `${res.message}` : ""}`,
-          );
+          toast.error(res?.message || "Something went wrong");
         }
-      });
-    } else {
-      socket.emit(SOCKET_EVENTS.UNPIN_MESSAGE, data, (res) => {
-        if (!res?.success) {
-          toast.error(
-            `${res?.message ? `${res.message}` : ""}`,
-          );
-        }
-      });
-    }
+      },
+    );
   };
 
-  const actions = {
-    handleCopy: handleCopy,
-    handleEdit: () => setMessageMode({ type: "edit", payload: message }),
-    handleDelete: () => setIsConfirmOpen(true),
-    handleReply: () => setMessageMode({ type: "reply", payload: message }),
-    handleForward: () => setForwardMessageId(message._id),
-    handlePin: handlePin,
+  const handleDelete = () => {
+    socket.emit(
+      SOCKET_EVENTS.DELETE_MESSAGE,
+      { messageId: message._id },
+      (res) => {
+        if (!res?.success) {
+          toast.error(res?.message || "Something went wrong");
+        }
+      },
+    );
+
+    setIsConfirmOpen(false);
+    onClose();
   };
 
-  useEffect(() => {
-    window.addEventListener("click", onClose);
+  const items = [
+    {
+      label: "Copy Message",
+      icon: RiFileCopyLine,
+      iconClassName: "rotate-180",
+      onClick: handleCopy,
+    },
+    {
+      label: "Edit Message",
+      icon: RiEdit2Line,
+      hidden:
+        !isMine || Date.now() - new Date(message.createdAt).getTime() > 900000,
+      onClick: () =>
+        setMessageMode({
+          type: "edit",
+          payload: message,
+        }),
+    },
+    {
+      label: "Reply",
+      icon: RiCornerUpLeftLine,
+      onClick: () =>
+        setMessageMode({
+          type: "reply",
+          payload: message,
+        }),
+    },
+    {
+      label: "Forward Message",
+      icon: RiShareForwardLine,
+      onClick: () => setForwardMessageId(message._id),
+    },
+    {
+      label: isPinned ? "Unpin Message" : "Pin Message",
+      icon: RiPushpin2Line,
+      hidden: isPinned && !canUnpin,
+      onClick: handlePin,
+    },
+    {
+      label: "Delete Message",
+      icon: RiDeleteBin3Line,
+      danger: true,
+      separator: true,
+      hidden: !isMine,
+      keepOpen: true,
+      onClick: () => setIsConfirmOpen(true),
+    },
+  ];
 
-    window.addEventListener("scroll", onClose, true);
-
-    return () => {
-      window.removeEventListener("click", onClose);
-      window.removeEventListener("scroll", onClose, true);
-    };
-  }, []);
-
-  return createPortal(
-    <div
-      onClick={(e) => e.stopPropagation()}
-      style={{ top: `${coords.y}px`, left: `${coords.x}px` }}
-      className={`absolute z-99 rounded-xl py-1.5 w-40 top-1/2 -translate-y-1/2 bg-(--bg-secondary) border border-(--foreground-secondary)/20 ${isMe ? "-translate-x-full" : ""}`}
-    >
-      {actionButtons.map((btn) => {
-        if (
-          (btn.actionFun === "handleEdit" &&
-            (Date.now() - new Date(message.createdAt).getTime() > 900000 ||
-              !isMine)) ||
-          (btn.actionFun === "handleDelete" && !isMine) ||
-          (btn.actionFun === "handlePin" && isPinned && !canUnpin)
-        )
-          return;
-
-        return (
-          <div key={btn.actionFun}>
-            {btn.actionFun === "handleDelete" ? (
-              <div className="h-[0.1px] my-2 bg-(--foreground-primary)/20" />
-            ) : null}
-            <button
-              onClick={(e) => {
-                actions[btn.actionFun](e);
-                btn.actionFun !== "handleDelete" ? onClose() : null;
-              }}
-              className={`w-full text-left px-3.5 py-2 text-xs transition-colors flex items-center gap-2.5 ${btn.danger ? "danger-action no-hover" : "text-(--foreground-primary) font-semibold"}`}
-            >
-              <IconsWrapper
-                icon={btn.icon}
-                size={15}
-                className={btn.actionFun === "handleCopy" ? "rotate-180" : ""}
-              />
-              {btn.actionFun === "handlePin"
-                ? isPinned
-                  ? "Unpin Message"
-                  : "Pin Message"
-                : btn.label}
-            </button>
-          </div>
-        );
-      })}
+  return (
+    <>
+      <ContextMenu
+        coords={coords}
+        items={items}
+        alignRight={isMe}
+        onClose={onClose}
+      />
 
       <AnimatePresence>
         {isConfirmOpen && (
           <ConfirmBox
             confirmWhat="deleteMessage"
             setIsConfirmOpen={setIsConfirmOpen}
-            onConfirm={handleOnConfirmDelete}
+            onConfirm={handleDelete}
           />
         )}
       </AnimatePresence>
-    </div>,
-    document.body,
+    </>
   );
 };
 
-export default OptionsMenu;
+export default MessageOptionsMenu;

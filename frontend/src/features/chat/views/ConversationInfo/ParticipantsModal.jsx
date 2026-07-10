@@ -13,6 +13,7 @@ import { useState } from "react";
 import { socket } from "../../../../socket/socket";
 import { SOCKET_EVENTS } from "../../../../socket/events";
 import toast from "react-hot-toast";
+import ParticipantsContextMenu from "./ParticipantsContextMenu";
 
 const ParticipantsModal = ({
   title,
@@ -22,6 +23,11 @@ const ParticipantsModal = ({
   onClose,
   blockedIds,
   groupId,
+  setMenuCoords,
+  setOpenUserId,
+  participantsData,
+  openUserId,
+  menuCoords
 }) => {
   const user = useAuthStore((state) => state.user);
   const { updateParams } = useQueryParams();
@@ -47,6 +53,26 @@ const ParticipantsModal = ({
     );
   }
 
+  function contextMenu(e, clickedUserId) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setMenuCoords({
+      x: e.clientX,
+      y: e.clientY,
+    });
+
+    setOpenUserId(clickedUserId);
+  }
+
+  const isOwner = participantsData?.some(
+    (part) => part._id === user._id && part.role === "owner",
+  );
+
+  const isAdmin = participantsData?.some(
+    (part) => part._id === user._id && part.role === "admin",
+  );
+
   return (
     <Motion
       variants={slideInFromLeft}
@@ -68,6 +94,7 @@ const ParticipantsModal = ({
             <div
               key={participant._id}
               className={`cursor-pointer flex gap-4 relative rounded-md py-3 px-4 transition duration-300 hover:bg-(--bg-secondary)/50 border ${selectedParticipants.includes(participant._id) ? "border-(--accent-color-secondary)/30" : "border-(--bg-primary)"}`}
+              onContextMenu={(e) => contextMenu(e, participant._id)}
               onClick={() => {
                 if (selectable) {
                   setSelectedParticipants((prevItems) => {
@@ -121,6 +148,18 @@ const ParticipantsModal = ({
                 <span className="text-xs opacity-60 self-center capitalize">
                   {participant.role}
                 </span>
+              )}
+
+              {openUserId === participant._id && (
+                <ParticipantsContextMenu
+                  participant={participant}
+                  currentConversationId={groupId}
+                  coords={menuCoords}
+                  onClose={() => setOpenUserId(null)}
+                  isOwner={isOwner}
+                  isAdmin={isAdmin}
+                  userId={user._id}
+                />
               )}
             </div>
           ))
