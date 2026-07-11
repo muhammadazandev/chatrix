@@ -18,6 +18,7 @@ export function registerLeaveListener(socket) {
         participantsData: state.participantsData.filter(
           (participant) => participant._id !== data.userId,
         ),
+        messages: [...state.messages, data.systemMessage],
       };
     });
   });

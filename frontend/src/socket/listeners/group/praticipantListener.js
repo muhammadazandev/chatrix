@@ -19,6 +19,7 @@ export function registerParticipantListener(socket) {
           },
         },
         participantsData: [...state.participantsData, ...data.newlyAdded],
+        messages: [...state.messages, data.systemMessage],
       };
     });
   });
@@ -40,11 +41,12 @@ export function registerParticipantListener(socket) {
         currentConversation: {
           ...state.currentConversation,
           participants: data.participants,
-          roles,
+          participantRoles: roles,
         },
         participantsData: state.participantsData.filter(
           (participant) => !removedParticipantsIdSet.has(participant._id),
         ),
+        messages: [...state.messages, data.systemMessage],
       };
     });
   });

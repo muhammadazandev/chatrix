@@ -11,12 +11,12 @@ const messageSchema = mongoose.Schema(
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default: null,
     },
 
     messageType: {
       type: String,
-      enum: ["text", "image", "video", "file"],
+      enum: ["text", "image", "video", "file", "system"],
       default: "text",
     },
 
@@ -37,6 +37,37 @@ const messageSchema = mongoose.Schema(
     },
 
     isForwarded: { type: Boolean, default: false },
+
+    // System Action messages info
+    systemAction: {
+      type: String,
+      enum: [
+        "member_added",
+        "member_removed",
+        "member_left",
+        "member_promoted",
+        "member_demoted",
+        "group_renamed",
+        "group_photo_changed",
+      ],
+    },
+
+    metadata: {
+      actor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+
+      targets: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+
+      oldValue: String,
+      newValue: String,
+    },
   },
   { timestamps: true },
 );

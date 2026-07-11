@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Conversation from "../../../models/conversation.model.js";
+import Message from "../../../models/message.model.js";
 
 export function registerRoles(io, socket) {
   async function getValidatedGroup(action, targetUserId, groupId, userId) {
@@ -75,9 +76,25 @@ export function registerRoles(io, socket) {
       group.participantRoles.set(toPromoteId, "admin");
       await group.save();
 
+      const systemMessage = await Message.create({
+        conversationId: groupId,
+        messageType: "system",
+        systemAction: "member_promoted",
+        metadata: {
+          actor: userId,
+          targets: [toPromoteId],
+        },
+      });
+
+      await systemMessage.populate([
+        { path: "metadata.actor", select: "username" },
+        { path: "metadata.targets", select: "username" },
+      ]);
+
       io.to(`conversation:${groupId}`).emit("promote_participant", {
         groupId,
         promotedParticipant: toPromoteId,
+        systemMessage,
       });
 
       return callback({
@@ -85,6 +102,7 @@ export function registerRoles(io, socket) {
         message: "Participant promoted successfully",
         groupId,
         promotedParticipant: toPromoteId,
+        systemMessage,
       });
     } catch (error) {
       console.error(error);
@@ -119,9 +137,25 @@ export function registerRoles(io, socket) {
       group.participantRoles.set(toDemoteId, "member");
       await group.save();
 
+      const systemMessage = await Message.create({
+        conversationId: groupId,
+        messageType: "system",
+        systemAction: "member_demoted",
+        metadata: {
+          actor: userId,
+          targets: [toDemoteId],
+        },
+      });
+
+      await systemMessage.populate([
+        { path: "metadata.actor", select: "username" },
+        { path: "metadata.targets", select: "username" },
+      ]);
+
       io.to(`conversation:${groupId}`).emit("demote_participant", {
         groupId,
         demotedParticipant: toDemoteId,
+        systemMessage,
       });
 
       return callback({
@@ -129,6 +163,7 @@ export function registerRoles(io, socket) {
         message: "Participant demoted successfully",
         groupId,
         demotedParticipant: toDemoteId,
+        systemMessage,
       });
     } catch (error) {
       console.error(error);
