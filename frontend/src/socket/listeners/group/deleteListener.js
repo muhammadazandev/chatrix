@@ -11,6 +11,7 @@ export function registerDeleteListener(socket) {
             (con) => con._id !== data.groupId,
           ),
           messages: [],
+          shouldCloseConversation: true,
         };
       }
 

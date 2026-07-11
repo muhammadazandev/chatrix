@@ -7,6 +7,7 @@ import { authApi } from "../../../utils/api";
 export const createConversationSlice = (set) => ({
   conversations: [],
   currentConversation: null,
+  shouldCloseConversation: false,
 
   accessConversation: async (targetUserId, onSuccessNavigate) => {
     try {

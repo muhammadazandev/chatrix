@@ -21,6 +21,9 @@ const Conversation = () => {
   const currentConversation = useChatStore(
     (state) => state.currentConversation,
   );
+  const shouldCloseConversation = useChatStore(
+    (state) => state.shouldCloseConversation,
+  );
   const forwardMessageId = useMessageUiStore((state) => state.forwardMessageId);
   const { updateParams } = useQueryParams();
 
@@ -45,10 +48,20 @@ const Conversation = () => {
   }, [conId, getMessages]);
 
   useEffect(() => {
-    if (!currentConversation) {
-      updateParams({ view: null }, true);
-    }
-  }, [currentConversation]);
+    if (!shouldCloseConversation) return;
+
+    updateParams(
+      {
+        conversationId: null,
+        view: null,
+      },
+      true,
+    );
+
+    useChatStore.setState({
+      shouldCloseConversation: false,
+    });
+  }, [updateParams, shouldCloseConversation]);
 
   return (
     <div className="flex-1 flex flex-col bg-(--bg-primary) h-screen relative overflow-hidden">
