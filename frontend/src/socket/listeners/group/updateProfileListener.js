@@ -24,6 +24,7 @@ export function registerUpdateProfileListener(socket) {
               avatar: data.avatar,
             };
           }),
+          messages: [...state.messages, data.systemMessage],
         };
       }
 
@@ -41,6 +42,7 @@ export function registerUpdateProfileListener(socket) {
               title: data.name,
             };
           }),
+          messages: [...state.messages, data.systemMessage],
         };
       }
 

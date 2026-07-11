@@ -4,6 +4,13 @@ import { SOCKET_EVENTS } from "../../events";
 export function registerRolesListener(socket) {
   socket.on(SOCKET_EVENTS.PROMOTE_PARTICIPANT, (data) => {
     useChatStore.setState((state) => {
+      console.log(
+        data,
+        state.messages,
+        [...state.messages, data.systemMessage],
+        state.messages.length,
+        [...state.messages, data.messages].length,
+      );
       if (
         state.currentConversation._id !== data.groupId ||
         state.participantsData.length === 0
@@ -20,12 +27,20 @@ export function registerRolesListener(socket) {
           }
           return participant;
         }),
+        messages: [...state.messages, data.systemMessage],
       };
     });
   });
 
   socket.on(SOCKET_EVENTS.DEMOTE_PARTICIPANT, (data) => {
     useChatStore.setState((state) => {
+      console.log(
+        data,
+        state.messages,
+        [...state.messages, data.systemMessage],
+        state.messages.length,
+        [...state.messages, data.messages].length,
+      );
       if (
         state.currentConversation._id !== data.groupId ||
         state.participantsData.length === 0
@@ -42,6 +57,7 @@ export function registerRolesListener(socket) {
           }
           return participant;
         }),
+        messages: [...state.messages, data.systemMessage],
       };
     });
   });

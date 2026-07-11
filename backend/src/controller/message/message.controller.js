@@ -58,6 +58,8 @@ async function getOldMessages(req, res) {
           select: "username profilePicture",
         },
       })
+      .populate("metadata.actor", "username")
+      .populate("metadata.targets", "username")
       .lean();
 
     const formatted = messages.map((m) => {
@@ -70,6 +72,13 @@ async function getOldMessages(req, res) {
           text: m.replyTo.text,
           sender: m.replyTo.senderId || null,
           isDeleted: m.replyTo.isDeleted,
+        };
+      }
+
+      if (m.messageType === "system") {
+        return {
+          ...m,
+          conversationType: conversation.type,
         };
       }
 

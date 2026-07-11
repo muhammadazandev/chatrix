@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Conversation from "../../../models/conversation.model.js";
+import Message from "../../../models/message.model.js";
 
 export function registerLeaveGroup(io, socket) {
   socket.on("leave_group", async (data, callback) => {
@@ -62,11 +63,25 @@ export function registerLeaveGroup(io, socket) {
       group.participantRoles.delete(userId);
       await group.save();
 
+      const systemMessage = await Message.create({
+        conversationId: group._id,
+        messageType: "system",
+        systemAction: "member_left",
+        metadata: {
+          actor: userId,
+        },
+      });
+
+      await systemMessage.populate([
+        { path: "metadata.actor", select: "username" },
+      ]);
+
       socket.leave(`conversation:${group._id}`);
 
       io.to(`conversation:${group._id}`).emit("leave_group", {
         groupId: group._id,
         userId,
+        systemMessage,
       });
 
       return callback({
@@ -74,6 +89,7 @@ export function registerLeaveGroup(io, socket) {
         message: "Successfully left the group",
         groupId: group._id,
         userId,
+        systemMessage,
       });
     } catch (error) {
       console.error(error);
