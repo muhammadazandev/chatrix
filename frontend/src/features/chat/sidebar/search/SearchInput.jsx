@@ -57,7 +57,7 @@ const SearchInput = ({
 
   return (
     <div className="mt-4">
-      <div className="rounded-full px-4 py-3   bg-(--bg-secondary) flex justify-between gap-3 items-center focus-within:bg-transparent transition-colors duration-400 ring-transparent ring-1 focus-within:ring-(--accent-color-primary) border-0 no-focus">
+      <div className="rounded-full px-4 py-3 bg-(--bg-secondary) flex justify-between gap-3 items-center focus-within:bg-transparent transition-colors duration-400 ring-transparent ring-1 focus-within:ring-(--accent-color-primary) border-0 no-focus">
         <IconsWrapper icon={RiSearch2Line} size={19} />
         <input
           ref={inputRef}

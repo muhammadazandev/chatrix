@@ -144,7 +144,11 @@ const MessageItem = ({
             </div>
           )}
 
-          {message.replyTo && <ReplyCard replyMessage={message.replyTo} />}
+          <div
+            className={`${isMe ? "[&>div]:bg-(--bg-primary)/15" : ""}`}
+          >
+            {message.replyTo && <ReplyCard replyMessage={message.replyTo} />}
+          </div>
           <div className={`${message.replyTo ? "px-2 py-1" : "px-1"}`}>
             {showHeader && (
               <span className="text-[12px] font-medium text-(--accent-color-secondary) mb-1">

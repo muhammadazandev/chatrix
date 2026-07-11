@@ -163,7 +163,7 @@ const MessageInput = () => {
           </div>
         </motion.div>
       ) : (
-        <div className="w-full flex justify-center opacity-90 tracking-wider my-2">
+        <div className="w-full flex justify-center tracking-wider my-2">
           <p className="bg-(--bg-secondary)/50 rounded-md px-4 py-2 text-md">
             Can not chat with unblocked users
           </p>

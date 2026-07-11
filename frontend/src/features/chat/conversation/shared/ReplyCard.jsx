@@ -20,7 +20,7 @@ const ReplyCard = ({
 
   const content = (
     <div
-      className={`w-full rounded-sm bg-(--bg-primary)/40 flex cursor-pointer ${className}`}
+      className={`w-full rounded-sm bg-(--bg-primary) flex cursor-pointer ${className}`}
       onClick={(e) => {
         if (e.target.tagName === "BUTTON") return;
         setJumpToMessageId(replyMessage._id);
