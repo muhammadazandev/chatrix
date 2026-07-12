@@ -6,7 +6,7 @@ import {
   updateProfilePictureController,
   updateUsernameController,
 } from "../controller/user/user.update.profile.controller.js";
-import upload from "../middleware/upload.js";
+import uploadProfilePicture from "../middleware/upload.profile.picture.js";
 import { getUserProfile } from "../controller/user/user.profile.controller.js";
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.patch("/update-username", updateUsernameController);
 router.patch("/update-bio", updateBioController);
 router.patch(
   "/update-profile-picture",
-  upload.single("profilePicture"),
+  uploadProfilePicture.single("profilePicture"),
   updateProfilePictureController,
 );
 router.get("/:userId/profile", protect, getUserProfile);
