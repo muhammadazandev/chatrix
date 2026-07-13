@@ -3,7 +3,7 @@ import {
   createGroup,
   getParticipants,
 } from "../controller/group/group.controller.js";
-import upload from "../middleware/upload.js";
+import uploadProfilePicture from "../middleware/upload.profile.picture.js";
 import { updateProfilePicture } from "../controller/group/update.profile.picture.controller.js";
 import Conversation from "../models/conversation.model.js";
 
@@ -39,12 +39,12 @@ async function checkGroupAdmin(req, res, next) {
   next();
 }
 
-router.post("/create-group", upload.single("profilePicture"), createGroup);
+router.post("/create-group", uploadProfilePicture.single("profilePicture"), createGroup);
 router.get("/participants/:groupId", getParticipants);
 router.patch(
   "/update-profile-picture/:groupId",
   checkGroupAdmin,
-  upload.single("profilePicture"),
+  uploadProfilePicture.single("profilePicture"),
   updateProfilePicture,
 );
 

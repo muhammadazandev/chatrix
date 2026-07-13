@@ -16,13 +16,19 @@ const messageSchema = mongoose.Schema(
 
     messageType: {
       type: String,
-      enum: ["text", "image", "video", "file", "system"],
+      enum: ["text", "image", "video", "file", "system", "audio"],
       default: "text",
     },
 
     text: { type: String, default: "" },
 
-    mediaUrl: { type: String },
+    media: {
+      url: String,
+      publicId: String,
+      mimeType: String,
+      originalName: String,
+      size: Number,
+    },
 
     isEdited: { type: Boolean, default: false },
 

@@ -11,7 +11,7 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({
+const uploadProfilePicture = multer({
   storage,
 
   limits: {
@@ -19,4 +19,4 @@ const upload = multer({
   },
 });
 
-export default upload;
+export default uploadProfilePicture;
