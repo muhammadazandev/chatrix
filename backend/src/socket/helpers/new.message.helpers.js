@@ -14,6 +14,7 @@ async function validateConversationParticipant(conversationId, senderId) {
         success: false,
         message: "No conversation found",
       },
+      status: 404,
     };
   }
 
@@ -29,6 +30,7 @@ async function validateConversationParticipant(conversationId, senderId) {
           message:
             "Cannot send messages in a conversation with a blocked user.",
         },
+        status: 400,
       };
     }
   }
@@ -41,19 +43,42 @@ async function createAndPopulateMessage(
   atDate,
   senderId,
   isForwarding,
+  isMediaMessage = false,
 ) {
-  const newMessage = await Message.create({
-    conversationId: message.conversationId,
-    senderId,
-    text: message.text,
-    replyTo: !isForwarding ? message.replyTo : null,
-    isForwarded: !!isForwarding,
-  });
+  let newMessage;
+
+  if (!isMediaMessage) {
+    newMessage = await Message.create({
+      conversationId: message.conversationId,
+      senderId,
+      text: message.text,
+      replyTo: !isForwarding ? message.replyTo : null,
+      isForwarded: !!isForwarding,
+    });
+  } else {
+    newMessage = await Message.create({
+      conversationId: message.conversationId,
+      senderId,
+
+      messageType: message.messageType,
+
+      replyTo: !isForwarding ? message.replyTo : null,
+      isForwarded: !!isForwarding,
+
+      media: {
+        url: message.url,
+        publicId: message.publicId,
+        mimeType: message.mime,
+        originalName: message.originalName,
+        size: message.size,
+      },
+    });
+  }
 
   await Conversation.updateOne(
     { _id: message.conversationId },
     {
-      lastMessageText: message.text,
+      lastMessageText: isMediaMessage ? message.lastMessageText : message.text,
       lastMessageAt: atDate,
     },
   );
@@ -62,7 +87,7 @@ async function createAndPopulateMessage(
     .populate("senderId", "username profilePicture")
     .populate({
       path: "replyTo",
-      select: "text senderId",
+      select: "text messageType senderId",
       populate: {
         path: "senderId",
         select: "username profilePicture",
@@ -107,6 +132,7 @@ function broadcastMessage(
   conversation,
   newMessage,
   atDate,
+  lastMessageTextForMedia = null,
 ) {
   io.to(`conversation:${conversationId}`).emit("new_message", {
     message: messageToSend,
@@ -116,7 +142,9 @@ function broadcastMessage(
   conversation.participants.forEach((id) => {
     io.to(`user:${id}`).emit("conversation_updated", {
       conversationId,
-      lastMessage: newMessage.text,
+      lastMessage: !lastMessageTextForMedia
+        ? newMessage.text
+        : lastMessageTextForMedia,
       lastMessageAt: atDate,
     });
   });
