@@ -1,20 +1,17 @@
-import {
-  RiCloseLine,
-  RiEmotionHappyLine,
-  RiSendPlane2Fill,
-} from "@remixicon/react";
-import IconsWrapper from "../../../../components/IconsWrapper";
-import { useState, useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 import { useSearchParams } from "react-router-dom";
+
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
-import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
-import Tooltip from "../../../../components/Tooltip";
 import useTypingIndicator from "../../../../hooks/useTypingIndicator";
-import useMessageUiStore from "../../../../store/useMessageUiStore";
 import useMessageComposer from "../../../../hooks/useMessageComposer";
-import ReplyCard from "../shared/ReplyCard";
+
+import useMessageUiStore from "../../../../store/useMessageUiStore";
 import useChatStore from "../../../../store/useChatStore";
+
+import MessageActions from "./MessageActions";
+import MessageReply from "./MessageReply";
+import MessageTextArea from "./MessageTextarea";
 
 const shakeVariants = {
   error: {
@@ -31,19 +28,24 @@ const shakeVariants = {
 const MessageInput = () => {
   const messageMode = useMessageUiStore((state) => state.messageMode);
   const clearMessageMode = useMessageUiStore((state) => state.clearMessageMode);
+
   const currentConversation = useChatStore(
     (state) => state.currentConversation,
   );
 
   const [isError, setIsError] = useState(false);
+
   const [searchParams] = useSearchParams();
 
   const conversationId = searchParams.get("conversationId");
+
   const conversationIdRef = useRef(conversationId);
   conversationIdRef.current = conversationId;
+
   const inputRef = useRef(null);
 
   const { stopTypingNow, handleTyping } = useTypingIndicator(conversationIdRef);
+
   const {
     value,
     setValue,
@@ -52,6 +54,7 @@ const MessageInput = () => {
     closePicker,
     togglePicker,
   } = useEmojiPicker("");
+
   const { sendMessage } = useMessageComposer({
     stopTypingNow,
     conversationIdRef,
@@ -72,10 +75,10 @@ const MessageInput = () => {
   }, [conversationId]);
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.style.height = "auto";
-      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
-    }
+    if (!inputRef.current) return;
+
+    inputRef.current.style.height = "auto";
+    inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
   }, [value]);
 
   return (
@@ -85,81 +88,42 @@ const MessageInput = () => {
         <motion.div
           variants={shakeVariants}
           animate={isError ? "error" : "normal"}
-          className={`w-full rounded-3xl bg-(--bg-secondary)/80 py-2 px-3 border-2 border-transparent`}
+          className="w-full rounded-3xl bg-(--bg-secondary)/80 py-2 px-3 border-2 border-transparent"
         >
-          <AnimatePresence>
-            {messageMode.type === "reply" && (
-              <ReplyCard
-                replyMessage={messageMode.payload}
-                showCloseButton
-                onClose={clearMessageMode}
-                animated
+          <MessageReply
+            messageMode={messageMode}
+            clearMessageMode={clearMessageMode}
+          />
+
+          <div className="w-full flex gap-4 items-end">
+            <div className="w-full flex gap-4 items-end">
+              <MessageActions
+                isOpen={isOpen}
+                togglePicker={togglePicker}
+                handleEmojiSelect={handleEmojiSelect}
+                closePicker={closePicker}
+                messageMode={messageMode}
+                cancelEditing={cancelEditing}
+                sendMessage={sendMessage}
+                side="left"
               />
-            )}
-          </AnimatePresence>
-          <div className="w-full flex gap-4 z-50 items-end">
-            <Tooltip content="Open Emoji Picker" delay={[1000, 0]}>
-              <button
-                className="p-2 rounded-full shrink-0 z-50"
-                onClick={togglePicker}
-              >
-                <IconsWrapper icon={RiEmotionHappyLine} size={25} />
-              </button>
-            </Tooltip>
 
-            <SharedEmojiPicker
-              isOpen={isOpen}
-              handleEmojiSelect={handleEmojiSelect}
-              closePicker={closePicker}
-              classes="absolute origin-bottom-left bottom-25 left-2"
-            />
+              <MessageTextArea
+                value={value}
+                setValue={setValue}
+                inputRef={inputRef}
+                handleTyping={handleTyping}
+                sendMessage={sendMessage}
+                cancelEditing={cancelEditing}
+              />
 
-            <textarea
-              placeholder="Enter Your Message"
-              className="w-full outline-none bg-transparent z-50 resize-none max-h-25 min-h-5 py-2"
-              ref={inputRef}
-              rows={1}
-              onChange={(e) => {
-                setValue(e.target.value);
-                handleTyping();
-              }}
-              value={value}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                } else if (e.key === "Escape") {
-                  cancelEditing();
-                }
-              }}
-            />
-
-            {messageMode.type === "edit" && (
-              <Tooltip content="Cancel Editing" delay={[1000, 0]}>
-                <button
-                  className="p-3 bg-(--bg-secondary) shrink-0 rounded-full border border-(--foreground-secondary)/10"
-                  onClick={cancelEditing}
-                >
-                  <IconsWrapper
-                    icon={RiCloseLine}
-                    size={16}
-                    className="scale-120"
-                  />
-                </button>
-              </Tooltip>
-            )}
-
-            <Tooltip
-              content={`${messageMode.type === "edit" ? "Edit" : "Send"} Message`}
-              delay={[1000, 0]}
-            >
-              <button
-                className="p-3 bg-(--accent-color-primary) rounded-full shrink-0 z-50 max-h-fit"
-                onClick={sendMessage}
-              >
-                <IconsWrapper icon={RiSendPlane2Fill} size={18} />
-              </button>
-            </Tooltip>
+              <MessageActions
+                messageMode={messageMode}
+                cancelEditing={cancelEditing}
+                sendMessage={sendMessage}
+                side="right"
+              />
+            </div>
           </div>
         </motion.div>
       ) : (
