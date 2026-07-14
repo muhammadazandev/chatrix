@@ -58,8 +58,17 @@ async function mediaMessage(req, res) {
       messageType = "audio";
     }
 
-    const lastMessageText =
-      messageType === "image"
+    const lastMessageText = message.text?.trim()
+      ? `${
+          messageType === "image"
+            ? "📷"
+            : messageType === "video"
+              ? "🎥"
+              : messageType === "audio"
+                ? "🎵"
+                : "📄"
+        } ${message.text.trim()}`
+      : messageType === "image"
         ? "📷 Photo"
         : messageType === "video"
           ? "🎥 Video"
@@ -83,8 +92,7 @@ async function mediaMessage(req, res) {
       messageData,
       atDate,
       userId,
-      false,
-      true,
+      false, 
     );
 
     const messageToSend = formatMessage(messageDoc, conversation.type);

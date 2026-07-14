@@ -43,42 +43,34 @@ async function createAndPopulateMessage(
   atDate,
   senderId,
   isForwarding,
-  isMediaMessage = false,
 ) {
-  let newMessage;
+  const isMedia = message.messageType !== "text";
 
-  if (!isMediaMessage) {
-    newMessage = await Message.create({
-      conversationId: message.conversationId,
-      senderId,
-      text: message.text,
-      replyTo: !isForwarding ? message.replyTo : null,
-      isForwarded: !!isForwarding,
-    });
-  } else {
-    newMessage = await Message.create({
-      conversationId: message.conversationId,
-      senderId,
+  const data = {
+    conversationId: message.conversationId,
+    senderId,
+    text: message.text?.trim() || "",
+    replyTo: !isForwarding ? message.replyTo : null,
+    isForwarded: !!isForwarding,
+  };
 
-      messageType: message.messageType,
-
-      replyTo: !isForwarding ? message.replyTo : null,
-      isForwarded: !!isForwarding,
-
-      media: {
-        url: message.url,
-        publicId: message.publicId,
-        mimeType: message.mime,
-        originalName: message.originalName,
-        size: message.size,
-      },
-    });
+  if (isMedia) {
+    data.messageType = message.messageType;
+    data.media = {
+      url: message.url,
+      publicId: message.publicId,
+      mimeType: message.mime,
+      originalName: message.originalName,
+      size: message.size,
+    };
   }
+
+  const newMessage = await Message.create(data);
 
   await Conversation.updateOne(
     { _id: message.conversationId },
     {
-      lastMessageText: isMediaMessage ? message.lastMessageText : message.text,
+      lastMessageText: isMedia ? message.lastMessageText : message.text,
       lastMessageAt: atDate,
     },
   );
@@ -132,8 +124,10 @@ function broadcastMessage(
   conversation,
   newMessage,
   atDate,
-  lastMessageTextForMedia = null,
+  lastMessageText,
 ) {
+  const text = newMessage.text?.trim() || "";
+
   io.to(`conversation:${conversationId}`).emit("new_message", {
     message: messageToSend,
     conversationId,
@@ -142,9 +136,7 @@ function broadcastMessage(
   conversation.participants.forEach((id) => {
     io.to(`user:${id}`).emit("conversation_updated", {
       conversationId,
-      lastMessage: !lastMessageTextForMedia
-        ? newMessage.text
-        : lastMessageTextForMedia,
+      lastMessageText: lastMessageText ?? text,
       lastMessageAt: atDate,
     });
   });
