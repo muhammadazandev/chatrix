@@ -1,16 +1,22 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Header from "./header/Header";
 import SearchInput from "./search/SearchInput";
 import SearchResults from "./search/SearchResults";
 import ViewTabs from "../views/ViewTabs";
 import { AnimatePresence } from "motion/react";
 import { FocusProvider } from "../../../Context/InputFocusContext";
-import { NoUserFound } from "./components/EmptyStates";
 import SidebarViewRenderer from "../views/SidebarViewRenderer";
 import { useSearchParams } from "react-router-dom";
 import useFriendshipStore from "../../../store/useFriendshipStore";
 import Motion from "../../../motion/Motion";
 import { fade, slideFade, slideInLeft } from "../../../motion/variants";
+import Loader from "../../../components/Loader";
+
+const NoUserFound = lazy(() =>
+  import("../sidebar/components/EmptyStates").then((module) => ({
+    default: module.NoUserFound,
+  })),
+);
 
 const ChatSidebar = () => {
   const [query, setQuery] = useState("");
@@ -37,7 +43,11 @@ const ChatSidebar = () => {
       results.length === 0 &&
       query.trim().length > 1
     ) {
-      return <NoUserFound />;
+      return (
+        <Suspense fallback={<Loader />}>
+          <NoUserFound />
+        </Suspense>
+      );
     }
 
     return <SearchResults results={results} isLoading={isLoading} />;

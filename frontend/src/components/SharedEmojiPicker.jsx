@@ -1,8 +1,11 @@
-import EmojiPicker from "emoji-picker-react";
+import { lazy, Suspense } from "react";
+
 import { AnimatePresence } from "motion/react";
 import Motion from "../motion/Motion";
 import { popLift } from "../motion/variants";
 import useSettingsStore from "../store/useSettingsStore";
+
+const EmojiPicker = lazy(() => import("emoji-picker-react"));
 
 export default function SharedEmojiPicker({
   classes,
@@ -25,14 +28,16 @@ export default function SharedEmojiPicker({
             transition={"spring"}
             className={`${classes} z-50`}
           >
-            <EmojiPicker
-              onEmojiClick={handleEmojiSelect}
-              lazyLoadEmojis={true}
-              emojiStyle="google"
-              theme={`${theme === "system" ? "auto" : theme}`}
-              reactionsDefaultOpen={true}
-              allowExpandReactions={true}
-            />
+            <Suspense fallback={<div className="h-[350px] w-[320px]" />}>
+              <EmojiPicker
+                onEmojiClick={handleEmojiSelect}
+                lazyLoadEmojis={true}
+                emojiStyle="google"
+                theme={`${theme === "system" ? "auto" : theme}`}
+                reactionsDefaultOpen={true}
+                allowExpandReactions={true}
+              />
+            </Suspense>
           </Motion>
         </>
       )}

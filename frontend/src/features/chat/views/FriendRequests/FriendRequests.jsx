@@ -1,10 +1,16 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
-import { FriendRequestsEmptyState } from "../../sidebar/components/EmptyStates";
 import { slideInRight } from "../../../../motion/variants";
 import Motion from "../../../../motion/Motion";
 import UserListItems from "../../sidebar/userListItems/UserListItems";
 import RenderActionButtons from "../../sidebar/userListItems/RelationshipActionMenu";
+import Loader from "../../../../components/Loader";
+
+const FriendRequestsEmptyState = lazy(() =>
+  import("../../sidebar/components/EmptyStates").then((module) => ({
+    default: module.FriendRequestsEmptyState,
+  })),
+);
 
 const FriendRequests = () => {
   const getFriendRequests = useFriendshipStore(
@@ -49,7 +55,11 @@ const FriendRequests = () => {
   const hasReceived = pendingReceivedRequests?.length > 0;
 
   if (!hasSent && !hasReceived) {
-    return <FriendRequestsEmptyState />;
+    return (
+      <Suspense fallback={<Loader />}>
+        <FriendRequestsEmptyState />
+      </Suspense>
+    );
   }
 
   return (

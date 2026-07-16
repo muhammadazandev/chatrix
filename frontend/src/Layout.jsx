@@ -1,13 +1,18 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/login/Login";
-import Homepage from "./pages/homepage/Homepage";
-import Chat from "./pages/chat/Chat";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
-import Signup from "./pages/signup/Signup";
 import { Toaster } from "react-hot-toast";
-import ResetPassword from "./pages/resetPassword/ResetPassword";
 import AppearanceBootstrap from "./bootstrap/AppearanceBootstrap";
+import Loader from "./components/Loader";
+
+const Homepage = lazy(() => import("./pages/homepage/Homepage"));
+const Login = lazy(() => import("./pages/login/Login"));
+const Signup = lazy(() => import("./pages/signup/Signup"));
+const Chat = lazy(() => import("./pages/chat/Chat"));
+const ForgotPassword = lazy(
+  () => import("./pages/forgotPassword/ForgotPassword"),
+);
+const ResetPassword = lazy(() => import("./pages/resetPassword/ResetPassword"));
 
 const Layout = () => {
   return (
@@ -27,24 +32,26 @@ const Layout = () => {
         }}
       />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Homepage />}></Route>
-          <Route path="/signup" element={<Signup />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoutes>
-                <Chat />
-              </ProtectedRoutes>
-            }
-          ></Route>
-          <Route
-            path="/reset-password/:token"
-            element={<ResetPassword />}
-          ></Route>
-          <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-        </Routes>
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoutes>
+                  <Chat />
+                </ProtectedRoutes>
+              }
+            />
+
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </>
   );

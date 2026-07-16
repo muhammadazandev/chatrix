@@ -18,9 +18,5 @@ export default defineConfig({
       ignored: ["**/node_modules/**", "**/.git/**"],
     },
   },
-  clearScreen: false, // Show full logs
-  build: {
-    sourcemap: true,
-  },
   assetsInclude: ["**/*.lottie"],
 });
