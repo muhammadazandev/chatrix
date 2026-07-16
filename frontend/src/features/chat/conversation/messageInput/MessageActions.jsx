@@ -7,6 +7,7 @@ import {
 import IconsWrapper from "../../../../components/IconsWrapper";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
 import Tooltip from "../../../../components/Tooltip";
+import MediaMessagesButtons from "./MediaMessagesButtons";
 
 const MessageActions = ({
   side,
@@ -20,13 +21,14 @@ const MessageActions = ({
 }) => {
   if (side === "left") {
     return (
-      <>
+      <div className="flex gap-1 shrink-0">
+        <MediaMessagesButtons />
         <Tooltip content="Open Emoji Picker" delay={[1000, 0]}>
           <button
-            className="p-2 rounded-full shrink-0 z-50"
+            className="p-2 rounded-full z-50"
             onClick={togglePicker}
           >
-            <IconsWrapper icon={RiEmotionHappyLine} size={25} />
+            <IconsWrapper icon={RiEmotionHappyLine} size={22} />
           </button>
         </Tooltip>
 
@@ -36,7 +38,7 @@ const MessageActions = ({
           closePicker={closePicker}
           classes="absolute origin-bottom-left bottom-25 left-2"
         />
-      </>
+      </div>
     );
   }
 

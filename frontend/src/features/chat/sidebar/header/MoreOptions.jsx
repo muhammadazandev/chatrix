@@ -61,7 +61,7 @@ const MoreOptions = ({ setIsMoreOpen, isMoreOpen }) => {
       <Motion
         variants={popLift}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="fixed bottom-auto left-[calc(100%/3.7)] mt-2 w-42 z-50 rounded-xl border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-[0_0_15px_var(--foreground-primary)]/5 flex flex-col origin-top-left overflow-hidden p-1"
+        className="fixed bottom-auto left-[calc(100%/3.7)] mt-2 w-42 z-55 rounded-xl border border-(--foreground-secondary)/30 bg-(--bg-primary) shadow-[0_0_15px_var(--foreground-primary)]/5 flex flex-col origin-top-left overflow-hidden p-1"
       >
         {options.map((opt) => {
           const isDanger = opt.variant === "danger";

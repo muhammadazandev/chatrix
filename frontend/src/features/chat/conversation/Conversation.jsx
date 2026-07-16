@@ -11,6 +11,7 @@ import useMessageUiStore from "../../../store/useMessageUiStore";
 import ForwardMessage from "./ForwardMessage";
 import { AnimatePresence } from "motion/react";
 import { useQueryParams } from "../../../hooks/useQueryParams";
+import MediaPreviewModal from "./messageInput/MediaPreviewModal";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
@@ -18,13 +19,11 @@ const Conversation = () => {
   const conId = searchParam.get("conversationId");
   const messages = useChatStore((state) => state.messages);
   const conversations = useChatStore((state) => state.conversations);
-  const currentConversation = useChatStore(
-    (state) => state.currentConversation,
-  );
   const shouldCloseConversation = useChatStore(
     (state) => state.shouldCloseConversation,
   );
   const forwardMessageId = useMessageUiStore((state) => state.forwardMessageId);
+  const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
   const { updateParams } = useQueryParams();
 
   useEffect(() => {
@@ -70,13 +69,15 @@ const Conversation = () => {
       <TypingIndicator />
       <MessageInput />
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {forwardMessageId && conversations && (
           <ForwardMessage
             forwardMessageId={forwardMessageId}
             conversations={conversations}
           />
         )}
+
+        {mediaPreviewInfo && <MediaPreviewModal />}
       </AnimatePresence>
     </div>
   );

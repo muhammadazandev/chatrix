@@ -50,7 +50,7 @@ const Header = () => {
   return (
     <div>
       <div
-        className="min-w-full px-3 py-2  bg-(--bg-primary) border-b border-(--foreground-primary)/20 cursor-pointer"
+        className="min-w-full px-3 py-2 bg-(--bg-primary) border-b border-(--foreground-primary)/20 cursor-pointer"
         onClick={() => updateParams({ view: "conversation-info" })}
       >
         <div className="p-3.5 flex items-center justify-between gap-4 relative">
