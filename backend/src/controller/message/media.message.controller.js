@@ -9,7 +9,6 @@ import {
 
 async function mediaMessage(req, res) {
   try {
-    // const { message } = req.body || {};
     const userId = req.user.id;
 
     const message =
@@ -92,7 +91,7 @@ async function mediaMessage(req, res) {
       messageData,
       atDate,
       userId,
-      false, 
+      false,
     );
 
     const messageToSend = formatMessage(messageDoc, conversation.type);
@@ -114,7 +113,7 @@ async function mediaMessage(req, res) {
       message: messageToSend,
     });
   } catch (error) {
-    console.error(error);
+    console.error("ERROR:", error);
     return res.status(500).json({
       message: "Internal server error",
       success: false,

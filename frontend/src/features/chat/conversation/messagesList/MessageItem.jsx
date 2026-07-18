@@ -117,7 +117,7 @@ const MessageItem = ({
             {renderSystemMessage()}
           </p>
         </div>
-      ) : (
+      ) : message.messageType === "text" ? (
         <div
           className={`relative max-w-[70%] border border-(--foreground-secondary)/20 py-1.5 px-0.5 flex flex-col ${
             isMe
@@ -144,9 +144,7 @@ const MessageItem = ({
             </div>
           )}
 
-          <div
-            className={`${isMe ? "[&>div]:bg-(--bg-primary)/15" : ""}`}
-          >
+          <div className={`${isMe ? "[&>div]:bg-(--bg-primary)/15" : ""}`}>
             {message.replyTo && <ReplyCard replyMessage={message.replyTo} />}
           </div>
           <div className={`${message.replyTo ? "px-2 py-1" : "px-1"}`}>
@@ -183,6 +181,58 @@ const MessageItem = ({
                 {message.createdAt ? formatTime(message.createdAt) : ""}
               </span>
             </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          className={`relative max-w-[40%] border border-(--foreground-secondary)/20 p-2 flex flex-col gap-2 ${
+            isMe
+              ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
+              : "bg-(--bg-secondary) rounded-xl rounded-bl-none"
+          }`}
+        >
+          {message.messageType === "image" && (
+            <img
+              src={message.media.url}
+              alt="Image"
+              className="max-w-full rounded-lg max-h-80 object-cover"
+            />
+          )}
+
+          {message.messageType === "video" && (
+            <video
+              src={message.media.url}
+              controls
+              className="max-w-full rounded-lg max-h-80"
+            />
+          )}
+
+          {message.messageType === "audio" && (
+            <audio src={message.media.url} controls />
+          )}
+
+          {message.messageType === "file" && (
+            <a
+              href={message.media.url}
+              target="_blank"
+              rel="noreferrer"
+              className="underline break-all"
+            >
+              {message.media.fileName || "Download file"}
+            </a>
+          )}
+
+          <div
+            className={`flex items-center gap-2 py-2 border-t border-(--foreground-secondary)/20 ${message.text ? "justify-between" : "justify-end"}`}
+          >
+            {message.text && (
+              <span className="text-sm leading-relaxed whitespace-pre-wrap mr-12 break-all">
+                {message.text}
+              </span>
+            )}
+            <span className="text-[10px] opacity-40">
+              {message.createdAt ? formatTime(message.createdAt) : ""}
+            </span>
           </div>
         </div>
       )}

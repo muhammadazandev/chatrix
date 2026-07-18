@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import MessageItem from "./MessageItem";
+import PendingMessages from "./PendingMessages";
 
 const MessagesList = ({ messages }) => {
   const messageRefs = useRef({});
@@ -125,6 +126,8 @@ const MessagesList = ({ messages }) => {
             </Fragment>
           );
         })}
+
+        <PendingMessages />
       </div>
     </div>
   );

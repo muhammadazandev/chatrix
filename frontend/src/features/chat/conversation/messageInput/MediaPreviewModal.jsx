@@ -1,4 +1,9 @@
-import { RiCloseLine, RiEmotionHappyLine, RiFile3Line } from "@remixicon/react";
+import {
+  RiCloseLine,
+  RiEmotionHappyLine,
+  RiFile3Line,
+  RiSendPlane2Fill,
+} from "@remixicon/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import Tooltip from "../../../../components/Tooltip";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
@@ -7,11 +12,25 @@ import { fade } from "../../../../motion/variants";
 import { convertFilesSize } from "../../../../utils/convertFilesSize";
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
+import { authApi } from "../../../../utils/api";
+import handleError from "../../../../utils/handleError";
+import toast from "react-hot-toast";
+import { useQueryParams } from "../../../../hooks/useQueryParams";
 
 const MediaPreviewModal = () => {
   const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
+  const pendingMessages = useMessageUiStore((state) => state.pendingMessages);
   const setMediaPreviewInfo = useMessageUiStore(
     (state) => state.setMediaPreviewInfo,
+  );
+  const addPendingMessage = useMessageUiStore(
+    (state) => state.addPendingMessage,
+  );
+  const updatePendingMessage = useMessageUiStore(
+    (state) => state.updatePendingMessage,
+  );
+  const removePendingMessage = useMessageUiStore(
+    (state) => state.removePendingMessage,
   );
   const type = mediaPreviewInfo?.file?.type ?? "";
   const {
@@ -22,6 +41,96 @@ const MediaPreviewModal = () => {
     closePicker,
     togglePicker,
   } = useEmojiPicker("");
+  const { searchParams } = useQueryParams();
+
+  async function sendMessage() {
+    const mime = mediaPreviewInfo.file.type;
+
+    let messageType = "file";
+
+    if (mime.startsWith("image/")) {
+      messageType = "image";
+    } else if (mime.startsWith("video/")) {
+      messageType = "video";
+    } else if (mime.startsWith("audio/")) {
+      messageType = "audio";
+    }
+
+    try {
+      const formData = new FormData();
+      const conversationId = searchParams.get("conversationId");
+      const tempId = crypto.randomUUID();
+
+      formData.append("file", mediaPreviewInfo.file);
+
+      formData.append(
+        "message",
+        JSON.stringify({
+          conversationId,
+          text: value,
+          // replyTo,
+          type: messageType,
+        }),
+      );
+
+      const pendingMessage = {
+        tempId,
+        conversationId,
+        status: "uploading",
+        progress: 0,
+
+        messageType,
+
+        media: {
+          url: mediaPreviewInfo?.url,
+          fileName: mediaPreviewInfo.file.name,
+          size: mediaPreviewInfo.file.size,
+        },
+
+        text: value,
+        createdAt: Date.now(),
+      };
+
+      addPendingMessage(pendingMessage);
+
+      let lastProgress = 0;
+
+      const request = authApi.post("/message/media", formData, {
+        onUploadProgress(e) {
+          if (!e.total) return;
+
+          const progress = Math.round((e.loaded * 100) / e.total);
+
+          if (progress !== lastProgress) {
+            lastProgress = progress;
+            updatePendingMessage(tempId, { progress });
+          }
+        },
+      });
+
+      setMediaPreviewInfo(null);
+
+      request
+        .then(() => {
+          removePendingMessage(tempId);
+
+          if (mediaPreviewInfo?.url) {
+            URL.revokeObjectURL(mediaPreviewInfo?.url);
+          }
+        })
+        .catch((error) => {
+          updatePendingMessage(tempId, {
+            status: "failed",
+            error: handleError(error),
+          });
+          const message = handleError(error);
+          if (message) toast.error(message);
+        });
+    } catch (error) {
+      const message = handleError(error);
+      if (message) toast.error(message);
+    }
+  }
 
   return (
     <Motion
@@ -37,7 +146,10 @@ const MediaPreviewModal = () => {
                 className="p-2 rounded-full"
                 onClick={() => {
                   setMediaPreviewInfo(null);
-                  URL.revokeObjectURL(mediaPreviewInfo?.url);
+
+                  if (mediaPreviewInfo?.url) {
+                    URL.revokeObjectURL(mediaPreviewInfo?.url);
+                  }
                 }}
               >
                 <IconsWrapper icon={RiCloseLine} />
@@ -57,18 +169,26 @@ const MediaPreviewModal = () => {
                     <img
                       src={mediaPreviewInfo?.url}
                       alt={mediaPreviewInfo?.file.name}
-                      className="max-w-full max-h-[70vh] object-contain"
+                      className="max-w-full max-h-[60vh] object-contain"
                     />
                   ) : (
-                    <video src={mediaPreviewInfo?.url} controls></video>
+                    <video
+                      className="max-w-md w-full"
+                      src={mediaPreviewInfo?.url}
+                      controls
+                    ></video>
                   )}
                 </>
               ) : (
                 <>
                   {type.startsWith("audio/") ? (
-                    <audio controls src={mediaPreviewInfo?.url}></audio>
+                    <audio
+                      controls
+                      src={mediaPreviewInfo?.url}
+                      className="w-full max-w-md"
+                    ></audio>
                   ) : (
-                    <div className="w-105 rounded-2xl bg-(--bg-secondary) border border-(--foreground-primary)/30">
+                    <div className="max-w-md w-full rounded-2xl bg-(--bg-secondary) border border-(--foreground-primary)/30">
                       <div className="p-6 flex items-center gap-4 border-b border-(--foreground-primary)/30">
                         <div className="size-14 rounded-xl bg-(--accent-color-secondary)/15 flex items-center justify-center">
                           <RiFile3Line className="size-7" />
@@ -105,10 +225,10 @@ const MediaPreviewModal = () => {
               )}
 
               {!type.startsWith("audio/") && (
-                <div className="flex-1 bg-(--bg-secondary) rounded-lg px-4 mt-15 flex justify-between py-2 items-center w-105">
+                <div className="flex-1 bg-(--bg-secondary) rounded-lg px-4 mt-15 flex justify-between py-2 items-center max-w-md w-full">
                   <textarea
                     placeholder="Enter Caption"
-                    className="w-full outline-none z-50 resize-none max-h-fit"
+                    className="w-full resize-none outline-none"
                     rows={1}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
@@ -135,8 +255,15 @@ const MediaPreviewModal = () => {
           </main>
 
           <footer>
-            <div>
-              <button></button>
+            <div className="flex justify-end p-2">
+              <Tooltip content={`Send Message`} delay={[1000, 0]}>
+                <button
+                  className="p-3 bg-(--accent-color-primary) rounded-full"
+                  onClick={sendMessage}
+                >
+                  <IconsWrapper icon={RiSendPlane2Fill} size={18} />
+                </button>
+              </Tooltip>
             </div>
           </footer>
         </>

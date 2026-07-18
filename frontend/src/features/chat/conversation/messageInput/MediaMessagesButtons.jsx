@@ -11,6 +11,7 @@ import { AnimatePresence } from "motion/react";
 import Motion from "../../../../motion/Motion";
 import { slideHeightExpand } from "../../../../motion/variants";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
+import toast from "react-hot-toast";
 
 const MediaMessagesButtons = () => {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
@@ -26,10 +27,19 @@ const MediaMessagesButtons = () => {
     if (nextFocused && menuRef.current?.contains(nextFocused)) return;
     setIsSelectorOpen(false);
   };
-  
+
   const handleFileChange = (e) => {
+    const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
+
+    if (files[0].size > MAX_FILE_SIZE) {
+      toast.error("Files larger than 100 MB aren't supported.");
+      e.target.value = "";
+      setSelectedButton(null);
+      return;
+    }
 
     const url = URL.createObjectURL(files[0]);
 
@@ -59,6 +69,21 @@ const MediaMessagesButtons = () => {
 
     setIsSelectorOpen(false);
   }, [selectedButton]);
+
+  useEffect(() => {
+    const input = fileInputRef.current;
+    if (!input) return;
+
+    const handleCancel = () => {
+      setSelectedButton(null);
+    };
+
+    input.addEventListener("cancel", handleCancel);
+
+    return () => {
+      input.removeEventListener("cancel", handleCancel);
+    };
+  }, []);
 
   return (
     <div ref={menuRef} onBlur={handleBlur} className="relative">

@@ -136,7 +136,7 @@ function broadcastMessage(
   conversation.participants.forEach((id) => {
     io.to(`user:${id}`).emit("conversation_updated", {
       conversationId,
-      lastMessageText: lastMessageText ?? text,
+      lastMessage: lastMessageText ?? text,
       lastMessageAt: atDate,
     });
   });

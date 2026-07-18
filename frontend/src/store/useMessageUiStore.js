@@ -8,6 +8,7 @@ const useMessageUiStore = create((set) => ({
   jumpToMessageId: null,
   forwardMessageId: null,
   mediaPreviewInfo: null,
+  pendingMessages: [],
 
   setMessageMode: (mode) => set({ messageMode: mode }),
   clearMessageMode: () =>
@@ -15,6 +16,23 @@ const useMessageUiStore = create((set) => ({
   setJumpToMessageId: (msg) => set({ jumpToMessageId: msg }),
   setForwardMessageId: (id) => set({ forwardMessageId: id }),
   setMediaPreviewInfo: (data) => set({ mediaPreviewInfo: data }),
+
+  addPendingMessage: (msg) =>
+    set((state) => ({ pendingMessages: [...state.pendingMessages, msg] })),
+
+  updatePendingMessage: (tempId, updates) =>
+    set((state) => ({
+      pendingMessages: state.pendingMessages.map((msg) =>
+        msg.tempId === tempId ? { ...msg, ...updates } : msg,
+      ),
+    })),
+
+  removePendingMessage: (tempId) =>
+    set((state) => ({
+      pendingMessages: state.pendingMessages.filter(
+        (msg) => msg.tempId !== tempId,
+      ),
+    })),
 }));
 
 export default useMessageUiStore;

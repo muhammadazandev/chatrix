@@ -5,6 +5,7 @@ import cloudinary from "../lib/cloudinary.js";
 const ALLOWED_MESSAGE_MIME_TYPES = [
   // Images
   "image/jpeg",
+  "image/jpg",
   "image/png",
   "image/webp",
   "image/gif",

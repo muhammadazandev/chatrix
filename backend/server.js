@@ -57,6 +57,15 @@ app.use("/api/conversation", protect, conversationRouter);
 app.use("/api/message", protect, messageRouter);
 app.use("/api/group", protect, groupRouter);
 
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+});
+
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ message: "OK" });
