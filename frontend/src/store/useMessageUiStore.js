@@ -9,6 +9,11 @@ const useMessageUiStore = create((set) => ({
   forwardMessageId: null,
   mediaPreviewInfo: null,
   pendingMessages: [],
+  mediaViewer: {
+    isOpen: false,
+    items: [],
+    activeIndex: 0,
+  },
 
   setMessageMode: (mode) => set({ messageMode: mode }),
   clearMessageMode: () =>
@@ -33,6 +38,24 @@ const useMessageUiStore = create((set) => ({
         (msg) => msg.tempId !== tempId,
       ),
     })),
+
+  openMediaViewer: (items, index) =>
+    set({
+      mediaViewer: {
+        isOpen: true,
+        items,
+        activeIndex: index,
+      },
+    }),
+
+  closeMediaViewer: () =>
+    set({
+      mediaViewer: {
+        isOpen: false,
+        items: [],
+        activeIndex: 0,
+      },
+    }),
 }));
 
 export default useMessageUiStore;

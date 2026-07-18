@@ -2,7 +2,11 @@ import { AnimatePresence } from "motion/react";
 import useAuthStore from "../../../../store/useAuthStore";
 import OptionsMenu from "./OptionsMenu";
 import IconsWrapper from "../../../../components/IconsWrapper";
-import { RiForbidLine, RiShareForwardLine } from "@remixicon/react";
+import {
+  RiForbidLine,
+  RiLoader4Line,
+  RiShareForwardLine,
+} from "@remixicon/react";
 import ReplyCard from "../shared/ReplyCard";
 
 const formatTime = (date) =>
@@ -13,12 +17,13 @@ const formatTime = (date) =>
 
 const MessageItem = ({
   message,
-  contextMenu,
+  contextMenu = () => {},
   prevMessage,
   openMessageMenuId,
-  messageRefs,
-  menuCoords,
-  closeMenu,
+  messageRefs = null,
+  menuCoords = { x: 0, y: 0 },
+  closeMenu = () => {},
+  isPending = false,
 }) => {
   const user = useAuthStore((state) => state.user);
 
@@ -37,6 +42,8 @@ const MessageItem = ({
 
   const showHeader =
     message.conversationType === "group" && !isMe && startsBlock && senderId;
+
+  const messageId = message._id || message.tempId;
 
   function handleMultipleTargets(targets) {
     const formatter = new Intl.ListFormat("en", {
@@ -89,14 +96,16 @@ const MessageItem = ({
   return (
     <div
       ref={(el) => {
-        if (el) {
-          messageRefs.current[message._id] = el;
-        } else {
-          delete messageRefs.current[message._id];
+        if (messageId && messageRefs) {
+          if (el) {
+            messageRefs.current[messageId] = el;
+          } else {
+            delete messageRefs.current[messageId];
+          }
         }
       }}
       className={`flex ${
-        isMe ? "justify-end" : "justify-start"
+        isMe || isPending ? "justify-end" : "justify-start"
       } ${startsBlock ? "mt-4" : "mt-1"}`}
     >
       {!isMe && message.conversationType === "group" && message.senderId && (
@@ -124,7 +133,7 @@ const MessageItem = ({
               ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
               : "bg-(--bg-secondary) rounded-xl rounded-bl-none px-1.5"
           } ${message.isDeleted ? "cursor-default" : "cursor-pointer"}`}
-          onContextMenu={(e) => contextMenu(e, message._id, message.isDeleted)}
+          onContextMenu={(e) => contextMenu(e, messageId, message.isDeleted)}
         >
           {message.isForwarded && (
             <div
@@ -186,11 +195,19 @@ const MessageItem = ({
       ) : (
         <div
           className={`relative max-w-[40%] border border-(--foreground-secondary)/20 p-2 flex flex-col gap-2 ${
-            isMe
+            isMe || isPending
               ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
               : "bg-(--bg-secondary) rounded-xl rounded-bl-none"
           }`}
         >
+          {isPending && (
+            <div className="absolute inset-0 z-10 rounded-xl bg-black/45 flex flex-col items-center justify-center gap-2">
+              <RiLoader4Line className="size-8 animate-spin text-white" />
+
+              <span className="text-xs text-white/80">{message.progress}%</span>
+            </div>
+          )}
+
           {message.messageType === "image" && (
             <img
               src={message.media.url}
@@ -238,7 +255,7 @@ const MessageItem = ({
       )}
 
       <AnimatePresence>
-        {openMessageMenuId === message._id && (
+        {openMessageMenuId === messageId && (
           <OptionsMenu
             message={message}
             coords={menuCoords}

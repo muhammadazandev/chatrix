@@ -17,9 +17,8 @@ import handleError from "../../../../utils/handleError";
 import toast from "react-hot-toast";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
 
-const MediaPreviewModal = () => {
+const MediaComposer = () => {
   const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
-  const pendingMessages = useMessageUiStore((state) => state.pendingMessages);
   const setMediaPreviewInfo = useMessageUiStore(
     (state) => state.setMediaPreviewInfo,
   );
@@ -272,4 +271,4 @@ const MediaPreviewModal = () => {
   );
 };
 
-export default MediaPreviewModal;
+export default MediaComposer;

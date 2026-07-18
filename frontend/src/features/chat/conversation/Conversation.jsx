@@ -11,7 +11,7 @@ import useMessageUiStore from "../../../store/useMessageUiStore";
 import ForwardMessage from "./ForwardMessage";
 import { AnimatePresence } from "motion/react";
 import { useQueryParams } from "../../../hooks/useQueryParams";
-import MediaPreviewModal from "./messageInput/MediaPreviewModal";
+import MediaComposer from "./media/MediaComposer";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
@@ -77,7 +77,7 @@ const Conversation = () => {
           />
         )}
 
-        {mediaPreviewInfo && <MediaPreviewModal />}
+        {mediaPreviewInfo && <MediaComposer />}
       </AnimatePresence>
     </div>
   );
