@@ -5,15 +5,13 @@ import IconsWrapper from "../../../../components/IconsWrapper";
 import {
   RiForbidLine,
   RiLoader4Line,
+  RiPlayLine,
   RiShareForwardLine,
 } from "@remixicon/react";
 import ReplyCard from "../shared/ReplyCard";
-
-const formatTime = (date) =>
-  new Date(date).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+import useMessageUiStore from "../../../../store/useMessageUiStore";
+import useChatStore from "../../../../store/useChatStore";
+import { formatTime } from "../../../../utils/messagesHelpers";
 
 const MessageItem = ({
   message,
@@ -30,7 +28,6 @@ const MessageItem = ({
   if (!message) return null;
 
   const senderId = message.sender?._id || message.senderId;
-
   const isMe = senderId === user?._id;
 
   const getSenderId = (msg) => (msg?.sender ? msg.sender._id : msg?.senderId);
@@ -44,6 +41,9 @@ const MessageItem = ({
     message.conversationType === "group" && !isMe && startsBlock && senderId;
 
   const messageId = message._id || message.tempId;
+
+  const openMediaViewer = useMessageUiStore((state) => state.openMediaViewer);
+  const messages = useChatStore((state) => state.messages);
 
   function handleMultipleTargets(targets) {
     const formatter = new Intl.ListFormat("en", {
@@ -90,6 +90,16 @@ const MessageItem = ({
 
       default:
         return "";
+    }
+  }
+
+  function handleOnMediaClick() {
+    if (!isPending) {
+      const allMedia = messages.filter(
+        (msg) => msg.messageType === "image" || msg.messageType === "video",
+      );
+
+      openMediaViewer(allMedia, allMedia.indexOf(message));
     }
   }
 
@@ -208,26 +218,31 @@ const MessageItem = ({
             </div>
           )}
 
-          {message.messageType === "image" && (
-            <img
-              src={message.media.url}
-              alt="Image"
-              className="max-w-full rounded-lg max-h-80 object-cover"
-            />
-          )}
-
-          {message.messageType === "video" && (
-            <video
-              src={message.media.url}
-              controls
-              className="max-w-full rounded-lg max-h-80"
-            />
+          {(message.messageType === "image" ||
+            message.messageType === "video") && (
+            <>
+              <img
+                src={message.media.thumbnailUrl || message.media.url}
+                alt="Image"
+                className="max-w-full rounded-lg max-h-80 object-cover cursor-pointer"
+                onClick={handleOnMediaClick}
+              />
+              {message.messageType === "video" && (
+                <div className="absolute top-1/3 left-1/2 -translate-y-1/3 -translate-x-1/2">
+                  <button
+                    className="hover:scale-110 rounded-full p-4 bg-(--bg-primary)/50 backdrop-blur-xl"
+                    onClick={handleOnMediaClick}
+                  >
+                    <IconsWrapper icon={RiPlayLine} size={28} />
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
           {message.messageType === "audio" && (
             <audio src={message.media.url} controls />
           )}
-
           {message.messageType === "file" && (
             <a
               href={message.media.url}
@@ -238,7 +253,6 @@ const MessageItem = ({
               {message.media.fileName || "Download file"}
             </a>
           )}
-
           <div
             className={`flex items-center gap-2 py-2 border-t border-(--foreground-secondary)/20 ${message.text ? "justify-between" : "justify-end"}`}
           >

@@ -6,6 +6,7 @@ import {
   formatMessage,
   validateConversationParticipant,
 } from "../../socket/helpers/new.message.helpers.js";
+import cloudinary from "../../lib/cloudinary.js";
 
 async function mediaMessage(req, res) {
   try {
@@ -76,12 +77,40 @@ async function mediaMessage(req, res) {
             : "📄 File";
     const atDate = Date.now();
 
+    let extraInfo;
+
+    if (messageType === "audio" || messageType === "video") {
+      extraInfo = await cloudinary.api.resource(req.file.filename, {
+        resource_type: "video",
+        media_metadata: true,
+      });
+
+      if (messageType === "video") {
+        const thumbnailUrl = cloudinary.url(extraInfo.public_id, {
+          resource_type: "video",
+          format: "jpg",
+          secure: true,
+          transformation: [
+            {
+              start_offset: "1",
+            },
+          ],
+        });
+        extraInfo = { ...extraInfo, thumbnailUrl };
+      }
+    }
+
     const messageData = {
       ...message,
       messageType,
       mime,
       lastMessageText,
-      url: req.file.path,
+      url: extraInfo ? extraInfo.secure_url : req.file.path,
+      thumbnailUrl: extraInfo ? extraInfo.thumbnailUrl : null,
+      duration:
+        messageType === "audio" || messageType === "video"
+          ? extraInfo.duration
+          : null,
       publicId: req.file.filename,
       originalName: req.file.originalname,
       size: req.file.size,

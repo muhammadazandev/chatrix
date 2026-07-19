@@ -62,6 +62,8 @@ async function createAndPopulateMessage(
       mimeType: message.mime,
       originalName: message.originalName,
       size: message.size,
+      thumbnailUrl: message.thumbnailUrl,
+      duration: message.duration,
     };
   }
 

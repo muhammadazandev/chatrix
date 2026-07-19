@@ -4,6 +4,10 @@ import { SOCKET_EVENTS } from "../../events";
 export async function registerDeleteMessage(socket) {
   socket.on(SOCKET_EVENTS.DELETE_MESSAGE, (data) => {
     useChatStore.setState((state) => ({
+      pinnedMessages: state.pinnedMessages.filter(
+        (mes) => mes.message._id !== data.messageId,
+      ),
+
       messages: state.messages.map((mes) => {
         if (mes.replyTo?._id === data.messageId) {
           return {

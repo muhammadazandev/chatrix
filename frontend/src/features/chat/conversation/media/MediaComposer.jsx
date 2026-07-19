@@ -9,7 +9,7 @@ import Tooltip from "../../../../components/Tooltip";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import Motion from "../../../../motion/Motion";
 import { fade } from "../../../../motion/variants";
-import { convertFilesSize } from "../../../../utils/convertFilesSize";
+import { convertFilesSize } from "../../../../utils/messagesHelpers";
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
 import { authApi } from "../../../../utils/api";

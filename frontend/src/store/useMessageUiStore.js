@@ -49,6 +49,19 @@ const useMessageUiStore = create((set) => ({
     }),
 
   closeMediaViewer: () =>
+    set((state) => ({
+      mediaViewer: {
+        ...state.mediaViewer,
+        isOpen: false,
+      },
+    })),
+
+  updateMediaViewerIndex: (newIndex) =>
+    set((state) => ({
+      mediaViewer: { ...state.mediaViewer, activeIndex: newIndex },
+    })),
+
+  clearMediaViewer: () =>
     set({
       mediaViewer: {
         isOpen: false,

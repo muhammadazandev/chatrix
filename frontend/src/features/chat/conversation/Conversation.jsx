@@ -12,6 +12,7 @@ import ForwardMessage from "./ForwardMessage";
 import { AnimatePresence } from "motion/react";
 import { useQueryParams } from "../../../hooks/useQueryParams";
 import MediaComposer from "./media/MediaComposer";
+import MediaViewer from "./media/MediaViewer";
 
 const Conversation = () => {
   const getMessages = useChatStore((state) => state.getMessages);
@@ -24,6 +25,8 @@ const Conversation = () => {
   );
   const forwardMessageId = useMessageUiStore((state) => state.forwardMessageId);
   const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
+  const mediaViewer = useMessageUiStore((state) => state.mediaViewer);
+  const clearMediaViewer = useMessageUiStore((state) => state.clearMediaViewer);
   const { updateParams } = useQueryParams();
 
   useEffect(() => {
@@ -78,6 +81,10 @@ const Conversation = () => {
         )}
 
         {mediaPreviewInfo && <MediaComposer />}
+      </AnimatePresence>
+
+      <AnimatePresence onExitComplete={clearMediaViewer}>
+        {mediaViewer.isOpen && <MediaViewer />}
       </AnimatePresence>
     </div>
   );

@@ -23,20 +23,18 @@ const MessagesList = ({ messages }) => {
   }, [messages]);
 
   useEffect(() => {
-    const replyToElement = messageRefs.current[jumpToMessageId];
+    if (!jumpToMessageId) return;
 
-    if (!replyToElement) return;
+    const element = messageRefs.current[jumpToMessageId];
 
-    replyToElement.scrollIntoView({
+    if (!element) return;
+
+    element.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
 
-    const tm = setTimeout(() => {
-      setJumpToMessageId(null);
-    }, 1000);
-
-    return () => clearTimeout(tm);
+    setJumpToMessageId(null);
   }, [jumpToMessageId, setJumpToMessageId]);
 
   useEffect(() => {

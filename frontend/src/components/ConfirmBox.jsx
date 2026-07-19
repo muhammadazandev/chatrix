@@ -42,7 +42,7 @@ const ConfirmBox = ({
   return createPortal(
     <Motion
       variants={fade}
-      className="fixed inset-0 z-100 flex items-center justify-center bg-(--foreground-primary)/20 backdrop-blur-[2px]"
+      className="fixed inset-0 z-200 flex items-center justify-center bg-(--foreground-primary)/20 backdrop-blur-[2px]"
     >
       <Motion
         variants={slideFadeScale}

@@ -24,9 +24,11 @@ const messageSchema = mongoose.Schema(
 
     media: {
       url: String,
+      thumbnailUrl: String,
+      duration: Number,
+      originalName: String,
       publicId: String,
       mimeType: String,
-      originalName: String,
       size: Number,
     },
 
