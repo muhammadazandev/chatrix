@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
-import { FriendListsEmptyState } from "../../sidebar/components/EmptyStates";
-ConfirmBox
 import { slideInRight } from "../../../../motion/variants";
 import Motion from "../../../../motion/Motion";
 import UserListItems from "../../sidebar/userListItems/UserListItems";
 import RenderActionButtons from "../../sidebar/userListItems/RelationshipActionMenu";
 import ConfirmBox from "../../../../components/ConfirmBox";
+import Loader from "../../../../components/Loader";
+
+const FriendListsEmptyState = lazy(() =>
+  import("../../sidebar/components/EmptyStates").then((module) => ({
+    default: module.FriendListsEmptyState,
+  })),
+);
 
 const FriendList = () => {
   const getAllFriends = useFriendshipStore((state) => state.getAllFriends);
@@ -58,7 +63,9 @@ const FriendList = () => {
           </AnimatePresence>
         </>
       ) : (
-        <FriendListsEmptyState />
+        <Suspense fallback={<Loader/>}>
+          <FriendListsEmptyState />
+        </Suspense>
       )}
     </Motion>
   );

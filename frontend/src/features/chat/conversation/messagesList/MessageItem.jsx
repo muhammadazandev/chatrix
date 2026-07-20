@@ -2,30 +2,32 @@ import { AnimatePresence } from "motion/react";
 import useAuthStore from "../../../../store/useAuthStore";
 import OptionsMenu from "./OptionsMenu";
 import IconsWrapper from "../../../../components/IconsWrapper";
-import { RiForbidLine, RiShareForwardLine } from "@remixicon/react";
+import {
+  RiForbidLine,
+  RiLoader4Line,
+  RiPlayLine,
+  RiShareForwardLine,
+} from "@remixicon/react";
 import ReplyCard from "../shared/ReplyCard";
-
-const formatTime = (date) =>
-  new Date(date).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+import useMessageUiStore from "../../../../store/useMessageUiStore";
+import useChatStore from "../../../../store/useChatStore";
+import { formatTime } from "../../../../utils/messagesHelpers";
 
 const MessageItem = ({
   message,
-  contextMenu,
+  contextMenu = () => {},
   prevMessage,
   openMessageMenuId,
-  messageRefs,
-  menuCoords,
-  closeMenu,
+  messageRefs = null,
+  menuCoords = { x: 0, y: 0 },
+  closeMenu = () => {},
+  isPending = false,
 }) => {
   const user = useAuthStore((state) => state.user);
 
   if (!message) return null;
 
   const senderId = message.sender?._id || message.senderId;
-
   const isMe = senderId === user?._id;
 
   const getSenderId = (msg) => (msg?.sender ? msg.sender._id : msg?.senderId);
@@ -37,6 +39,11 @@ const MessageItem = ({
 
   const showHeader =
     message.conversationType === "group" && !isMe && startsBlock && senderId;
+
+  const messageId = message._id || message.tempId;
+
+  const openMediaViewer = useMessageUiStore((state) => state.openMediaViewer);
+  const messages = useChatStore((state) => state.messages);
 
   function handleMultipleTargets(targets) {
     const formatter = new Intl.ListFormat("en", {
@@ -86,17 +93,29 @@ const MessageItem = ({
     }
   }
 
+  function handleOnMediaClick() {
+    if (!isPending) {
+      const allMedia = messages.filter(
+        (msg) => msg.messageType === "image" || msg.messageType === "video",
+      );
+
+      openMediaViewer(allMedia, allMedia.indexOf(message));
+    }
+  }
+
   return (
     <div
       ref={(el) => {
-        if (el) {
-          messageRefs.current[message._id] = el;
-        } else {
-          delete messageRefs.current[message._id];
+        if (messageId && messageRefs) {
+          if (el) {
+            messageRefs.current[messageId] = el;
+          } else {
+            delete messageRefs.current[messageId];
+          }
         }
       }}
       className={`flex ${
-        isMe ? "justify-end" : "justify-start"
+        isMe || isPending ? "justify-end" : "justify-start"
       } ${startsBlock ? "mt-4" : "mt-1"}`}
     >
       {!isMe && message.conversationType === "group" && message.senderId && (
@@ -117,14 +136,14 @@ const MessageItem = ({
             {renderSystemMessage()}
           </p>
         </div>
-      ) : (
+      ) : message.messageType === "text" ? (
         <div
           className={`relative max-w-[70%] border border-(--foreground-secondary)/20 py-1.5 px-0.5 flex flex-col ${
             isMe
               ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
               : "bg-(--bg-secondary) rounded-xl rounded-bl-none px-1.5"
           } ${message.isDeleted ? "cursor-default" : "cursor-pointer"}`}
-          onContextMenu={(e) => contextMenu(e, message._id, message.isDeleted)}
+          onContextMenu={(e) => contextMenu(e, messageId, message.isDeleted)}
         >
           {message.isForwarded && (
             <div
@@ -144,9 +163,7 @@ const MessageItem = ({
             </div>
           )}
 
-          <div
-            className={`${isMe ? "[&>div]:bg-(--bg-primary)/15" : ""}`}
-          >
+          <div className={`${isMe ? "[&>div]:bg-(--bg-primary)/15" : ""}`}>
             {message.replyTo && <ReplyCard replyMessage={message.replyTo} />}
           </div>
           <div className={`${message.replyTo ? "px-2 py-1" : "px-1"}`}>
@@ -185,10 +202,74 @@ const MessageItem = ({
             </div>
           </div>
         </div>
+      ) : (
+        <div
+          className={`relative max-w-[40%] border border-(--foreground-secondary)/20 p-2 flex flex-col gap-2 ${
+            isMe || isPending
+              ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
+              : "bg-(--bg-secondary) rounded-xl rounded-bl-none"
+          }`}
+        >
+          {isPending && (
+            <div className="absolute inset-0 z-10 rounded-xl bg-black/45 flex flex-col items-center justify-center gap-2">
+              <RiLoader4Line className="size-8 animate-spin text-white" />
+
+              <span className="text-xs text-white/80">{message.progress}%</span>
+            </div>
+          )}
+
+          {(message.messageType === "image" ||
+            message.messageType === "video") && (
+            <>
+              <img
+                src={message.media.thumbnailUrl || message.media.url}
+                alt="Image"
+                className="max-w-full rounded-lg max-h-80 object-cover cursor-pointer"
+                onClick={handleOnMediaClick}
+              />
+              {message.messageType === "video" && (
+                <div className="absolute top-1/3 left-1/2 -translate-y-1/3 -translate-x-1/2">
+                  <button
+                    className="hover:scale-110 rounded-full p-4 bg-(--bg-primary)/50 backdrop-blur-xl"
+                    onClick={handleOnMediaClick}
+                  >
+                    <IconsWrapper icon={RiPlayLine} size={28} />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {message.messageType === "audio" && (
+            <audio src={message.media.url} controls />
+          )}
+          {message.messageType === "file" && (
+            <a
+              href={message.media.url}
+              target="_blank"
+              rel="noreferrer"
+              className="underline break-all"
+            >
+              {message.media.fileName || "Download file"}
+            </a>
+          )}
+          <div
+            className={`flex items-center gap-2 py-2 border-t border-(--foreground-secondary)/20 ${message.text ? "justify-between" : "justify-end"}`}
+          >
+            {message.text && (
+              <span className="text-sm leading-relaxed whitespace-pre-wrap mr-12 break-all">
+                {message.text}
+              </span>
+            )}
+            <span className="text-[10px] opacity-40">
+              {message.createdAt ? formatTime(message.createdAt) : ""}
+            </span>
+          </div>
+        </div>
       )}
 
       <AnimatePresence>
-        {openMessageMenuId === message._id && (
+        {openMessageMenuId === messageId && (
           <OptionsMenu
             message={message}
             coords={menuCoords}

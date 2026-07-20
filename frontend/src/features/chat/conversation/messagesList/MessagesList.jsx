@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import MessageItem from "./MessageItem";
+import PendingMessages from "./PendingMessages";
 
 const MessagesList = ({ messages }) => {
   const messageRefs = useRef({});
@@ -22,20 +23,18 @@ const MessagesList = ({ messages }) => {
   }, [messages]);
 
   useEffect(() => {
-    const replyToElement = messageRefs.current[jumpToMessageId];
+    if (!jumpToMessageId) return;
 
-    if (!replyToElement) return;
+    const element = messageRefs.current[jumpToMessageId];
 
-    replyToElement.scrollIntoView({
+    if (!element) return;
+
+    element.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
 
-    const tm = setTimeout(() => {
-      setJumpToMessageId(null);
-    }, 1000);
-
-    return () => clearTimeout(tm);
+    setJumpToMessageId(null);
   }, [jumpToMessageId, setJumpToMessageId]);
 
   useEffect(() => {
@@ -125,6 +124,8 @@ const MessagesList = ({ messages }) => {
             </Fragment>
           );
         })}
+
+        <PendingMessages />
       </div>
     </div>
   );

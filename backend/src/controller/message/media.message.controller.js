@@ -6,10 +6,10 @@ import {
   formatMessage,
   validateConversationParticipant,
 } from "../../socket/helpers/new.message.helpers.js";
+import cloudinary from "../../lib/cloudinary.js";
 
 async function mediaMessage(req, res) {
   try {
-    // const { message } = req.body || {};
     const userId = req.user.id;
 
     const message =
@@ -58,8 +58,17 @@ async function mediaMessage(req, res) {
       messageType = "audio";
     }
 
-    const lastMessageText =
-      messageType === "image"
+    const lastMessageText = message.text?.trim()
+      ? `${
+          messageType === "image"
+            ? "📷"
+            : messageType === "video"
+              ? "🎥"
+              : messageType === "audio"
+                ? "🎵"
+                : "📄"
+        } ${message.text.trim()}`
+      : messageType === "image"
         ? "📷 Photo"
         : messageType === "video"
           ? "🎥 Video"
@@ -68,12 +77,40 @@ async function mediaMessage(req, res) {
             : "📄 File";
     const atDate = Date.now();
 
+    let extraInfo;
+
+    if (messageType === "audio" || messageType === "video") {
+      extraInfo = await cloudinary.api.resource(req.file.filename, {
+        resource_type: "video",
+        media_metadata: true,
+      });
+
+      if (messageType === "video") {
+        const thumbnailUrl = cloudinary.url(extraInfo.public_id, {
+          resource_type: "video",
+          format: "jpg",
+          secure: true,
+          transformation: [
+            {
+              start_offset: "1",
+            },
+          ],
+        });
+        extraInfo = { ...extraInfo, thumbnailUrl };
+      }
+    }
+
     const messageData = {
       ...message,
       messageType,
       mime,
       lastMessageText,
-      url: req.file.path,
+      url: extraInfo ? extraInfo.secure_url : req.file.path,
+      thumbnailUrl: extraInfo ? extraInfo.thumbnailUrl : null,
+      duration:
+        messageType === "audio" || messageType === "video"
+          ? extraInfo.duration
+          : null,
       publicId: req.file.filename,
       originalName: req.file.originalname,
       size: req.file.size,
@@ -84,7 +121,6 @@ async function mediaMessage(req, res) {
       atDate,
       userId,
       false,
-      true,
     );
 
     const messageToSend = formatMessage(messageDoc, conversation.type);
@@ -106,7 +142,7 @@ async function mediaMessage(req, res) {
       message: messageToSend,
     });
   } catch (error) {
-    console.error(error);
+    console.error("ERROR:", error);
     return res.status(500).json({
       message: "Internal server error",
       success: false,

@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
-import { BlockEmptyState } from "../../sidebar/components/EmptyStates";
+import { lazy, Suspense, useEffect, useState } from "react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import Motion from "../../../../motion/Motion";
 import { slideInRight } from "../../../../motion/variants";
 import UserListItems from "../../sidebar/userListItems/UserListItems";
 import RenderActionButtons from "../../sidebar/userListItems/RelationshipActionMenu";
+import Loader from "../../../../components/Loader";
+
+const BlockEmptyState = lazy(() =>
+  import("../../sidebar/components/EmptyStates").then((module) => ({
+    default: module.BlockEmptyState,
+  })),
+);
 
 const Blocked = () => {
   const getAllBlockedUsers = useFriendshipStore(
@@ -46,7 +52,9 @@ const Blocked = () => {
           isShowBlockButton={false}
         />
       ) : (
-        <BlockEmptyState />
+        <Suspense fallback={<Loader />}>
+          <BlockEmptyState />
+        </Suspense>
       )}
     </Motion>
   );

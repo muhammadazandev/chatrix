@@ -1,7 +1,13 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import useChatStore from "../../../../store/useChatStore";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
-import { ConversationEmptyState } from "../../sidebar/components/EmptyStates";
+import Loader from "../../../../components/Loader";
+
+const ConversationEmptyState = lazy(() =>
+  import("../../sidebar/components/EmptyStates").then((module) => ({
+    default: module.ConversationEmptyState,
+  })),
+);
 
 const ConversationLists = () => {
   const getConversations = useChatStore((state) => state.getConversations);
@@ -61,7 +67,9 @@ const ConversationLists = () => {
           );
         })
       ) : (
-        <ConversationEmptyState />
+        <Suspense fallback={<Loader />}>
+          <ConversationEmptyState />
+        </Suspense>
       )}
     </div>
   );
