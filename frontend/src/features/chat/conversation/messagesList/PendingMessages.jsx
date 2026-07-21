@@ -1,6 +1,6 @@
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
-import MessageItem from "./MessageItem";
+import MessageItem from "./MessageItem/MessageItem";
 
 const PendingMessages = () => {
   const pendingMessages = useMessageUiStore((state) => state.pendingMessages);

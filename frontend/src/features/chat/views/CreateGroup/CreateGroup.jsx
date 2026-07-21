@@ -10,7 +10,7 @@ import { AnimatePresence } from "motion/react";
 import GroupProfile from "./GroupProfile";
 import Tooltip from "../../../../components/Tooltip";
 
-function Lists({ friend = {}, isSelected, moveElement }) {
+function SelectableFriends({ friend = {}, isSelected, handleFriendSelection }) {
   return (
     <div
       key={friend}
@@ -18,9 +18,9 @@ function Lists({ friend = {}, isSelected, moveElement }) {
       onClick={(e) => {
         if (isSelected) {
           if (e.target.tagName === "BUTTON")
-            return moveElement(isSelected, friend._id);
+            return handleFriendSelection(isSelected, friend._id);
         } else {
-          moveElement(isSelected, friend._id);
+          handleFriendSelection(isSelected, friend._id);
         }
       }}
     >
@@ -77,7 +77,7 @@ const CreateGroup = () => {
         )
       : [];
 
-  function moveElement(isSelected, id) {
+  function handleFriendSelection(isSelected, id) {
     if (!isSelected) {
       const element = friends.find((fr) => fr._id === id);
       if (!element) return;
@@ -110,11 +110,11 @@ const CreateGroup = () => {
           {selectedFriends.length > 0 &&
             selectedFriends.map((friend) => {
               return (
-                <Lists
+                <SelectableFriends
                   friend={friend}
                   key={friend._id}
                   isSelected={true}
-                  moveElement={moveElement}
+                  handleFriendSelection={handleFriendSelection}
                 />
               );
             })}
@@ -138,20 +138,20 @@ const CreateGroup = () => {
               .slice()
               .sort((a, b) => a.username.localeCompare(b.username))
               .map((friend) => (
-                <Lists
+                <SelectableFriends
                   friend={friend}
                   key={friend._id}
                   isSelected={false}
-                  moveElement={moveElement}
+                  handleFriendSelection={handleFriendSelection}
                 />
               ))
           ) : filteredFriends.length > 0 ? (
             filteredFriends.map((friend) => (
-              <Lists
+              <SelectableFriends
                 friend={friend}
                 key={friend._id}
                 isSelected={false}
-                moveElement={moveElement}
+                handleFriendSelection={handleFriendSelection}
               />
             ))
           ) : (
