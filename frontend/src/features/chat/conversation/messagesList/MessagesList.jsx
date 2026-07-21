@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
-import MessageItem from "./MessageItem";
+import MessageItem from "./MessageItem/MessageItem";
 import PendingMessages from "./PendingMessages";
 
 const MessagesList = ({ messages }) => {

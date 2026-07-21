@@ -3,15 +3,15 @@ import {
   RiUserAddLine,
   RiUserMinusLine,
 } from "@remixicon/react";
-import IconsWrapper from "../../../../components/IconsWrapper";
-import Motion from "../../../../motion/Motion";
-import { slideInFromLeft } from "../../../../motion/variants";
-import Tooltip from "../../../../components/Tooltip";
-import useAuthStore from "../../../../store/useAuthStore";
-import { useQueryParams } from "../../../../hooks/useQueryParams";
+import IconsWrapper from "../../../../../components/IconsWrapper";
+import Motion from "../../../../../motion/Motion";
+import { slideInFromLeft } from "../../../../../motion/variants";
+import Tooltip from "../../../../../components/Tooltip";
+import useAuthStore from "../../../../../store/useAuthStore";
+import { useQueryParams } from "../../../../../hooks/useQueryParams";
 import { useState } from "react";
-import { socket } from "../../../../socket/socket";
-import { SOCKET_EVENTS } from "../../../../socket/events";
+import { socket } from "../../../../../socket/socket";
+import { SOCKET_EVENTS } from "../../../../../socket/events";
 import toast from "react-hot-toast";
 import ParticipantsContextMenu from "./ParticipantsContextMenu";
 
@@ -27,13 +27,13 @@ const ParticipantsModal = ({
   setOpenUserId,
   participantsData,
   openUserId,
-  menuCoords
+  menuCoords,
 }) => {
   const user = useAuthStore((state) => state.user);
   const { updateParams } = useQueryParams();
   const [selectedParticipants, setSelectedParticipants] = useState([]);
 
-  function handleOnPerformAction() {
+  function handleAction() {
     if (selectedParticipants.length === 0) return;
     let event = "";
 
@@ -177,7 +177,7 @@ const ParticipantsModal = ({
               type="button"
               className="rounded-full p-3 bg-(--accent-color-primary)"
               disabled={selectedParticipants.length > 0 ? false : true}
-              onClick={() => handleOnPerformAction()}
+              onClick={() => handleAction()}
             >
               <IconsWrapper
                 icon={action === "add" ? RiUserAddLine : RiUserMinusLine}

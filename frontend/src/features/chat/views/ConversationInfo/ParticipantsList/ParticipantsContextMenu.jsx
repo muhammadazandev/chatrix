@@ -5,11 +5,11 @@ import {
   RiUser2Line,
 } from "@remixicon/react";
 
-import ContextMenu from "../../../../components/ContextMenu";
-import { socket } from "../../../../socket/socket";
-import { SOCKET_EVENTS } from "../../../../socket/events";
+import ContextMenu from "../../../../../components/ContextMenu";
+import { socket } from "../../../../../socket/socket";
+import { SOCKET_EVENTS } from "../../../../../socket/events";
 import toast from "react-hot-toast";
-import { useQueryParams } from "../../../../hooks/useQueryParams";
+import { useQueryParams } from "../../../../../hooks/useQueryParams";
 
 const ParticipantsContextMenu = ({
   participant,

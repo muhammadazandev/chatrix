@@ -39,6 +39,13 @@ const ALLOWED_MESSAGE_MIME_TYPES = [
 
   "text/plain",
 
+  "text/csv",
+  "application/vnd.ms-excel",
+  "application/json",
+  "application/xml",
+  "text/xml",
+  "text/html",
+
   // Archives
   "application/zip",
   "application/x-zip-compressed",

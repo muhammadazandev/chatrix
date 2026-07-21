@@ -12,24 +12,12 @@ import { fade } from "../../../../motion/variants";
 import { convertFilesSize } from "../../../../utils/messagesHelpers";
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
-import { authApi } from "../../../../utils/api";
-import handleError from "../../../../utils/handleError";
-import toast from "react-hot-toast";
-import { useQueryParams } from "../../../../hooks/useQueryParams";
+import useMediaComposer from "../../../../hooks/useMediaComposer";
 
 const MediaComposer = () => {
   const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
   const setMediaPreviewInfo = useMessageUiStore(
     (state) => state.setMediaPreviewInfo,
-  );
-  const addPendingMessage = useMessageUiStore(
-    (state) => state.addPendingMessage,
-  );
-  const updatePendingMessage = useMessageUiStore(
-    (state) => state.updatePendingMessage,
-  );
-  const removePendingMessage = useMessageUiStore(
-    (state) => state.removePendingMessage,
   );
   const type = mediaPreviewInfo?.file?.type ?? "";
   const {
@@ -40,96 +28,7 @@ const MediaComposer = () => {
     closePicker,
     togglePicker,
   } = useEmojiPicker("");
-  const { searchParams } = useQueryParams();
-
-  async function sendMessage() {
-    const mime = mediaPreviewInfo.file.type;
-
-    let messageType = "file";
-
-    if (mime.startsWith("image/")) {
-      messageType = "image";
-    } else if (mime.startsWith("video/")) {
-      messageType = "video";
-    } else if (mime.startsWith("audio/")) {
-      messageType = "audio";
-    }
-
-    try {
-      const formData = new FormData();
-      const conversationId = searchParams.get("conversationId");
-      const tempId = crypto.randomUUID();
-
-      formData.append("file", mediaPreviewInfo.file);
-
-      formData.append(
-        "message",
-        JSON.stringify({
-          conversationId,
-          text: value,
-          // replyTo,
-          type: messageType,
-        }),
-      );
-
-      const pendingMessage = {
-        tempId,
-        conversationId,
-        status: "uploading",
-        progress: 0,
-
-        messageType,
-
-        media: {
-          url: mediaPreviewInfo?.url,
-          fileName: mediaPreviewInfo.file.name,
-          size: mediaPreviewInfo.file.size,
-        },
-
-        text: value,
-        createdAt: Date.now(),
-      };
-
-      addPendingMessage(pendingMessage);
-
-      let lastProgress = 0;
-
-      const request = authApi.post("/message/media", formData, {
-        onUploadProgress(e) {
-          if (!e.total) return;
-
-          const progress = Math.round((e.loaded * 100) / e.total);
-
-          if (progress !== lastProgress) {
-            lastProgress = progress;
-            updatePendingMessage(tempId, { progress });
-          }
-        },
-      });
-
-      setMediaPreviewInfo(null);
-
-      request
-        .then(() => {
-          removePendingMessage(tempId);
-
-          if (mediaPreviewInfo?.url) {
-            URL.revokeObjectURL(mediaPreviewInfo?.url);
-          }
-        })
-        .catch((error) => {
-          updatePendingMessage(tempId, {
-            status: "failed",
-            error: handleError(error),
-          });
-          const message = handleError(error);
-          if (message) toast.error(message);
-        });
-    } catch (error) {
-      const message = handleError(error);
-      if (message) toast.error(message);
-    }
-  }
+  const { sendMessage } = useMediaComposer({ value });
 
   return (
     <Motion
@@ -145,7 +44,6 @@ const MediaComposer = () => {
                 className="p-2 rounded-full"
                 onClick={() => {
                   setMediaPreviewInfo(null);
-
                   if (mediaPreviewInfo?.url) {
                     URL.revokeObjectURL(mediaPreviewInfo?.url);
                   }

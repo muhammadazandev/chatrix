@@ -9,9 +9,9 @@ import useChatStore from "../../../../store/useChatStore";
 import { useEffect } from "react";
 import useFriendshipStore from "../../../../store/useFriendshipStore";
 import PinnedSection from "./PinnedSection";
-import ParticipantsList from "./ParticipantsList";
 import ActionButtons from "./ActionButtons";
 import ProfileInfo from "./ProfileInfo";
+import ParticipantsList from "./ParticipantsList/ParticipantsList";
 
 const ConversationInfo = () => {
   const { searchParams, updateParams } = useQueryParams();
