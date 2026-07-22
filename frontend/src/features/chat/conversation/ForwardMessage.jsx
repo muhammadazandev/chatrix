@@ -54,7 +54,7 @@ const ForwardMessage = ({ forwardMessageId, conversations }) => {
 
     socket.emit(SOCKET_EVENTS.FORWARD_MESSAGE, data, (res) => {
       if (!res?.success) {
-        toast.error(`${res?.message ? `${res.message}` : ""}`);
+        toast.error(res?.message);
       }
     });
 

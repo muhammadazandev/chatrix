@@ -21,6 +21,7 @@ const MediaMessagesButtons = () => {
   const setMediaPreviewInfo = useMessageUiStore(
     (state) => state.setMediaPreviewInfo,
   );
+  const messageMode = useMessageUiStore((state) => state.messageMode);
 
   const handleBlur = (e) => {
     const nextFocused = e.relatedTarget;
@@ -91,6 +92,7 @@ const MediaMessagesButtons = () => {
         <button
           className="p-2 rounded-full z-50"
           onClick={() => setIsSelectorOpen(!isSelectorOpen)}
+          disabled={messageMode.type === "reply"}
         >
           <IconsWrapper icon={RiAddLine} size={22} />
         </button>

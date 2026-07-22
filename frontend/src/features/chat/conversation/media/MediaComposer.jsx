@@ -129,6 +129,9 @@ const MediaComposer = () => {
                     rows={1}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") sendMessage();
+                    }}
                   />
 
                   <Tooltip content="Open Emoji Picker" delay={[1000, 0]}>

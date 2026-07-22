@@ -34,25 +34,6 @@ const MessageItem = ({
 
   const messageId = message._id || message.tempId;
 
-  function ReturnMessage() {
-    if (message.messageType === "system") {
-      return <SystemMessage message={message} />;
-    } else if (message.messageType === "text") {
-      return (
-        <TextMessage
-          isMe={isMe}
-          message={message}
-          contextMenu={contextMenu}
-          showHeader={showHeader}
-        />
-      );
-    } else {
-      return (
-        <MediaMessage isMe={isMe} isPending={isPending} message={message} />
-      );
-    }
-  }
-
   return (
     <div
       ref={(el) => {
@@ -80,7 +61,23 @@ const MessageItem = ({
         </div>
       )}
 
-      {<ReturnMessage />}
+      {message.messageType === "system" ? (
+        <SystemMessage message={message} />
+      ) : message.messageType === "text" ? (
+        <TextMessage
+          isMe={isMe}
+          message={message}
+          contextMenu={contextMenu}
+          showHeader={showHeader}
+        />
+      ) : (
+        <MediaMessage
+          isMe={isMe}
+          isPending={isPending}
+          message={message}
+          contextMenu={contextMenu}
+        />
+      )}
 
       <AnimatePresence>
         {openMessageMenuId === messageId && (

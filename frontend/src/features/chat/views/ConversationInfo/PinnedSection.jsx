@@ -39,9 +39,7 @@ const PinnedSection = ({ currentConversation, pinnedMessages }) => {
       },
       (res) => {
         if (!res?.success) {
-          toast.error(
-            `${res?.message ? `${res.message}` : ""}`,
-          );
+          toast.error(res?.message);
         }
       },
     );

@@ -13,31 +13,6 @@ const MessagesList = ({ messages }) => {
   );
 
   useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-
-    if (!lastMessage || jumpToMessageId) return;
-
-    messageRefs.current[lastMessage._id]?.scrollIntoView({
-      behavior: "smooth",
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    if (!jumpToMessageId) return;
-
-    const element = messageRefs.current[jumpToMessageId];
-
-    if (!element) return;
-
-    element.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-
-    setJumpToMessageId(null);
-  }, [jumpToMessageId, setJumpToMessageId]);
-
-  useEffect(() => {
     const closeMenu = () => setOpenMessageMenuId(null);
     window.addEventListener("click", closeMenu);
     return () => window.removeEventListener("click", closeMenu);
@@ -93,6 +68,46 @@ const MessagesList = ({ messages }) => {
       current.getDate() !== previous.getDate()
     );
   }
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage || jumpToMessageId) return;
+
+    const element = messageRefs.current[lastMessage._id];
+    if (!element) return;
+
+    const observer = new ResizeObserver(() => {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    });
+
+    observer.observe(element);
+
+    // scroll for text messages
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+
+    return () => observer.disconnect();
+  }, [messages]);
+
+  useEffect(() => {
+    const element = messageRefs.current[jumpToMessageId];
+
+    if (!jumpToMessageId) return;
+
+    if (!element) return;
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    setJumpToMessageId(null);
+  }, [jumpToMessageId]);
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto bg-transparent">

@@ -27,7 +27,6 @@ const formatTime = (date, isMonthYearDay = false) => {
   });
 };
 
-
 function formatDuration(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
@@ -35,4 +34,14 @@ function formatDuration(seconds) {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
-export { convertFilesSize, formatTime, formatDuration };
+function getMediaText(message) {
+  if (message.messageType === "image")
+    return `📷 ${message.text ? `${message.text} (Image)` : "Photo"}`;
+  if (message.messageType === "video")
+    return `🎥 ${message.text ? `${message.text} (Video)` : "Video"}`;
+  if (message.messageType === "audio") return "🎵 Audio";
+  if (message.messageType === "file")
+    return `📄 ${message.text ? `${message.text} (File)` : "File"}`;
+}
+
+export { convertFilesSize, formatTime, formatDuration, getMediaText };
