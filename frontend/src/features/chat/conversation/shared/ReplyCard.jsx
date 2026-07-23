@@ -38,11 +38,10 @@ const ReplyCard = ({
         setJumpToMessageId(replyMessage._id);
       }}
     >
-      {/* <div className="flex-1 flex"> */}
       <span className="bg-(--accent-color-secondary) w-1 rounded-l-full" />
 
-      <div className="px-3 py-2 flex w-full justify-between">
-        <div className="max-w-[95%]">
+      <div className="flex flex-1 items-center">
+        <div className="min-w-0 flex-1 px-3 py-2">
           <p className="text-sm text-(--accent-color-secondary)">
             {replyMessage?.sender?._id?.toString() === user?._id?.toString()
               ? "You"
@@ -67,26 +66,25 @@ const ReplyCard = ({
           </Tooltip>
         )}
       </div>
-      {/* </div> */}
 
-      {!showCloseButton &&
+      {!replyMessage.isDeleted &&
+        !showCloseButton &&
         (replyMessage.messageType === "image" ||
-          replyMessage.messageType === "video") &&
-        replyMessage?.isDeleted && (
-          <div className="absolute right-0 top-0 h-full">
-            <div className="absolute inset-0 bg-black opacity-50 rounded-sm"></div>
-
+          replyMessage.messageType === "video") && (
+          <div className="relative min-h-full w-full ml-10">
             <img
-              className="h-full w-24 rounded-sm"
-              src={replyMessage.media.thumbnailUrl || replyMessage.media.url}
+              className="h-full max-w-23 rounded-sm"
+              src={replyMessage.media?.thumbnailUrl || replyMessage.media?.url}
               alt={replyMessage.messageType}
             />
 
+            <div className="absolute inset-0 bg-black/35" />
+
             {replyMessage.messageType === "video" && (
-              <div className="absolute bottom-1 left-1 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px]">
+              <div className="absolute left-2 bottom-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px]">
                 <IconsWrapper icon={RiVideoOnFill} size={12} />
                 <span className="text-[10px]">
-                  {formatDuration(replyMessage.media.duration)}
+                  {formatDuration(replyMessage.media?.duration)}
                 </span>
               </div>
             )}

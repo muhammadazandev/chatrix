@@ -64,6 +64,7 @@ async function createAndPopulateMessage(
       size: message.size,
       thumbnailUrl: message.thumbnailUrl,
       duration: message.duration,
+      resourceType: message.resourceType,
     };
   }
 

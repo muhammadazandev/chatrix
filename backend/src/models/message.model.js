@@ -30,6 +30,7 @@ const messageSchema = mongoose.Schema(
       publicId: String,
       mimeType: String,
       size: Number,
+      resourceType: String,
     },
 
     isEdited: { type: Boolean, default: false },
