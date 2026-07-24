@@ -7,6 +7,7 @@ import {
   validateConversationParticipant,
 } from "../../socket/helpers/new.message.helpers.js";
 import cloudinary from "../../lib/cloudinary.js";
+import { mediaMessageText } from "../../utils/messagesHelpers.js";
 
 async function mediaMessage(req, res) {
   try {
@@ -58,23 +59,7 @@ async function mediaMessage(req, res) {
       messageType = "audio";
     }
 
-    const lastMessageText = message.text?.trim()
-      ? `${
-          messageType === "image"
-            ? "📷"
-            : messageType === "video"
-              ? "🎥"
-              : messageType === "audio"
-                ? "🎵"
-                : "📄"
-        } ${message.text.trim()}`
-      : messageType === "image"
-        ? "📷 Photo"
-        : messageType === "video"
-          ? "🎥 Video"
-          : messageType === "audio"
-            ? "🎵 Audio"
-            : "📄 File";
+    const lastMessageText = mediaMessageText(message.text, messageType);
     const atDate = Date.now();
 
     let extraInfo = null;

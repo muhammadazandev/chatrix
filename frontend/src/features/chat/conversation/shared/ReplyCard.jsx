@@ -7,14 +7,14 @@ import Tooltip from "../../../../components/Tooltip";
 import { slideHeightExpand } from "../../../../motion/variants";
 import {
   formatDuration,
-  getMediaText,
+  mediaMessageText,
 } from "../../../../utils/messagesHelpers";
 
 function renderMessageText(message) {
   if (!message) return;
 
   if (message.messageType !== "text") {
-    return getMediaText(message);
+    return mediaMessageText(message.text, message.messageType);
   } else return message.text;
 }
 

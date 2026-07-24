@@ -34,14 +34,28 @@ function formatDuration(seconds) {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
-function getMediaText(message) {
-  if (message.messageType === "image")
-    return `📷 ${message.text ? `${message.text} (Image)` : "Photo"}`;
-  if (message.messageType === "video")
-    return `🎥 ${message.text ? `${message.text} (Video)` : "Video"}`;
-  if (message.messageType === "audio") return "🎵 Audio";
-  if (message.messageType === "file")
-    return `📄 ${message.text ? `${message.text} (File)` : "File"}`;
+function mediaMessageText(messageText, messageType) {
+  const icons = {
+    image: "📷",
+    video: "🎥",
+    audio: "🎵",
+    file: "📄",
+  };
+
+  const labels = {
+    image: "Photo",
+    video: "Video",
+    audio: "Audio",
+    file: "File",
+  };
+
+  const text = messageText?.trim();
+  
+  if (text) {
+    return `${icons[messageType]} ${text} (${messageType})`;
+  }
+
+  return `${icons[messageType]} ${labels[messageType]}`;
 }
 
-export { convertFilesSize, formatTime, formatDuration, getMediaText };
+export { convertFilesSize, formatTime, formatDuration, mediaMessageText };

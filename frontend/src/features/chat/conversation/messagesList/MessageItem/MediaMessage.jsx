@@ -14,9 +14,11 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
 
   function handleOnMediaClick() {
     if (!isPending) {
-      const allMedia = messages.filter(
-        (msg) => msg.messageType === "image" || msg.messageType === "video",
-      );
+      const allMedia = messages
+        .filter(
+          (msg) => msg.messageType === "image" || msg.messageType === "video",
+        )
+        .filter((msg) => !msg.isDeleted);
 
       openMediaViewer(allMedia, allMedia.indexOf(message));
     }
