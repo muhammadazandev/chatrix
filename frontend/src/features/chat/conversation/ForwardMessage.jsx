@@ -10,15 +10,18 @@ import { socket } from "../../../socket/socket";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import useFriendshipStore from "../../../store/useFriendshipStore";
+import useMediaComposer from "../../../hooks/useMediaComposer";
 
-const ForwardMessage = ({ forwardMessageId, conversations }) => {
+const ForwardMessage = ({ forwardMessage, conversations }) => {
   const [search, setSearch] = useState("");
+  const [isForwarding, setIsForwarding] = useState(false);
   const [selectedConversations, setSelectedConversations] = useState([]);
   const [searchParam] = useSearchParams();
   const currentConversationId = searchParam.get("conversationId");
-  const setForwardMessageId = useMessageUiStore(
-    (state) => state.setForwardMessageId,
+  const setForwardMessage = useMessageUiStore(
+    (state) => state.setForwardMessage,
   );
+  const { sendMessage } = useMediaComposer();
   const blocked = useFriendshipStore((state) => state.blocked);
 
   const filteredConversations = useMemo(() => {
@@ -46,26 +49,55 @@ const ForwardMessage = ({ forwardMessageId, conversations }) => {
     );
   }
 
-  function handleForward() {
+  async function handleForward() {
     const data = {
-      messageId: forwardMessageId,
+      messageId: forwardMessage?.id,
       conversationIds: selectedConversations,
     };
+    setIsForwarding(true);
 
-    socket.emit(SOCKET_EVENTS.FORWARD_MESSAGE, data, (res) => {
-      if (!res?.success) {
-        toast.error(res?.message);
-      }
-    });
+    if (forwardMessage.messageType === "text") {
+      socket.emit(SOCKET_EVENTS.FORWARD_MESSAGE, data, (res) => {
+        setIsForwarding(false);
+        if (!res?.success) {
+          toast.error(res?.message);
+        }
+      });
+    } else {
+      const res = await fetch(forwardMessage.messageUrl);
 
-    setForwardMessageId(null);
+      if (!res.ok) return toast.error("File not found");
+
+      const blob = await res.blob();
+      const file = new File([blob], forwardMessage.originalName, {
+        type: forwardMessage.mimeType,
+      });
+
+      await Promise.all(
+        selectedConversations.map((conversationId) => {
+          const previewUrl = URL.createObjectURL(file);
+
+          return sendMessage({
+            conversationId,
+            file,
+            previewUrl,
+          });
+        }),
+      );
+
+      setIsForwarding(false);
+    }
+
+    setForwardMessage({});
   }
 
   return (
     <>
       <div
         className="fixed inset-0 bg-black/50 z-99"
-        onClick={() => setForwardMessageId(null)}
+        onClick={() => {
+          if (!isForwarding) setForwardMessage({});
+        }}
       />
 
       <Motion
@@ -86,7 +118,8 @@ const ForwardMessage = ({ forwardMessageId, conversations }) => {
 
             <Tooltip content="Cancel" delay={[1000, 0]}>
               <button
-                onClick={() => setForwardMessageId(null)}
+                disabled={isForwarding}
+                onClick={() => setForwardMessage({})}
                 className="p-2 rounded-full"
               >
                 <IconsWrapper
@@ -173,7 +206,7 @@ const ForwardMessage = ({ forwardMessageId, conversations }) => {
 
         <div className="p-4 border-t border-(--foreground-secondary)/20">
           <button
-            disabled={!selectedConversations.length}
+            disabled={!selectedConversations.length || isForwarding}
             className="w-full py-3 rounded-lg bg-(--accent-color-primary) text-white font-semibold"
             onClick={handleForward}
           >

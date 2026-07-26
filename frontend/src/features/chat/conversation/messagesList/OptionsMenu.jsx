@@ -26,8 +26,8 @@ const MessageOptionsMenu = ({ message, coords, isMe, onClose }) => {
   const pinnedMessages = useChatStore((state) => state.pinnedMessages);
 
   const setMessageMode = useMessageUiStore((state) => state.setMessageMode);
-  const setForwardMessageId = useMessageUiStore(
-    (state) => state.setForwardMessageId,
+  const setForwardMessage = useMessageUiStore(
+    (state) => state.setForwardMessage,
   );
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -113,7 +113,14 @@ const MessageOptionsMenu = ({ message, coords, isMe, onClose }) => {
     {
       label: "Forward Message",
       icon: RiShareForwardLine,
-      onClick: () => setForwardMessageId(message._id),
+      onClick: () =>
+        setForwardMessage({
+          id: message._id,
+          messageType: message.messageType,
+          messageUrl: message?.media?.url,
+          originalName: message?.media?.originalName,
+          mimeType: message?.media?.mimeType
+        }),
     },
     {
       label: isPinned ? "Unpin Message" : "Pin Message",

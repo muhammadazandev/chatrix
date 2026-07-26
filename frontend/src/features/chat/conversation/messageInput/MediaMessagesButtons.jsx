@@ -44,7 +44,12 @@ const MediaMessagesButtons = () => {
 
     const url = URL.createObjectURL(files[0]);
 
-    setMediaPreviewInfo({ file: files[0], url, type: selectedButton });
+    setMediaPreviewInfo({
+      showPreview: true,
+      file: files[0],
+      url,
+      type: selectedButton,
+    });
 
     e.target.value = "";
     setSelectedButton(null);

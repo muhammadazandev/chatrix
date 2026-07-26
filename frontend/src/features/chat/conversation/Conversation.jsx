@@ -23,7 +23,7 @@ const Conversation = () => {
   const shouldCloseConversation = useChatStore(
     (state) => state.shouldCloseConversation,
   );
-  const forwardMessageId = useMessageUiStore((state) => state.forwardMessageId);
+  const forwardMessage = useMessageUiStore((state) => state.forwardMessage);
   const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
   const mediaViewer = useMessageUiStore((state) => state.mediaViewer);
   const clearMediaViewer = useMessageUiStore((state) => state.clearMediaViewer);
@@ -73,14 +73,14 @@ const Conversation = () => {
       <MessageInput />
 
       <AnimatePresence mode="wait">
-        {forwardMessageId && conversations && (
+        {forwardMessage?.id && conversations && (
           <ForwardMessage
-            forwardMessageId={forwardMessageId}
+            forwardMessage={forwardMessage}
             conversations={conversations}
           />
         )}
 
-        {mediaPreviewInfo && <MediaComposer />}
+        {mediaPreviewInfo?.showPreview && <MediaComposer />}
       </AnimatePresence>
 
       <AnimatePresence onExitComplete={clearMediaViewer}>
