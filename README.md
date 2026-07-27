@@ -207,6 +207,10 @@ CLOUDINARY_API_SECRET=
 VITE_API_URL=
 ```
 
+## 📝 Notes
+
+- **Cloudinary PDF delivery:** Cloudinary may restrict public delivery of PDF and certain document types depending on your account configuration. If PDF messages cannot be opened or forwarded and Cloudinary returns **HTTP 401**, enable PDF delivery in your Cloudinary account or contact Cloudinary support.
+
 ## 📄 License
 
 This project is licensed under the MIT License.
