@@ -1,6 +1,7 @@
 import {
   RiCornerUpLeftLine,
   RiDeleteBin3Line,
+  RiDownloadLine,
   RiEdit2Line,
   RiFileCopyLine,
   RiPushpin2Line,
@@ -20,6 +21,7 @@ import useMessageUiStore from "../../../../store/useMessageUiStore";
 
 import { socket } from "../../../../socket/socket";
 import { SOCKET_EVENTS } from "../../../../socket/events";
+import { downloadFile } from "../../../../utils/downloadFile";
 
 const MessageOptionsMenu = ({ message, coords, isMe, onClose }) => {
   const user = useAuthStore((state) => state.user);
@@ -85,16 +87,27 @@ const MessageOptionsMenu = ({ message, coords, isMe, onClose }) => {
 
   const items = [
     {
+      label: "Download",
+      icon: RiDownloadLine,
+      onClick: async () => {
+        await downloadFile(message?.media?.url, message?.media?.originalName);
+      },
+      hidden: message.messageType === "text" || message.messageType === "audio",
+    },
+    {
       label: "Copy Message",
       icon: RiFileCopyLine,
       iconClassName: "rotate-180",
       onClick: handleCopy,
+      hidden: message.messageType !== "text",
     },
     {
       label: "Edit Message",
       icon: RiEdit2Line,
       hidden:
-        !isMine || Date.now() - new Date(message.createdAt).getTime() > 900000,
+        !isMine ||
+        Date.now() - new Date(message.createdAt).getTime() > 900000 ||
+        message.messageType !== "text",
       onClick: () =>
         setMessageMode({
           type: "edit",
@@ -119,7 +132,7 @@ const MessageOptionsMenu = ({ message, coords, isMe, onClose }) => {
           messageType: message.messageType,
           messageUrl: message?.media?.url,
           originalName: message?.media?.originalName,
-          mimeType: message?.media?.mimeType
+          mimeType: message?.media?.mimeType,
         }),
     },
     {
