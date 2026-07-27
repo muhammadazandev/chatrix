@@ -7,6 +7,7 @@ import { RiPushpin2Line } from "@remixicon/react";
 import { motion } from "motion/react";
 import useAuthStore from "../../../../store/useAuthStore";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
+import { mediaMessageText } from "../../../../utils/messagesHelpers";
 
 const childVariants = {
   rest: {
@@ -39,9 +40,7 @@ const PinnedSection = ({ currentConversation, pinnedMessages }) => {
       },
       (res) => {
         if (!res?.success) {
-          toast.error(
-            `${res?.message ? `${res.message}` : ""}`,
-          );
+          toast.error(res?.message);
         }
       },
     );
@@ -61,13 +60,15 @@ const PinnedSection = ({ currentConversation, pinnedMessages }) => {
             <div className="flex items-center gap-2 text-xs opacity-60">
               <IconsWrapper icon={RiPushpin2Line} size={14} />
               <span>
-                Pinned by{" "}
+                Pinned by
                 {m.pinnedBy._id === user._id ? "You" : m.pinnedBy.username}
               </span>
             </div>
 
             <p className="mt-2 text-sm line-clamp-2 wrap-break-word">
-              {m.message.text}
+              {m?.message?.messageType !== "text"
+                ? mediaMessageText(m?.message?.text, m?.message?.messageType)
+                : m?.message?.text}
             </p>
 
             {m.pinnedBy._id === user._id && (

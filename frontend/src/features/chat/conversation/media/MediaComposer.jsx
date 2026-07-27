@@ -13,12 +13,14 @@ import { convertFilesSize } from "../../../../utils/messagesHelpers";
 import useEmojiPicker from "../../../../hooks/useEmojiPicker";
 import SharedEmojiPicker from "../../../../components/SharedEmojiPicker";
 import useMediaComposer from "../../../../hooks/useMediaComposer";
+import { useQueryParams } from "../../../../hooks/useQueryParams";
 
 const MediaComposer = () => {
   const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
   const setMediaPreviewInfo = useMessageUiStore(
     (state) => state.setMediaPreviewInfo,
   );
+  const { searchParams } = useQueryParams();
   const type = mediaPreviewInfo?.file?.type ?? "";
   const {
     value,
@@ -29,7 +31,7 @@ const MediaComposer = () => {
     togglePicker,
   } = useEmojiPicker("");
   const { sendMessage } = useMediaComposer({ value });
-
+  
   return (
     <Motion
       variants={fade}
@@ -44,9 +46,6 @@ const MediaComposer = () => {
                 className="p-2 rounded-full"
                 onClick={() => {
                   setMediaPreviewInfo(null);
-                  if (mediaPreviewInfo?.url) {
-                    URL.revokeObjectURL(mediaPreviewInfo?.url);
-                  }
                 }}
               >
                 <IconsWrapper icon={RiCloseLine} />
@@ -129,6 +128,21 @@ const MediaComposer = () => {
                     rows={1}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+
+                        sendMessage({
+                          conversationId: searchParams.get("conversationId"),
+                          file: mediaPreviewInfo.file,
+                          previewUrl: mediaPreviewInfo.url,
+                          text: value,
+                        });
+
+                        URL.revokeObjectURL(mediaPreviewInfo.url);
+                        setMediaPreviewInfo(null);
+                      }
+                    }}
                   />
 
                   <Tooltip content="Open Emoji Picker" delay={[1000, 0]}>
@@ -156,7 +170,16 @@ const MediaComposer = () => {
               <Tooltip content={`Send Message`} delay={[1000, 0]}>
                 <button
                   className="p-3 bg-(--accent-color-primary) rounded-full"
-                  onClick={sendMessage}
+                  onClick={() => {
+                    sendMessage({
+                      conversationId: searchParams.get("conversationId"),
+                      file: mediaPreviewInfo.file,
+                      previewUrl: mediaPreviewInfo.url,
+                      text: value,
+                    });
+
+                    setMediaPreviewInfo(null);
+                  }}
                 >
                   <IconsWrapper icon={RiSendPlane2Fill} size={18} />
                 </button>

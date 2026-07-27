@@ -1,13 +1,9 @@
 import useMessageUiStore from "../store/useMessageUiStore";
 import { authApi } from "../utils/api";
 import handleError from "../utils/handleError";
-import { useQueryParams } from "./useQueryParams";
 import toast from "react-hot-toast";
 
-const useMediaComposer = ({ value }) => {
-  const { searchParams } = useQueryParams();
-
-  const mediaPreviewInfo = useMessageUiStore((state) => state.mediaPreviewInfo);
+const useMediaComposer = () => {
   const addPendingMessage = useMessageUiStore(
     (state) => state.addPendingMessage,
   );
@@ -17,14 +13,15 @@ const useMediaComposer = ({ value }) => {
   const removePendingMessage = useMessageUiStore(
     (state) => state.removePendingMessage,
   );
-  const setMediaPreviewInfo = useMessageUiStore(
-    (state) => state.setMediaPreviewInfo,
-  );
+  async function sendMessage({
+    conversationId,
+    file,
+    previewUrl,
+    text = "",
+  }) {
+    if (!file) return;
 
-  async function sendMessage() {
-    if (!mediaPreviewInfo?.file) return;
-
-    const mime = mediaPreviewInfo.file.type;
+    const mime = file.type;
 
     let messageType = "file";
 
@@ -38,17 +35,15 @@ const useMediaComposer = ({ value }) => {
 
     try {
       const formData = new FormData();
-      const conversationId = searchParams.get("conversationId");
       const tempId = crypto.randomUUID();
 
-      formData.append("file", mediaPreviewInfo.file);
+      formData.append("file", file);
 
       formData.append(
         "message",
         JSON.stringify({
           conversationId,
-          text: value,
-          // replyTo,
+          text,
           type: messageType,
         }),
       );
@@ -62,12 +57,12 @@ const useMediaComposer = ({ value }) => {
         messageType,
 
         media: {
-          url: mediaPreviewInfo?.url,
-          fileName: mediaPreviewInfo.file.name,
-          size: mediaPreviewInfo.file.size,
+          url: previewUrl,
+          fileName: file.name,
+          size: file.size,
         },
 
-        text: value,
+        text,
         createdAt: Date.now(),
       };
 
@@ -88,17 +83,9 @@ const useMediaComposer = ({ value }) => {
         },
       });
 
-      const preview = mediaPreviewInfo;
-
-      setMediaPreviewInfo(null);
-
       request
         .then(() => {
           removePendingMessage(tempId);
-
-          if (preview?.url) {
-            URL.revokeObjectURL(preview?.url);
-          }
         })
         .catch((error) => {
           updatePendingMessage(tempId, {

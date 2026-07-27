@@ -7,6 +7,7 @@ import {
   validateConversationParticipant,
 } from "../../socket/helpers/new.message.helpers.js";
 import cloudinary from "../../lib/cloudinary.js";
+import { mediaMessageText } from "../../utils/messagesHelpers.js";
 
 async function mediaMessage(req, res) {
   try {
@@ -58,26 +59,11 @@ async function mediaMessage(req, res) {
       messageType = "audio";
     }
 
-    const lastMessageText = message.text?.trim()
-      ? `${
-          messageType === "image"
-            ? "📷"
-            : messageType === "video"
-              ? "🎥"
-              : messageType === "audio"
-                ? "🎵"
-                : "📄"
-        } ${message.text.trim()}`
-      : messageType === "image"
-        ? "📷 Photo"
-        : messageType === "video"
-          ? "🎥 Video"
-          : messageType === "audio"
-            ? "🎵 Audio"
-            : "📄 File";
+    const lastMessageText = mediaMessageText(message.text, messageType);
     const atDate = Date.now();
 
-    let extraInfo;
+    let extraInfo = null;
+    let resourceType = "raw";
 
     if (messageType === "audio" || messageType === "video") {
       extraInfo = await cloudinary.api.resource(req.file.filename, {
@@ -85,18 +71,31 @@ async function mediaMessage(req, res) {
         media_metadata: true,
       });
 
+      resourceType = extraInfo.resource_type;
+
       if (messageType === "video") {
-        const thumbnailUrl = cloudinary.url(extraInfo.public_id, {
+        extraInfo.thumbnailUrl = cloudinary.url(extraInfo.public_id, {
           resource_type: "video",
           format: "jpg",
           secure: true,
-          transformation: [
-            {
-              start_offset: "1",
-            },
-          ],
+          transformation: [{ start_offset: "1" }],
         });
-        extraInfo = { ...extraInfo, thumbnailUrl };
+      }
+    } else {
+      try {
+        extraInfo = await cloudinary.api.resource(req.file.filename, {
+          resource_type: "image",
+          media_metadata: true,
+        });
+
+        resourceType = extraInfo.resource_type;
+      } catch {
+        extraInfo = await cloudinary.api.resource(req.file.filename, {
+          resource_type: "raw",
+          media_metadata: true,
+        });
+
+        resourceType = extraInfo.resource_type;
       }
     }
 
@@ -114,6 +113,7 @@ async function mediaMessage(req, res) {
       publicId: req.file.filename,
       originalName: req.file.originalname,
       size: req.file.size,
+      resourceType,
     };
 
     const { messageDoc, newMessage } = await createAndPopulateMessage(

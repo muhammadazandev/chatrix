@@ -64,6 +64,7 @@ async function createAndPopulateMessage(
       size: message.size,
       thumbnailUrl: message.thumbnailUrl,
       duration: message.duration,
+      resourceType: message.resourceType,
     };
   }
 
@@ -81,7 +82,7 @@ async function createAndPopulateMessage(
     .populate("senderId", "username profilePicture")
     .populate({
       path: "replyTo",
-      select: "text messageType senderId",
+      select: "text messageType senderId media",
       populate: {
         path: "senderId",
         select: "username profilePicture",
@@ -101,6 +102,12 @@ function formatMessage(messageDoc, conversationType) {
       _id: messageDoc.replyTo._id,
       text: messageDoc.replyTo.text,
       sender: messageDoc.replyTo.senderId || null,
+      messageType: messageDoc.replyTo.messageType,
+      media: {
+        url: messageDoc.replyTo?.media?.url,
+        thumbnailUrl: messageDoc.replyTo?.media?.thumbnailUrl,
+        duration: messageDoc.replyTo?.media?.duration,
+      },
     };
   }
 

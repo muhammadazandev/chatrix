@@ -6,7 +6,7 @@ const useMessageUiStore = create((set) => ({
     payload: null,
   },
   jumpToMessageId: null,
-  forwardMessageId: null,
+  forwardMessage: {},
   mediaPreviewInfo: null,
   pendingMessages: [],
   mediaViewer: {
@@ -19,7 +19,7 @@ const useMessageUiStore = create((set) => ({
   clearMessageMode: () =>
     set({ messageMode: { type: "normal", payload: null } }),
   setJumpToMessageId: (msg) => set({ jumpToMessageId: msg }),
-  setForwardMessageId: (id) => set({ forwardMessageId: id }),
+  setForwardMessage: (info) => set({ forwardMessage: info }),
   setMediaPreviewInfo: (data) => set({ mediaPreviewInfo: data }),
 
   addPendingMessage: (msg) =>

@@ -107,6 +107,7 @@ export function registerPinMessage(io, socket) {
           message: {
             _id: message._id,
             text: message.text,
+            messageType: message.messageType,
           },
           pinnedBy: {
             _id: pinnedMessage.pinnedBy._id,
@@ -124,6 +125,7 @@ export function registerPinMessage(io, socket) {
           message: {
             _id: message._id,
             text: message.text,
+            messageType: message.messageType,
           },
           pinnedBy: {
             _id: pinnedMessage.pinnedBy._id,
@@ -187,5 +189,3 @@ export function registerPinMessage(io, socket) {
     }
   });
 }
-
-// Update delete logic for pin messages.

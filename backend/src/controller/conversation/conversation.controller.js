@@ -160,7 +160,7 @@ async function verifyConversation(req, res) {
 
     const conversation = await Conversation.findById(conversationId)
       .populate("pinnedMessages.pinnedBy", "username")
-      .populate("pinnedMessages.message", "text");
+      .populate("pinnedMessages.message", "text messageType");
 
     if (!conversation) {
       return res.status(404).json({

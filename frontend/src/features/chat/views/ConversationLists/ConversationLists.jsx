@@ -2,6 +2,9 @@ import { lazy, Suspense, useEffect } from "react";
 import useChatStore from "../../../../store/useChatStore";
 import { useQueryParams } from "../../../../hooks/useQueryParams";
 import Loader from "../../../../components/Loader";
+import useMessageUiStore from "../../../../store/useMessageUiStore";
+import IconsWrapper from "../../../../components/IconsWrapper";
+import { RiChatUnreadFill, RiChatUnreadLine } from "@remixicon/react";
 
 const ConversationEmptyState = lazy(() =>
   import("../../sidebar/components/EmptyStates").then((module) => ({
@@ -14,6 +17,12 @@ const ConversationLists = () => {
   const conversations = useChatStore((state) => state.conversations);
   const verifyConversation = useChatStore((state) => state.verifyConversation);
   const { searchParams, updateParams } = useQueryParams();
+  const pendingMessages = useMessageUiStore((state) => state.pendingMessages);
+
+  const conversationPendingMessages = pendingMessages.filter(
+    (msg) => msg.conversationId === searchParams.get("conversationId"),
+  );
+
   const sortedConversations = conversations
     ? [...conversations].sort(
         (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt),
@@ -36,6 +45,10 @@ const ConversationLists = () => {
     <div className="mt-8 flex flex-col gap-1">
       {sortedConversations?.length > 0 ? (
         sortedConversations.map((con) => {
+          const pendingForThisCon = pendingMessages.filter(
+            (msg) => msg.conversationId === con._id,
+          );
+
           return (
             <div
               key={con._id}
@@ -58,9 +71,17 @@ const ConversationLists = () => {
                       {con.title}
                     </h3>
                   </div>
-                  <p className="text-xs font-medium opacity-50 truncate max-w-60 mt-0.5">
-                    {con.lastMessageText || ""}
-                  </p>
+
+                  <div className="text-xs font-medium opacity-50 truncate max-w-60 mt-0.5">
+                    {pendingForThisCon.length > 0 ? (
+                      <p className="inline-flex gap-1 items-center">
+                        <IconsWrapper icon={RiChatUnreadLine} size={13} />
+                        {pendingForThisCon.length} Pending
+                      </p>
+                    ) : (
+                      con.lastMessageText
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

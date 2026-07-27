@@ -9,6 +9,7 @@ import Tooltip from "../../../../components/Tooltip";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import { slideHeightExpand } from "../../../../motion/variants";
 import Motion from "../../../../motion/Motion";
+import { mediaMessageText } from "../../../../utils/messagesHelpers";
 
 const PinnedMessages = ({ pinnedMessages }) => {
   if (!pinnedMessages || pinnedMessages.length === 0) return null;
@@ -53,7 +54,14 @@ const PinnedMessages = ({ pinnedMessages }) => {
                 Pinned by {msg?.pinnedBy?.username}
               </p>
 
-              <p className="truncate">{msg?.message?.text}</p>
+              <p className="truncate">
+                {msg?.message?.messageType !== "text"
+                  ? mediaMessageText(
+                      msg?.message?.text,
+                      msg?.message?.messageType,
+                    )
+                  : msg?.message?.text}
+              </p>
             </div>
           </div>
         </div>

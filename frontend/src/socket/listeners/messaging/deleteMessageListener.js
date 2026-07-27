@@ -16,6 +16,7 @@ export async function registerDeleteMessage(socket) {
               ...mes.replyTo,
               isDeleted: data.patch.isDeleted,
               text: "",
+              media: data.patch.media,
             },
           };
         }
@@ -24,11 +25,7 @@ export async function registerDeleteMessage(socket) {
 
         return {
           ...mes,
-          isDeleted: data.patch.isDeleted,
-          isEdited: data.patch.isEdited,
-          editedAt: data.patch.editedAt,
-          text: data.patch.text,
-          mediaUrl: data.patch.mediaUrl,
+          ...data.patch,
         };
       }),
     }));

@@ -21,6 +21,7 @@ const MediaMessagesButtons = () => {
   const setMediaPreviewInfo = useMessageUiStore(
     (state) => state.setMediaPreviewInfo,
   );
+  const messageMode = useMessageUiStore((state) => state.messageMode);
 
   const handleBlur = (e) => {
     const nextFocused = e.relatedTarget;
@@ -43,7 +44,12 @@ const MediaMessagesButtons = () => {
 
     const url = URL.createObjectURL(files[0]);
 
-    setMediaPreviewInfo({ file: files[0], url, type: selectedButton });
+    setMediaPreviewInfo({
+      showPreview: true,
+      file: files[0],
+      url,
+      type: selectedButton,
+    });
 
     e.target.value = "";
     setSelectedButton(null);
@@ -91,6 +97,7 @@ const MediaMessagesButtons = () => {
         <button
           className="p-2 rounded-full z-50"
           onClick={() => setIsSelectorOpen(!isSelectorOpen)}
+          disabled={messageMode.type === "reply"}
         >
           <IconsWrapper icon={RiAddLine} size={22} />
         </button>

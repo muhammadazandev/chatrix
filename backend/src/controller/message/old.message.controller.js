@@ -52,7 +52,7 @@ async function getOldMessages(req, res) {
       .populate("senderId", "username profilePicture")
       .populate({
         path: "replyTo",
-        select: "text senderId isDeleted",
+        select: "text senderId isDeleted messageType media",
         populate: {
           path: "senderId",
           select: "username profilePicture",
@@ -72,6 +72,12 @@ async function getOldMessages(req, res) {
           text: m.replyTo.text,
           sender: m.replyTo.senderId || null,
           isDeleted: m.replyTo.isDeleted,
+          messageType: m.replyTo.messageType,
+          media: {
+            url: m.replyTo?.media?.url,
+            thumbnailUrl: m.replyTo?.media?.thumbnailUrl,
+            duration: m.replyTo?.media?.duration,
+          },
         };
       }
 

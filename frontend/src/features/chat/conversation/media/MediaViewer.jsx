@@ -159,7 +159,7 @@ const MediaViewer = () => {
                   }}
                 >
                   <img
-                    src={item.media.thumbnailUrl || item.media.url}
+                    src={item.media?.thumbnailUrl || item.media?.url}
                     alt="Image"
                     className="w-full h-full object-cover"
                   />
@@ -168,7 +168,7 @@ const MediaViewer = () => {
                     <div className="absolute bottom-0 py-1 left-0 pl-2 flex gap-2 bg-(--bg-primary)/70 w-full">
                       <IconsWrapper icon={RiVideoOnFill} size={15} />
                       <span className="text-xs">
-                        {formatDuration(item.media.duration)}
+                        {formatDuration(item.media?.duration)}
                       </span>
                     </div>
                   )}

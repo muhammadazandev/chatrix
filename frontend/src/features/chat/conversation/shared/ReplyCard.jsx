@@ -1,10 +1,22 @@
-import { RiCloseLine } from "@remixicon/react";
+import { RiCloseLine, RiVideoOnFill } from "@remixicon/react";
 import IconsWrapper from "../../../../components/IconsWrapper";
 import useAuthStore from "../../../../store/useAuthStore";
 import Motion from "../../../../motion/Motion";
 import useMessageUiStore from "../../../../store/useMessageUiStore";
 import Tooltip from "../../../../components/Tooltip";
 import { slideHeightExpand } from "../../../../motion/variants";
+import {
+  formatDuration,
+  mediaMessageText,
+} from "../../../../utils/messagesHelpers";
+
+function renderMessageText(message) {
+  if (!message) return;
+
+  if (message.messageType !== "text") {
+    return mediaMessageText(message.text, message.messageType);
+  } else return message.text;
+}
 
 const ReplyCard = ({
   replyMessage,
@@ -20,7 +32,7 @@ const ReplyCard = ({
 
   const content = (
     <div
-      className={`w-full rounded-sm bg-(--bg-primary) flex cursor-pointer ${className}`}
+      className={`w-full rounded-sm bg-(--bg-primary) flex cursor-pointer ${className} relative`}
       onClick={(e) => {
         if (e.target.tagName === "BUTTON") return;
         setJumpToMessageId(replyMessage._id);
@@ -28,8 +40,8 @@ const ReplyCard = ({
     >
       <span className="bg-(--accent-color-secondary) w-1 rounded-l-full" />
 
-      <div className="px-3 py-2 flex w-full justify-between">
-        <div className="max-w-[95%]">
+      <div className="flex flex-1 items-center">
+        <div className="min-w-0 flex-1 px-3 py-2">
           <p className="text-sm text-(--accent-color-secondary)">
             {replyMessage?.sender?._id?.toString() === user?._id?.toString()
               ? "You"
@@ -39,7 +51,7 @@ const ReplyCard = ({
           <p className="text-sm opacity-50 truncate">
             {replyMessage?.isDeleted
               ? "This message was deleted"
-              : replyMessage?.text}
+              : renderMessageText(replyMessage)}
           </p>
         </div>
 
@@ -54,6 +66,30 @@ const ReplyCard = ({
           </Tooltip>
         )}
       </div>
+
+      {!replyMessage.isDeleted &&
+        !showCloseButton &&
+        (replyMessage.messageType === "image" ||
+          replyMessage.messageType === "video") && (
+          <div className="relative min-h-full w-full ml-10">
+            <img
+              className="h-full max-w-23 rounded-sm"
+              src={replyMessage.media?.thumbnailUrl || replyMessage.media?.url}
+              alt={replyMessage.messageType}
+            />
+
+            <div className="absolute inset-0 bg-black/35" />
+
+            {replyMessage.messageType === "video" && (
+              <div className="absolute left-2 bottom-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px]">
+                <IconsWrapper icon={RiVideoOnFill} size={12} />
+                <span className="text-[10px]">
+                  {formatDuration(replyMessage.media?.duration)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
     </div>
   );
 

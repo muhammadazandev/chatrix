@@ -1,3 +1,4 @@
+import cloudinary from "../../../lib/cloudinary.js";
 import Conversation from "../../../models/conversation.model.js";
 import Message from "../../../models/message.model.js";
 
@@ -34,11 +35,28 @@ export function registerDeleteMessage(io, socket) {
         });
       }
 
+      if (message.media?.publicId) {
+        const result = await cloudinary.uploader.destroy(
+          message.media.publicId,
+          {
+            resource_type: message.media.resourceType,
+          },
+        );
+
+        if (result.result !== "ok") {
+          return callback?.({
+            success: false,
+            message: `Cloudinary deletion failed: ${result.result}`,
+          });
+        }
+      }
+
       message.isDeleted = true;
       message.isEdited = false;
-      message.editedAt = null;
       message.text = "";
-      message.mediaUrl = "";
+      message.editedAt = undefined;
+      message.media = undefined;
+
       await message.save();
 
       // Delete from pinned messages if pinned
@@ -46,6 +64,14 @@ export function registerDeleteMessage(io, socket) {
         message.conversationId,
         "pinnedMessages",
       );
+
+      if (!con) {
+        return callback?.({
+          success: false,
+          message: "Conversation not found",
+        });
+      }
+
       const index = con.pinnedMessages.findIndex(
         (pin) => pin.message.toString() === message._id.toString(),
       );
@@ -63,7 +89,7 @@ export function registerDeleteMessage(io, socket) {
           isEdited: message.isEdited,
           editedAt: message.editedAt,
           text: message.text,
-          mediaUrl: message.mediaUrl,
+          media: message.media
         },
       });
 
