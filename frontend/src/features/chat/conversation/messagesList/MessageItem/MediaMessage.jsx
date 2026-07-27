@@ -1,6 +1,7 @@
 import { RiLoader4Line, RiPlayLine, RiVideoOnFill } from "@remixicon/react";
 import IconsWrapper from "../../../../../components/IconsWrapper";
 import {
+  convertFilesSize,
   formatDuration,
   formatTime,
 } from "../../../../../utils/messagesHelpers";
@@ -26,7 +27,7 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
 
   return (
     <div
-      className={`relative max-w-[40%] border border-(--foreground-secondary)/20  flex flex-col ${message?.isDeleted ? "p-2" : "p-1 gap-2"} ${
+      className={`relative max-w-[40%] border border-(--foreground-secondary)/20  flex flex-col ${message?.isDeleted ? "p-2" : message.messageType === "file" ? "p-0.5 pb-1" : "p-1 gap-2"} ${
         isMe || isPending
           ? "bg-linear-to-br from-(--accent-color-primary) to-(--accent-color-primary)/50 text-white rounded-xl rounded-br-none"
           : "bg-(--bg-secondary) rounded-xl rounded-bl-none"
@@ -90,16 +91,35 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
             <audio src={message.media.url} controls />
           )}
           {message.messageType === "file" && (
-            <a
-              href={message.media.url}
-              target="_blank"
-              rel="noreferrer"
-              className="underline break-all"
+            <div
+              className="p-3 rounded-sm flex gap-2 items-center bg-(--bg-primary)/25 min-w-64 max-w-96 cursor-pointer"
             >
-              {message.media.fileName || "Download file"}
-            </a>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="35"
+                height="35"
+                viewBox="0 0 48 48"
+              >
+                <path fill="#90CAF9" d="M40 45L8 45 8 3 30 3 40 13z"></path>
+                <path fill="#E1F5FE" d="M38.5 14L29 14 29 4.5z"></path>
+              </svg>
+              <div className="flex flex-col gap-1">
+                <p className="text-sm line-clamp-2 break-all">
+                  {message.media?.originalName}
+                </p>
+
+                <div className="flex flex-col gap-4 opacity-50 text-xs">
+                  <p className="uppercase">
+                    {message.media?.originalName?.split(".").pop()} -{" "}
+                    {convertFilesSize(message?.media?.size)}
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
-          <div className="relative pt-4">
+          <div className="relative pb-2">
             {message.text && (
               <span className="block text-sm leading-relaxed whitespace-pre-wrap break-all pr-12">
                 {message.text}
