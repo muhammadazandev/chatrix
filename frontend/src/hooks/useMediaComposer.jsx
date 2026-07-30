@@ -13,11 +13,15 @@ const useMediaComposer = () => {
   const removePendingMessage = useMessageUiStore(
     (state) => state.removePendingMessage,
   );
+
   async function sendMessage({
     conversationId,
     file,
     previewUrl,
     text = "",
+    oldTempId = null,
+    isRetry = false,
+    isForward,
   }) {
     if (!file) return;
 
@@ -45,6 +49,7 @@ const useMediaComposer = () => {
           conversationId,
           text,
           type: messageType,
+          isForward: isForward ?? false,
         }),
       );
 
@@ -55,6 +60,7 @@ const useMediaComposer = () => {
         progress: 0,
 
         messageType,
+        file: file,
 
         media: {
           url: previewUrl,
@@ -66,7 +72,15 @@ const useMediaComposer = () => {
         createdAt: Date.now(),
       };
 
-      addPendingMessage(pendingMessage);
+      if (!isRetry) {
+        addPendingMessage(pendingMessage);
+      } else {
+        updatePendingMessage(oldTempId, {
+          status: "uploading",
+          progress: 0,
+          error: null,
+        });
+      }
 
       let lastProgress = 0;
 
@@ -78,17 +92,17 @@ const useMediaComposer = () => {
 
           if (progress !== lastProgress) {
             lastProgress = progress;
-            updatePendingMessage(tempId, { progress });
+            updatePendingMessage(oldTempId ?? tempId, { progress });
           }
         },
       });
 
       request
         .then(() => {
-          removePendingMessage(tempId);
+          removePendingMessage(oldTempId ?? tempId);
         })
         .catch((error) => {
-          updatePendingMessage(tempId, {
+          updatePendingMessage(oldTempId ?? tempId, {
             status: "failed",
             error: handleError(error),
           });
