@@ -17,6 +17,9 @@ import UploadStatus from "./UploadStatus";
 const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
   const openMediaViewer = useMessageUiStore((state) => state.openMediaViewer);
   const messages = useChatStore((state) => state.messages);
+  const removePendingMessage = useMessageUiStore(
+    (state) => state.removePendingMessage,
+  );
   const { sendMessage } = useMediaComposer();
 
   function handleOnMediaClick() {
@@ -42,6 +45,14 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
     });
   }
 
+  function handleCancel() {
+    message.abortController.abort();
+  }
+
+  function handleRemove() {
+    removePendingMessage(message.tempId);
+  }
+
   return (
     <div
       className={`relative max-w-[40%] border border-(--foreground-secondary)/20  flex flex-col ${message?.isDeleted ? "p-2" : message.messageType === "file" ? "p-0.5 pb-1" : "p-1 gap-2"} ${
@@ -64,12 +75,12 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
                 status={message.status}
                 progress={message.progress}
                 onRetry={handleRetry}
-                // onCancel={handleCancel}
-                // onRemove={handleRemove}
+                onCancel={message.progress >= 97 ? null : handleCancel}
+                onRemove={handleRemove}
               />
             )}
 
-          <div className="relative">
+          <div className="relative w-full">
             {(message.messageType === "image" ||
               message.messageType === "video") && (
               <>
@@ -113,8 +124,11 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
 
           {message.messageType === "audio" && (
             <>
-              <audio src={message.media?.url} controls className="w-full" />
-
+              <audio
+                src={message.media?.url}
+                controls
+                className="min-w-[50%]"
+              />
               {isPending &&
                 (message.status === "uploading" ||
                   message.status === "failed") && (
@@ -122,8 +136,8 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
                     status={message.status}
                     progress={message.progress}
                     onRetry={handleRetry}
-                    // onCancel={handleCancel}
-                    // onRemove={handleRemove}
+                    onCancel={message.progress >= 97 ? null : handleCancel}
+                    onRemove={handleRemove}
                   />
                 )}
             </>
@@ -164,8 +178,8 @@ const MediaMessage = ({ isMe, isPending, message, contextMenu }) => {
                     status={message.status}
                     progress={message.progress}
                     onRetry={handleRetry}
-                    // onCancel={handleCancel}
-                    // onRemove={handleRemove}
+                    onCancel={message.progress >= 97 ? null : handleCancel}
+                    onRemove={handleRemove}
                   />
                 )}
             </>

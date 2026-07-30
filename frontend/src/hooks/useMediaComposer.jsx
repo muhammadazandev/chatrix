@@ -1,3 +1,4 @@
+import axios from "axios";
 import useMessageUiStore from "../store/useMessageUiStore";
 import { authApi } from "../utils/api";
 import handleError from "../utils/handleError";
@@ -53,6 +54,8 @@ const useMediaComposer = () => {
         }),
       );
 
+      const controller = new AbortController();
+
       const pendingMessage = {
         tempId,
         conversationId,
@@ -70,12 +73,14 @@ const useMediaComposer = () => {
 
         text,
         createdAt: Date.now(),
+        abortController: controller,
       };
 
       if (!isRetry) {
         addPendingMessage(pendingMessage);
       } else {
         updatePendingMessage(oldTempId, {
+          abortController: controller,
           status: "uploading",
           progress: 0,
           error: null,
@@ -85,6 +90,8 @@ const useMediaComposer = () => {
       let lastProgress = 0;
 
       const request = authApi.post("/message/media", formData, {
+        signal: controller.signal,
+
         onUploadProgress(e) {
           if (!e.total) return;
 
@@ -102,12 +109,10 @@ const useMediaComposer = () => {
           removePendingMessage(oldTempId ?? tempId);
         })
         .catch((error) => {
-          updatePendingMessage(oldTempId ?? tempId, {
-            status: "failed",
-            error: handleError(error),
-          });
-          const message = handleError(error);
-          if (message) toast.error(message);
+          if (axios.isCancel(error)) {
+            removePendingMessage(oldTempId ?? tempId);
+            return;
+          }
         });
     } catch (error) {
       const message = handleError(error);
