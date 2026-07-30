@@ -81,6 +81,7 @@ const ForwardMessage = ({ forwardMessage, conversations }) => {
             conversationId,
             file,
             previewUrl,
+            isForward: true,
           });
         }),
       );

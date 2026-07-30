@@ -9,6 +9,7 @@ const ALLOWED_MESSAGE_MIME_TYPES = [
   "image/png",
   "image/webp",
   "image/gif",
+  "image/svg+xml",
 
   // Videos
   "video/mp4",

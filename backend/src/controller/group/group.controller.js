@@ -47,7 +47,7 @@ async function createGroup(req, res) {
 
     if (avatar === "default") {
       avatarUrl =
-        "https://res.cloudinary.com/dbzdwitoa/image/upload/q_auto/f_auto/v1778327421/contact-dark-mode-glyph-ui-icon-address-book-profile-page-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector_sjfa4p.jpg";
+        "https://res.cloudinary.com/dbzdwitoa/image/upload/v1785436153/default-picture.avif";
     } else if (req.file) {
       avatarUrl = req.file.path;
     }

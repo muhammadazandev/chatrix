@@ -120,7 +120,7 @@ async function mediaMessage(req, res) {
       messageData,
       atDate,
       userId,
-      false,
+      message.isForward,
     );
 
     const messageToSend = formatMessage(messageDoc, conversation.type);
