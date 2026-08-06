@@ -11,7 +11,7 @@ import useChatStore from "../../../../store/useChatStore";
 
 import MessageActions from "./MessageActions";
 import MessageReply from "./MessageReply";
-import MessageTextArea from "./MessageTextarea";
+import ComposerContent from "./ComposerContent";
 
 const shakeVariants = {
   error: {
@@ -106,9 +106,10 @@ const MessageInput = () => {
                 cancelEditing={cancelEditing}
                 sendMessage={sendMessage}
                 side="left"
+                value={value}
               />
 
-              <MessageTextArea
+              <ComposerContent
                 value={value}
                 setValue={setValue}
                 inputRef={inputRef}
@@ -122,6 +123,7 @@ const MessageInput = () => {
                 cancelEditing={cancelEditing}
                 sendMessage={sendMessage}
                 side="right"
+                value={value}
               />
             </div>
           </div>

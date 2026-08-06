@@ -1,4 +1,4 @@
-const MessageTextArea = ({
+const ComposerContent = ({
   value,
   setValue,
   inputRef,
@@ -6,6 +6,8 @@ const MessageTextArea = ({
   sendMessage,
   cancelEditing,
 }) => {
+  const { isRecording } = useM
+
   return (
     <textarea
       placeholder="Enter Your Message"
@@ -29,4 +31,4 @@ const MessageTextArea = ({
   );
 };
 
-export default MessageTextArea;
+export default ComposerContent;
